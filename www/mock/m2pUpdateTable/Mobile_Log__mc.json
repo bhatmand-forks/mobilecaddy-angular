@@ -1,0 +1,20 @@
+{
+  "migrateTo": null,
+  "mt": "Mobile_Log__mc",
+  "cp": "PROXY%Connection_Session__mc%1461061655913%61%a1r8E0000000ga5QAA",
+  "csId": "a1v8E00000076W4QAI",
+  "ps": "M2P UP - Record Processed",
+  "sdfbe": "K",
+  "hdfbe": "R",
+  "usvbe": "K",
+  "ufvbe": "K",
+  "ucvbe": "K",
+  "ifvbe": "K",
+  "ufbe": "K",
+  "stbe": "R",
+  "ifbe": "K",
+  "is": [],
+  "ifmf": [],
+  "id": [],
+  "if": { "if": [], "ifv": [], "icv": [] }
+}

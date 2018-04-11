@@ -1,0 +1,22 @@
+ion-buttons {
+  display: block;
+  float: right;
+}
+
+@keyframes anim-rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spinner {
+  animation: anim-rotate 1.6s infinite linear;
+}
+.spinner--steps {
+  animation: anim-rotate 0.8s infinite steps(8);
+}
+.spinner--steps2 {
+  animation: anim-rotate 0.8s infinite steps(12);
+}
