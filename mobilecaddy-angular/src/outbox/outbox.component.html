@@ -1,0 +1,7 @@
+<ion-list>
+  <ion-item *ngFor="let x of dirtyRecordsSummary">
+    <span class="tableName">{{ x.displayName}}: </span>{{x.count}}
+  </ion-item>
+</ion-list>
+<button ion-button (click)="doSync($event)">Sync now
+</button>

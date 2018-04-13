@@ -8,9 +8,10 @@ interface SyncTableConfig {
   maxTableAge?: number;
 }
 
+const logTag: string = 'mobilecaddy-sync.service.ts';
+
 @Injectable()
 export class MobileCaddySyncService {
-  logTag: string = 'mobilecaddy-sync.service.ts';
   initialSyncState: BehaviorSubject<string> = new BehaviorSubject('');
   syncState: BehaviorSubject<string> = new BehaviorSubject('');
   _syncState: string = '';
@@ -21,18 +22,18 @@ export class MobileCaddySyncService {
   }
 
   doInitialSync(config: any[]): void {
-    console.log(this.logTag, 'Calling initialSync');
+    console.log(logTag, 'Calling initialSync');
     this.syncState.next('InitialSyncInProgress');
     devUtils.initialSync(config).then(res => {
       localStorage.setItem('initialSyncState', 'InitialLoadComplete');
-      console.log(this.logTag, 'InitialLoadComplete');
+      console.log(logTag, 'InitialLoadComplete');
       this.initialSyncState.next('InitialLoadComplete');
       this.syncState.next('complete');
     });
   }
 
   doColdStartSync(coldStartTables: any): void {
-    console.log(this.logTag, 'doColdStartSync', coldStartTables);
+    console.log(logTag, 'doColdStartSync', coldStartTables);
     let mobileLogConfig: SyncTableConfig = {
       Name: 'Mobile_Log__mc',
       syncWithoutLocalUpdates: false
@@ -43,7 +44,7 @@ export class MobileCaddySyncService {
 
   syncTables(tablesToSync: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(this.logTag, 'syncTables');
+      console.log(logTag, 'syncTables');
       // TODO - put some local notification stuff in here.
       this.doSyncTables(tablesToSync).then(res => {
         this.setSyncState('complete');
@@ -78,7 +79,7 @@ export class MobileCaddySyncService {
         return sequence
           .then(res => {
             console.log(
-              this.logTag,
+              logTag,
               'doSyncTables inSequence',
               table,
               res,
@@ -99,7 +100,7 @@ export class MobileCaddySyncService {
             }
           })
           .then(resObject => {
-            console.log(this.logTag, resObject);
+            console.log(logTag, resObject);
             switch (resObject.status) {
               case devUtils.SYNC_NOK:
               case devUtils.SYNC_ALREADY_IN_PROGRESS:
@@ -118,7 +119,7 @@ export class MobileCaddySyncService {
             return resObject;
           })
           .catch(e => {
-            console.error(this.logTag, 'doSyncTables', e);
+            console.error(logTag, 'doSyncTables', e);
             if (e.status != devUtils.SYNC_UNKONWN_TABLE) {
               stopSyncing = true;
               //   this.tableSyncStatus.emit({

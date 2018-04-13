@@ -21,12 +21,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 
+const logTag: string = 'mobilecaddy-sync.ts';
+
 @Component({
   selector: 'mobilecaddy-sync',
   templateUrl: 'mobilecaddy-sync.component.html'
 })
 export class MobileCaddySyncComponent implements OnInit {
-  logTag: string = 'mobilecaddy-sync.ts';
   @Input() config: any;
 
   constructor(
@@ -50,7 +51,7 @@ export class MobileCaddySyncComponent implements OnInit {
   }
 
   doInitialSync(): void {
-    console.log(this.logTag, 'Calling initialSync');
+    console.log(logTag, 'Calling initialSync');
     let loader = this.loadingCtrl.create({
       content: 'Running Sync...',
       duration: 120000
@@ -58,7 +59,7 @@ export class MobileCaddySyncComponent implements OnInit {
     loader.present();
 
     this.mobilecaddySyncService.getSyncState().subscribe(res => {
-      console.log(this.logTag, 'SyncState Update', res);
+      console.log(logTag, 'SyncState Update', res);
       if (res == 'complete') {
         loader.dismiss();
       }
@@ -68,11 +69,7 @@ export class MobileCaddySyncComponent implements OnInit {
   }
 
   doColdStartSync(): void {
-    console.log(
-      this.logTag,
-      'doColdStartSync',
-      this.config.coldStartSyncTables
-    );
+    console.log(logTag, 'doColdStartSync', this.config.coldStartSyncTables);
     this.mobilecaddySyncService.syncTables(this.config.coldStartSyncTables);
   }
 }

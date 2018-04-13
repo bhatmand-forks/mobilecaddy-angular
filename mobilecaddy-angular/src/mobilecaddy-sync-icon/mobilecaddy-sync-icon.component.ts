@@ -16,6 +16,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 
+const logTag: string = 'mobilecaddy-sync-icon.component.ts';
+
 @Component({
   selector: 'mobilecaddy-sync-icon',
   templateUrl: 'mobilecaddy-sync-icon.component.html',
@@ -27,7 +29,6 @@ import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-
   // styleUrls: ['mobilecaddy-sync-icon.component.css']
 })
 export class MobileCaddySyncIconComponent implements OnInit {
-  logTag: string = 'mobilecaddy-sync-icon.component.ts';
   iconName: string = 'cloud-done';
   spinnerClass: string = '';
 
@@ -37,7 +38,7 @@ export class MobileCaddySyncIconComponent implements OnInit {
   ngOnInit() {
     this.iconName = 'cloud-done';
     this.mobilecaddySyncService.getSyncState().subscribe(res => {
-      console.log(this.logTag, 'SyncState Update1', res);
+      console.log(logTag, 'SyncState Update1', res);
       switch (res) {
         case 'complete':
           this.iconName = 'cloud-done';

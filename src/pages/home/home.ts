@@ -5,12 +5,13 @@ import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 
+const logTag: string = 'home.ts';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage implements OnInit {
-  logTag: string = 'home.ts';
   accounts;
   accountTable: string = 'Account__ap';
   config: IAppConfig;
@@ -26,7 +27,7 @@ export class HomePage implements OnInit {
     this.mobilecaddySyncService
       .getInitialSyncState()
       .subscribe(initialSyncState => {
-        console.log(this.logTag, 'initialSyncState Update', initialSyncState);
+        console.log(logTag, 'initialSyncState Update', initialSyncState);
         if (initialSyncState == 'InitialLoadComplete') {
           this.showAccounts();
         }
@@ -42,7 +43,7 @@ export class HomePage implements OnInit {
   }
 
   doSync(event): void {
-    console.log(this.logTag, 'doSync');
+    console.log(logTag, 'doSync');
     this.mobilecaddySyncService
       .syncTables([{ Name: this.accountTable }])
       .then(function(r) {
