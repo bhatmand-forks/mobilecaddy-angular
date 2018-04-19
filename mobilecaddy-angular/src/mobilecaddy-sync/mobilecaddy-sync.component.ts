@@ -20,6 +20,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddyConfigService } from '../config-service/config.service';
 
 const logTag: string = 'mobilecaddy-sync.ts';
 
@@ -32,10 +33,14 @@ export class MobileCaddySyncComponent implements OnInit {
 
   constructor(
     public loadingCtrl: LoadingController,
-    private mobilecaddySyncService: MobileCaddySyncService
+    private mobilecaddySyncService: MobileCaddySyncService,
+    private MobileCaddyConfigService: MobileCaddyConfigService
   ) {}
 
   ngOnInit() {
+    // Set our config in config.service, so that it is available to all
+    this.MobileCaddyConfigService.setConfig(this.config);
+
     if (this.mobilecaddySyncService.hasInitialSynCompleted()) {
       const coldStart = localStorage.getItem('coldStart')
         ? localStorage.getItem('coldStart')
@@ -65,11 +70,11 @@ export class MobileCaddySyncComponent implements OnInit {
       }
     });
 
-    this.mobilecaddySyncService.doInitialSync(this.config.initialSyncTables);
+    this.mobilecaddySyncService.doInitialSync();
   }
 
   doColdStartSync(): void {
-    console.log(logTag, 'doColdStartSync', this.config.coldStartSyncTables);
-    this.mobilecaddySyncService.syncTables(this.config.coldStartSyncTables);
+    console.log(logTag, 'doColdStartSync');
+    this.mobilecaddySyncService.doColdStartSync();
   }
 }

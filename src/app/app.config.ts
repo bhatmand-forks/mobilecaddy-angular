@@ -5,6 +5,7 @@ export let APP_CONFIG = new InjectionToken('app.config');
 export interface IAppConfig {
   initialSyncTables: string[];
   coldStartSyncTables: SyncTableConfig[];
+  forceSyncTables: SyncTableConfig[];
   outboxTables?: OutBoxTableConfig[];
 }
 
@@ -23,7 +24,10 @@ export interface OutBoxTableConfig {
 const oneMinute: number = 1000 * 60;
 
 export const AppConfig: IAppConfig = {
+  // Tables to sync on initialSync
   initialSyncTables: ['Account__ap', 'Contact__ap'],
+
+  // Tables to sync on Cold Start
   coldStartSyncTables: [
     {
       Name: 'Account__ap',
@@ -36,8 +40,22 @@ export const AppConfig: IAppConfig = {
       maxTableAge: oneMinute
     }
   ],
+
+  // Tables used in Outbox and Settings Sync
+  forceSyncTables: [
+    {
+      Name: 'Account__ap',
+      syncWithoutLocalUpdates: true,
+      maxTableAge: 0
+    },
+    {
+      Name: 'Contact__ap',
+      syncWithoutLocalUpdates: true,
+      maxTableAge: 0
+    }
+  ],
   outboxTables: [
-    { Name: 'Account__ap', DisplayName: 'Accounts' }
-    // { Name: 'Contact__ap', DisplayName: 'Contacts' }
+    { Name: 'Account__ap', DisplayName: 'Accounts' },
+    { Name: 'Contact__ap', DisplayName: 'Contacts' }
   ]
 };

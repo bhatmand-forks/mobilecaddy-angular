@@ -7,6 +7,7 @@ import { InitPage } from '../pages/init/init';
 
 import { HomePage } from '../pages/home/home';
 import { OutboxPage } from '../pages/outbox/outbox';
+import { SettingsPage } from '../../mobilecaddy-angular/src/settings-page/settings-page';
 
 // DEV STUFF
 import { isDevMode } from '@angular/core';
@@ -41,7 +42,8 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Accounts', component: HomePage },
-      { title: 'Outbox', component: OutboxPage }
+      { title: 'Outbox', component: OutboxPage },
+      { title: 'Settings', component: SettingsPage }
     ];
   }
 

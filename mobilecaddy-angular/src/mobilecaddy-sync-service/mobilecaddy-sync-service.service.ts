@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { MobileCaddyConfigService } from '../config-service/config.service';
 
 interface SyncTableConfig {
   Name: string;
@@ -8,45 +9,52 @@ interface SyncTableConfig {
   maxTableAge?: number;
 }
 
-const logTag: string = 'mobilecaddy-sync.service.ts';
-
 @Injectable()
 export class MobileCaddySyncService {
+  private logTag: string = 'mobilecaddy-sync.service.ts';
   initialSyncState: BehaviorSubject<string> = new BehaviorSubject('');
   syncState: BehaviorSubject<string> = new BehaviorSubject('');
   _syncState: string = '';
 
-  constructor() {
+  constructor(private MobileCaddyConfigService: MobileCaddyConfigService) {
     this.initialSyncState.next(localStorage.getItem('initialSyncState'));
     this.syncState.next('undefined');
   }
 
-  doInitialSync(config: any[]): void {
-    console.log(logTag, 'Calling initialSync');
+  doInitialSync(): void {
+    console.log(this.logTag, 'Calling initialSync');
     this.syncState.next('InitialSyncInProgress');
-    devUtils.initialSync(config).then(res => {
-      localStorage.setItem('initialSyncState', 'InitialLoadComplete');
-      console.log(logTag, 'InitialLoadComplete');
-      this.initialSyncState.next('InitialLoadComplete');
-      this.syncState.next('complete');
-    });
+    devUtils
+      .initialSync(this.MobileCaddyConfigService.getConfig('initialSyncTables'))
+      .then(res => {
+        localStorage.setItem('initialSyncState', 'InitialLoadComplete');
+        console.log(this.logTag, 'InitialLoadComplete');
+        this.initialSyncState.next('InitialLoadComplete');
+        this.syncState.next('complete');
+      });
   }
 
-  doColdStartSync(coldStartTables: any): void {
-    console.log(logTag, 'doColdStartSync', coldStartTables);
+  doColdStartSync(): void {
+    console.log(this.logTag, 'doColdStartSync');
     let mobileLogConfig: SyncTableConfig = {
       Name: 'Mobile_Log__mc',
       syncWithoutLocalUpdates: false
     };
-    coldStartTables = [mobileLogConfig].concat(coldStartTables);
+    let coldStartTables = [mobileLogConfig].concat(
+      this.MobileCaddyConfigService.getConfig('coldStartSyncTables')
+    );
     this.syncTables(coldStartTables);
   }
 
-  syncTables(tablesToSync: any[]): Promise<any> {
+  syncTables(tablesToSync: any[] | string): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(logTag, 'syncTables');
+      console.log(this.logTag, 'syncTables');
+      let myTablestoSync =
+        typeof tablesToSync == 'string'
+          ? this.MobileCaddyConfigService.getConfig(tablesToSync)
+          : tablesToSync;
       // TODO - put some local notification stuff in here.
-      this.doSyncTables(tablesToSync).then(res => {
+      this.doSyncTables(myTablestoSync).then(res => {
         this.setSyncState('complete');
         if (!res || res.status == 100999) {
           // LocalNotificationService.setLocalNotification();
@@ -79,7 +87,7 @@ export class MobileCaddySyncService {
         return sequence
           .then(res => {
             console.log(
-              logTag,
+              this.logTag,
               'doSyncTables inSequence',
               table,
               res,
@@ -100,7 +108,7 @@ export class MobileCaddySyncService {
             }
           })
           .then(resObject => {
-            console.log(logTag, resObject);
+            console.log(this.logTag, resObject);
             switch (resObject.status) {
               case devUtils.SYNC_NOK:
               case devUtils.SYNC_ALREADY_IN_PROGRESS:
@@ -119,7 +127,7 @@ export class MobileCaddySyncService {
             return resObject;
           })
           .catch(e => {
-            console.error(logTag, 'doSyncTables', e);
+            console.error(this.logTag, 'doSyncTables', e);
             if (e.status != devUtils.SYNC_UNKONWN_TABLE) {
               stopSyncing = true;
               //   this.tableSyncStatus.emit({

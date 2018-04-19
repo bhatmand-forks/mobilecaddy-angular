@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Settings</ion-title>
+    <ion-buttons end>
+      <mobilecaddy-sync-icon></mobilecaddy-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding="true">
+
+  <ion-card id='vsnInfo'>
+    <ion-card-header>Version Info</ion-card-header>
+    <ion-card-content>
+      <em>{{ vsnInfo?.buildName }}.B{{ vsnInfo?.buildVersion }}.D{{ vsnInfo?.dynVersionNumber }}.V{{ vsnInfo?.appVersion }}</em>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Sync &amp; Outbox</ion-card-header>
+    <button ion-button clear (click)="doSync($event)">
+      <ion-icon name="refresh-circle"></ion-icon>
+      Sync now
+    </button>
+    <button ion-button clear>
+      <ion-icon name="cloud-upload"></ion-icon>
+      Outbox{{outboxCount}}
+    </button>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>Advanced</ion-card-header>
+    <button ion-button clear>
+      <ion-icon name="download"></ion-icon>
+      Upgrade
+    </button>
+    <button ion-button clear>
+      <ion-icon name="exit"></ion-icon>
+      Log out
+    </button>
+    <button ion-button clear>
+      <ion-icon name="speedometer"></ion-icon>
+      Diagnostics
+    </button>
+    <button ion-button clear>
+      <ion-icon name="settings"></ion-icon>
+      Admin Functions
+    </button>
+  </ion-card>
+
+
+</ion-content>

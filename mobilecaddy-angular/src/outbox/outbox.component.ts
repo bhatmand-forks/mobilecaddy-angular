@@ -1,9 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
+
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddyConfigService } from '../config-service/config.service';
+
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';
 import * as _ from 'underscore';
+
+interface outboxSummary {
+  name: string;
+  count: number;
+  displayName: string;
+}
 
 @Component({
   selector: 'mobilecaddy-outbox',
@@ -12,15 +21,17 @@ import * as _ from 'underscore';
 })
 export class OutboxComponent implements OnInit {
   private logTag: string = 'outbox.component.ts';
-  dirtyRecordsSummary: any[];
-  @Input() config: any;
+  dirtyRecordsSummary: outboxSummary[];
+  private config: any;
 
   constructor(
     public loadingCtrl: LoadingController,
-    private mobilecaddySyncService: MobileCaddySyncService
+    private mobilecaddySyncService: MobileCaddySyncService,
+    private MobileCaddyConfigService: MobileCaddyConfigService
   ) {}
 
   async ngOnInit() {
+    this.config = this.MobileCaddyConfigService.getConfig();
     console.log(this.logTag, 'ngOnInit');
     this.dirtyRecordsSummary = await this.getDirtyRecords();
     console.log(this.logTag, this.dirtyRecordsSummary);
@@ -35,7 +46,7 @@ export class OutboxComponent implements OnInit {
     loader.present();
 
     this.mobilecaddySyncService
-      .syncTables(this.config.coldStartSyncTables)
+      .syncTables(this.config.forceSyncTables)
       .then(r => {
         loader.dismiss();
         alert(r.status);
@@ -46,6 +57,9 @@ export class OutboxComponent implements OnInit {
       });
   }
 
+  /**
+   * @returns Promise Resolves to outboxSummary[]
+   */
   private getDirtyRecords(): any {
     return new Promise((resolve, reject) => {
       let knownTables: string[] = this.getKnownTables();
@@ -60,11 +74,9 @@ export class OutboxComponent implements OnInit {
             .countBy('Mobile_Table_Name')
             .value();
 
-          console.log(tableCount);
           let summary = [];
           for (var p in tableCount) {
             if (tableCount.hasOwnProperty(p)) {
-              // res += p + " , " + records[p] + "\n";
               summary.push({
                 name: p,
                 count: tableCount[p],
@@ -72,9 +84,6 @@ export class OutboxComponent implements OnInit {
               });
             }
           }
-          // let summary = records.map(el => {
-          //   el.displayName = tableNameMap[el.Name];
-          // });
           resolve(summary);
         })
         .catch(e => {
