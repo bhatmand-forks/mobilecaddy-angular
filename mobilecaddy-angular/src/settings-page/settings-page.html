@@ -25,19 +25,20 @@
       <ion-icon name="refresh-circle"></ion-icon>
       Sync now
     </button>
-    <button ion-button clear>
+    <button ion-button clear (click)="navToOutbox()">
       <ion-icon name="cloud-upload"></ion-icon>
-      Outbox{{outboxCount}}
+      Outbox
+      <span *ngIf="outboxCount">({{outboxCount}})</span>
     </button>
   </ion-card>
 
   <ion-card>
     <ion-card-header>Advanced</ion-card-header>
-    <button ion-button clear>
+    <button ion-button clear *ngIf="upgradeAvailable" (click)="upgrade()">
       <ion-icon name="download"></ion-icon>
       Upgrade
     </button>
-    <button ion-button clear>
+    <button ion-button clear (click)="logout()">
       <ion-icon name="exit"></ion-icon>
       Log out
     </button>

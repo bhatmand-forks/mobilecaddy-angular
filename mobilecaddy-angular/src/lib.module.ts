@@ -7,6 +7,7 @@ import { MobileCaddySyncIconComponent } from './mobilecaddy-sync-icon/mobilecadd
 import { MobileCaddySyncComponent } from './mobilecaddy-sync/mobilecaddy-sync.component';
 import { OutboxComponent } from './outbox/outbox.component';
 import { SettingsPage } from './settings-page/settings-page';
+import { MCOutboxPage } from './outbox-page/outbox-page';
 
 // Providers
 import { MobileCaddySyncService } from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
@@ -18,13 +19,15 @@ import { MobileCaddyConfigService } from './config-service/config.service';
     MobileCaddySyncComponent,
     MobileCaddySyncIconComponent,
     OutboxComponent,
-    SettingsPage
+    SettingsPage,
+    MCOutboxPage
   ],
   exports: [
     MobileCaddySyncComponent,
     MobileCaddySyncIconComponent,
     OutboxComponent,
-    SettingsPage
+    SettingsPage,
+    MCOutboxPage
   ]
 })
 export class MobileCaddyModule {

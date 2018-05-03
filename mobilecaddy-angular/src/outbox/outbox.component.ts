@@ -8,7 +8,7 @@ import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';
 import * as _ from 'underscore';
 
-interface outboxSummary {
+export interface outboxSummary {
   name: string;
   count: number;
   displayName: string;
@@ -49,7 +49,6 @@ export class OutboxComponent implements OnInit {
       .syncTables(this.config.forceSyncTables)
       .then(r => {
         loader.dismiss();
-        alert(r.status);
       })
       .catch(e => {
         console.error(e);

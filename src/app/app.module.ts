@@ -9,6 +9,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { OutboxPage } from '../pages/outbox/outbox';
 import { SettingsPage } from '../../mobilecaddy-angular/src/settings-page/settings-page';
+import { MCOutboxPage } from '../../mobilecaddy-angular/src/outbox-page/outbox-page';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -27,7 +28,14 @@ import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/mobilecadd
     MobileCaddyModule.forRoot()
   ],
   bootstrap: [IonicApp],
-  entryComponents: [MyApp, InitPage, HomePage, OutboxPage, SettingsPage],
+  entryComponents: [
+    MyApp,
+    InitPage,
+    HomePage,
+    OutboxPage,
+    SettingsPage,
+    MCOutboxPage
+  ],
   providers: [
     StatusBar,
     SplashScreen,

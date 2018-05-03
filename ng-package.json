@@ -3,7 +3,8 @@
   "dest": "dist/mobilecaddy-angular",
   "workingDirectory": ".ng_build",
   "lib": {
-    "entryFile": "mobilecaddy-angular/src/public_api.ts"
+    "entryFile": "mobilecaddy-angular/src/public_api.ts",
+    "languageLevel": ["dom", "es2017"]
   },
   "whitelistedNonPeerDependencies": [
     "angular",
