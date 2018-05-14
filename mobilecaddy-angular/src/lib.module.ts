@@ -12,6 +12,7 @@ import { MCOutboxPage } from './outbox-page/outbox-page';
 // Providers
 import { MobileCaddySyncService } from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { MobileCaddyConfigService } from './config-service/config.service';
+import { Network } from '@ionic-native/network';
 
 @NgModule({
   imports: [CommonModule, IonicModule],
@@ -28,7 +29,8 @@ import { MobileCaddyConfigService } from './config-service/config.service';
     OutboxComponent,
     SettingsPage,
     MCOutboxPage
-  ]
+  ],
+  providers: [Network]
 })
 export class MobileCaddyModule {
   public static forRoot(): ModuleWithProviders {

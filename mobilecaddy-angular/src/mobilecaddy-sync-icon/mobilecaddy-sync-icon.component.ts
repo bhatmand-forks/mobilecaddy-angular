@@ -2,19 +2,27 @@
  * MobileCaddy Sync Icon Component
  *
  * @description Manages the sync icon, representing the connection state, sync
- *  state, and outbox state
+ *  state, and outbox state.
+ *  Note - we're using OnPush change detection, as it wasn't working with the automatic approach
  *
  * TODO:
- * - Connectivity state
  * - Outbox state
- * - Syncing spin icon
  *
  * Roadmap:
  * -
  */
 
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { Network } from '@ionic-native/network';
+import { Observer } from 'rxjs/Observer';
+import { Subscription } from 'rxjs/Subscription';
 
 const logTag: string = 'mobilecaddy-sync-icon.component.ts';
 
@@ -23,25 +31,38 @@ const logTag: string = 'mobilecaddy-sync-icon.component.ts';
   templateUrl: 'mobilecaddy-sync-icon.component.html',
   styles: [
     `ion-buttons{display:block;float:right}@-webkit-keyframes anim-rotate{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes anim-rotate{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:1.6s linear infinite anim-rotate;animation:1.6s linear infinite anim-rotate}.spinner--steps{-webkit-animation:.8s steps(8) infinite anim-rotate;animation:.8s steps(8) infinite anim-rotate}.spinner--steps2{-webkit-animation:.8s steps(12) infinite anim-rotate;animation:.8s steps(12) infinite anim-rotate}`
-  ]
+  ],
   /*  Using Inline styles at the moment. Doing this as I can't work out how to use scss
    or css, and still have the module live-reload. Maybe I could do this using custom sass scripts also. */
   // styleUrls: ['mobilecaddy-sync-icon.component.css']
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MobileCaddySyncIconComponent implements OnInit {
+export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
   iconName: string = 'cloud-done';
   spinnerClass: string = '';
+  private disconnectSubscription: Subscription;
+  private connectSubscription: Subscription;
 
-  constructor(private mobilecaddySyncService: MobileCaddySyncService) {}
+  constructor(
+    private mobilecaddySyncService: MobileCaddySyncService,
+    private network: Network,
+    private cd: ChangeDetectorRef
+  ) {}
   // constructor() {}
 
   ngOnInit() {
-    this.iconName = 'cloud-done';
+    console.log(this.network.type);
     this.mobilecaddySyncService.getSyncState().subscribe(res => {
       console.log(logTag, 'SyncState Update1', res);
       switch (res) {
         case 'complete':
-          this.iconName = 'cloud-done';
+          switch (this.network.type) {
+            case 'none':
+              this.iconName = 'cloud-outline';
+              break;
+            default:
+              this.iconName = 'cloud-done';
+          }
           this.spinnerClass = '';
           break;
         case 'InitialSyncInProgress':
@@ -50,6 +71,36 @@ export class MobileCaddySyncIconComponent implements OnInit {
           this.spinnerClass = 'spinner';
           break;
       }
+      this.cd.detectChanges();
     });
+
+    // watch network for a disconnect
+    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      console.log('MC network was disconnected :-(');
+      this.iconName = 'cloud-outline';
+      this.cd.detectChanges();
+    });
+
+    // watch network for a connection
+    this.connectSubscription = this.network.onConnect().subscribe(() => {
+      console.log('MC network connected!');
+      this.iconName = 'cloud-done';
+      this.cd.detectChanges();
+      // We just got a connection but we need to wait briefly
+      // before we determine the connection type. Might need to wait.
+      // prior to doing any api requests as well.
+      setTimeout(() => {
+        if (this.network.type === 'wifi') {
+          console.log('MC we got a wifi connection, woohoo!');
+        }
+      }, 3000);
+    });
+  }
+
+  ngOnDestroy() {
+    // stop watching for online/offline
+    console.log('ngnOnDestroy');
+    this.disconnectSubscription.unsubscribe();
+    this.connectSubscription.unsubscribe();
   }
 }
