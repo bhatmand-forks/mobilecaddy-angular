@@ -28,6 +28,7 @@ export class SettingsPage {
   vsnInfo: vsnInfo;
   upgradeAvailable: boolean = false;
   outboxPage: MCOutboxPage;
+  private settingsTab: string = 'basic';
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -124,6 +125,18 @@ export class SettingsPage {
       ]
     });
     alert.present();
+  }
+
+  selectedBasic(): void {
+    this.settingsTab = 'basic';
+  }
+
+  selectedDiagnostics(): void {
+    this.settingsTab = 'diagnostics';
+  }
+
+  selectedAdvanced(): void {
+    this.settingsTab = 'advanced';
   }
 
   private getVersionInfo(): Promise<vsnInfo> {
