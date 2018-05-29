@@ -7,6 +7,7 @@ export interface IAppConfig {
   coldStartSyncTables: SyncTableConfig[];
   forceSyncTables: SyncTableConfig[];
   outboxTables?: OutBoxTableConfig[];
+  recentItems?: RecentItemsConfig;
 }
 
 export interface SyncTableConfig {
@@ -18,6 +19,12 @@ export interface SyncTableConfig {
 export interface OutBoxTableConfig {
   Name: string;
   DisplayName: string;
+}
+
+export interface RecentItemsConfig {
+  maxItems?: number;
+  encrypted?: boolean;
+  tables?: any;
 }
 
 // const fourHours: number = 1000 * 60 * 60 * 4;
@@ -54,8 +61,26 @@ export const AppConfig: IAppConfig = {
       maxTableAge: 0
     }
   ],
+
   outboxTables: [
     { Name: 'Account__ap', DisplayName: 'Accounts' },
     { Name: 'Contact__ap', DisplayName: 'Contacts' }
-  ]
+  ],
+
+  recentItems: {
+    maxItems: 50,
+    encrypted: false,
+    tables: [
+      {
+        name: 'Account',
+        icon: 'ion-folder',
+        href: '/accounts/:Id'
+      },
+      {
+        name: 'Contact',
+        icon: 'ion-person',
+        href: '/accounts/:AccountId/contacts/:Id'
+      }
+    ]
+  }
 };

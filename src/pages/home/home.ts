@@ -5,6 +5,8 @@ import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 
+import { AccountDetailPage } from '../accountDetail/accountDetail';
+
 const logTag: string = 'home.ts';
 
 @Component({
@@ -49,5 +51,12 @@ export class HomePage implements OnInit {
       .then(function(r) {
         alert(r.status);
       });
+  }
+
+  goToAccount(a): void {
+    console.log(logTag, 'goToAccount', a);
+    this.navCtrl.push(AccountDetailPage, {
+      account: a
+    });
   }
 }

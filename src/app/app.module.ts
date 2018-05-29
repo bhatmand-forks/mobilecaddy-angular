@@ -7,7 +7,10 @@ import { MobileCaddyModule } from '../../mobilecaddy-angular/src/lib.module';
 import { InitPage } from '../pages/init/init';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { AccountDetailPage } from '../pages/accountDetail/accountDetail';
 import { OutboxPage } from '../pages/outbox/outbox';
+
+// MobileCaddy
 import { SettingsPage } from '../../mobilecaddy-angular/src/settings-page/settings-page';
 import { MCOutboxPage } from '../../mobilecaddy-angular/src/outbox-page/outbox-page';
 
@@ -19,9 +22,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 // Providers
 import { APP_CONFIG, AppConfig } from './app.config';
 import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { RecentItemsService } from '../../mobilecaddy-angular/src/recent-items-service/recent-items-service';
 
 @NgModule({
-  declarations: [MyApp, InitPage, HomePage, OutboxPage],
+  declarations: [MyApp, InitPage, HomePage, AccountDetailPage, OutboxPage],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
@@ -32,6 +36,7 @@ import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/mobilecadd
     MyApp,
     InitPage,
     HomePage,
+    AccountDetailPage,
     OutboxPage,
     SettingsPage,
     MCOutboxPage
@@ -41,7 +46,8 @@ import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/mobilecadd
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     { provide: APP_CONFIG, useValue: AppConfig },
-    MobileCaddySyncService
+    MobileCaddySyncService,
+    RecentItemsService
   ]
 })
 export class AppModule {}
