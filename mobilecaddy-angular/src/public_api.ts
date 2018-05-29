@@ -4,5 +4,6 @@ export * from './outbox/outbox.component';
 export * from './settings-page/settings-page';
 export * from './outbox-page/outbox-page';
 export * from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+export * from './recent-items-service/recent-items-service';
 export * from './config-service/config.service';
 export * from './lib.module';

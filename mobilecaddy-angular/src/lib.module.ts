@@ -11,6 +11,7 @@ import { MCOutboxPage } from './outbox-page/outbox-page';
 
 // Providers
 import { MobileCaddySyncService } from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { RecentItemsService } from './recent-items-service/recent-items-service';
 import { MobileCaddyConfigService } from './config-service/config.service';
 import { Network } from '@ionic-native/network';
 
@@ -36,7 +37,11 @@ export class MobileCaddyModule {
   public static forRoot(): ModuleWithProviders {
     return {
       ngModule: MobileCaddyModule,
-      providers: [MobileCaddySyncService, MobileCaddyConfigService]
+      providers: [
+        MobileCaddySyncService,
+        RecentItemsService,
+        MobileCaddyConfigService
+      ]
     };
   }
 }
