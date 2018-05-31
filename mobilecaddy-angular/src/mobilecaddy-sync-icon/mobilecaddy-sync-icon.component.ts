@@ -71,7 +71,10 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
           this.spinnerClass = 'spinner';
           break;
       }
-      this.cd.detectChanges();
+      // Below line errors when syncing when coming back to the page
+      if (!this.cd['destroyed']) {
+        this.cd.detectChanges();
+      }
     });
 
     // watch network for a disconnect
@@ -100,6 +103,7 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // stop watching for online/offline
     console.log('ngnOnDestroy');
+    this.cd.detach();
     this.disconnectSubscription.unsubscribe();
     this.connectSubscription.unsubscribe();
   }
