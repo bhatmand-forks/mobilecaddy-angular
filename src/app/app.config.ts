@@ -8,6 +8,7 @@ export interface IAppConfig {
   forceSyncTables: SyncTableConfig[];
   outboxTables?: OutBoxTableConfig[];
   recentItems?: RecentItemsConfig;
+  globalSearch?: any;
 }
 
 export interface SyncTableConfig {
@@ -73,13 +74,36 @@ export const AppConfig: IAppConfig = {
     tables: [
       {
         name: 'Account',
-        icon: 'ion-folder',
+        icon: 'folder',
         href: '/accounts/:Id'
       },
       {
         name: 'Contact',
-        icon: 'ion-person',
+        icon: 'person',
         href: '/accounts/:AccountId/contacts/:Id'
+      }
+    ]
+  },
+
+  globalSearch: {
+    maxItems: 10,
+    encrypted: false,
+    tables: [
+      {
+        table: 'Account__ap',
+        name: 'Accounts',
+        fieldsToQuery: ['Name', 'Description'],
+        fieldsToShow: ['Name', 'BillingCountry'],
+        icon: 'folder',
+        href: '/accounts/:Id'
+      },
+      {
+        table: 'Contact__ap',
+        name: 'Contacts',
+        fieldsToQuery: ['Name', 'Email'],
+        fieldsToShow: ['Name', 'Title'],
+        icon: 'person',
+        href: '/accounts/:AccountId/contact/:Id'
       }
     ]
   }

@@ -3,14 +3,13 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>{{ account.Name }}</ion-title>
+    <ion-title>Search</ion-title>
     <ion-buttons end>
       <mobilecaddy-sync-icon></mobilecaddy-sync-icon>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h3>Upload</h3>
-  <input type="file" name="file" (change)=" ($event)" />
+<ion-content padding="true">
+  <global-search></global-search>
 </ion-content>

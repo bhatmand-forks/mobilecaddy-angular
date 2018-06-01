@@ -81,13 +81,18 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       console.log('MC network was disconnected :-(');
       this.iconName = 'cloud-outline';
+      this.spinnerClass = '';
       this.cd.detectChanges();
     });
 
     // watch network for a connection
     this.connectSubscription = this.network.onConnect().subscribe(() => {
       console.log('MC network connected!');
-      this.iconName = 'cloud-done';
+      // Only set to a cloud if we're not currently syncing
+      if (this.iconName != 'refresh') {
+        this.spinnerClass = '';
+        this.iconName = 'cloud-done';
+      }
       this.cd.detectChanges();
       // We just got a connection but we need to wait briefly
       // before we determine the connection type. Might need to wait.

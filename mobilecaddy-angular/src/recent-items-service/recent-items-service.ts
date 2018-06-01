@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MobileCaddyConfigService } from '../config-service/config.service';
 import * as _ from 'underscore';
 
-interface recentItemsTypeConfig {
+export interface recentItemsTypeConfig {
   name: string;
   icon: string;
   href: string;
@@ -17,14 +17,13 @@ export class RecentItemsService {
   constructor(private MobileCaddyConfigService: MobileCaddyConfigService) {}
 
   /**
-   * @function addRecentItem
    * @description Adds an item to the recent items list. It can be added to the
    * localStorage or to the database. Any repeated item will be deleted before
    * adding the same one. Also if the max number is reached the oldest item wil
    * be deleted.
    *
-   * @param {String} type the type of the new item, e.g. "Account"
-   * @param {Object} object the object that will be added
+   * @param type the type of the new item, e.g. "Account"
+   * @param object the object that will be added
    */
   addRecentItem(type: string, object): void {
     let maxRecentItems = this.getMaxItems();
@@ -63,10 +62,9 @@ export class RecentItemsService {
   }
 
   /**
-   * @function clearRecentItems
    * @description It removes the recentItems from localStorage
    *
-   * @param {String} type the type of the items to delete, e.g. "Account".
+   * @param type the type of the items to delete, e.g. "Account".
    * It's optional
    */
   clearRecentItems(type) {
@@ -88,8 +86,8 @@ export class RecentItemsService {
   /**
    * @description Checks to see if an item with id exists, if so return it, if not return false
    *
-   * @param  {string} id Id of the object to look for.
-   * @return {object}    Matching recentItem object | false.
+   * @param id Id of the object to look for.
+   * @return  Matching recentItem object | false.
    */
   contains(id) {
     let recentItems = JSON.parse(localStorage.getItem(this.recentItemsKey));
@@ -100,9 +98,8 @@ export class RecentItemsService {
   }
 
   /**
-   * @function enrichItem
-   * @param {Object} item represents the recent item
-   * @return {Object} represents the recent item that has been enriched
+   * @param  item represents the recent item
+   * @return represents the recent item that has been enriched
    * @description It adds config information to the item
    */
   private enrichItem(item) {
@@ -167,14 +164,13 @@ export class RecentItemsService {
   }
 
   /**
-   * @function findId
    * @description Auxiliar function that searches through the item object,
    * to try to find the value of the corresponding idName
    *
-   * @param {Object} object item object from the database or localStorage
-   * @param {String} idName name of the placeholder containing an Id,
+   * @param  object item object from the database or localStorage
+   * @param  idName name of the placeholder containing an Id,
    * e.g.: AccountId
-   * @return {String} value of the Id placeholder in the item object
+   * @return value of the Id placeholder in the item object
    */
   private findId(object: object, idName: string): string {
     var idValue;
@@ -191,11 +187,10 @@ export class RecentItemsService {
   }
 
   /**
-   * @function getConfigForType
    * @description Returns the config information for a recent item type
    *
-   * @param {string} type type of recent item, e.g.:'Account'
-   * @return {Object} object that contains the configuration information about
+   * @param type type of recent item, e.g.:'Account'
+   * @return object that contains the configuration information about
    * the item of the specified type
    */
   getConfigForType(type: string): recentItemsTypeConfig {
@@ -208,15 +203,14 @@ export class RecentItemsService {
   }
 
   /**
-   * @function getRecentItems
    * @description It returns an array of recent items
    *
-   * @param {String} type the type of the items, e.g. "Account". It's optional
-   * @param {Number} amount the number of recent items that the controller
+   * @param type the type of the items, e.g. "Account". It's optional
+   * @param amount the number of recent items that the controller
    * wants to receive. It's optional
-   * @param {Boolean} config defines if the user wants to get config
+   * @paramconfig defines if the user wants to get config
    * information about the recent items. It's optional
-   * @return {[Object]} represents the array of recent item objects
+   * @return represents the array of recent item objects
    */
   getRecentItems(type: string, amount?: number, config?: boolean) {
     var recentItems = JSON.parse(localStorage.getItem(this.recentItemsKey));
@@ -255,11 +249,10 @@ export class RecentItemsService {
   }
 
   /**
-   * @function getMaxItems
    * @description Gets the maximum number of items that can be in the recent
    * items list
    *
-   * @return {Number} maximum number of items
+   * @return maximum number of items
    */
   getMaxItems(): number {
     if (!this.config)
@@ -274,8 +267,8 @@ export class RecentItemsService {
   /**
    * @description Removes an item.
    *
-   * @param  {string} id If od the object.
-   * @return {boolean}    true if item found, false if not.
+   * @param id If od the object.
+   * @return    true if item found, false if not.
    */
   removeItem(id: string): boolean {
     let recentItems = JSON.parse(localStorage.getItem(this.recentItemsKey));

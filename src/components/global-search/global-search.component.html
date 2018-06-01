@@ -1,0 +1,48 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-input type="text" placeholder="Search" [(ngModel)]="query" #searchBox></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col col-auto>
+      <button ion-button icon-only clear (click)="clearSearch()">
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+      <button ion-button icon-only clear (click)="doSearch()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+<div *ngIf="!searchDone &amp;&amp; recentSearches?.length > 0">
+  <h3>Recent Searches</h3>
+  <ion-list>
+    <ion-item *ngFor="let item of recentSearches" (click)="resultClicked(item, result)">
+      <ion-icon name="{{item?.icon}}" item-start></ion-icon>
+      {{ item.result.string }}
+    </ion-item>
+  </ion-list>
+</div>
+
+<div *ngIf="searchDone">
+  <h3>Results</h3>
+  <div *ngFor="let item of results">
+    <h4 class="margin-left-10 detail">
+      <ion-icon name="{{item.icon}}"></ion-icon>
+      {{ item.name }}
+    </h4>
+    <ion-list>
+      <ion-item *ngIf="item.results == undefined">
+        <em>Searching....</em>
+      </ion-item>
+      <ion-item *ngIf="item.results?.length == 0">
+        <em>No matches</em>
+      </ion-item>
+      <ion-item *ngFor="let result of item.results" (click)="resultClicked(item, result)">
+        {{ result?.string }}
+      </ion-item>
+    </ion-list>
+  </div>
+</div>
