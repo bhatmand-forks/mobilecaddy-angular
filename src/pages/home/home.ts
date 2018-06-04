@@ -38,7 +38,15 @@ export class HomePage implements OnInit {
   }
 
   showAccounts(): void {
-    devUtils.readRecords(this.accountTable).then(res => {
+    let soql =
+      'SELECT {' +
+      this.accountTable +
+      ':Id}, {' +
+      this.accountTable +
+      ':Name} FROM {' +
+      this.accountTable +
+      '} ORDER BY NAME';
+    devUtils.smartSql(soql).then(res => {
       console.log('res', res);
       this.accounts = res.records;
     });
@@ -55,8 +63,8 @@ export class HomePage implements OnInit {
 
   goToAccount(a): void {
     console.log(logTag, 'goToAccount', a);
-    this.navCtrl.push(AccountDetailPage, {
-      account: a
+    this.navCtrl.push('AccountDetailPage', {
+      account: { Id: a[0], Name: a[1] }
     });
   }
 }

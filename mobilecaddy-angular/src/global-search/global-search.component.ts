@@ -1,12 +1,14 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NavController } from 'ionic-angular'; // ? Need this to allow us to focus on input?
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators/debounceTime';
 
-// import { MobileCaddyConfigService } from '../../../mobilecaddy-angular/src/config-service/config.service';
+// import { MobileCaddyConfigService } from '../config-service/config.service';
 
-import { GlobalSearchProvider } from '../../providers/global-search/global-search';
+import { GlobalSearchProvider } from '../global-search-service/global-search.service';
 
 @Component({
-  selector: 'global-search',
+  selector: 'mobilecaddy-global-search',
   templateUrl: './global-search.component.html'
 })
 export class GlobalSearch implements OnInit {
@@ -15,19 +17,31 @@ export class GlobalSearch implements OnInit {
   searchDone: boolean = false;
   results: Array<any>;
   @Input() query: string;
+  searchControl: FormControl;
   @ViewChild('searchBox') searchBox;
 
   constructor(
     private searchPvdr: GlobalSearchProvider,
     private navCtrl: NavController
-  ) {}
+  ) {
+    this.searchControl = new FormControl();
+  }
 
   ngOnInit() {
-    // TODO Show recent searches
     setTimeout(() => {
       this.searchBox.setFocus();
     }, 150);
     this.showRecentSearches();
+    this.searchControl.valueChanges
+      .pipe(debounceTime(800))
+      .subscribe(search => {
+        console.log(this.logTag, 'Maybe do a search', search);
+        if (search === '') {
+          this.searchDone = false;
+        } else if (search && search.length > 2) {
+          this.doSearch();
+        }
+      });
   }
 
   /**
@@ -80,14 +94,14 @@ export class GlobalSearch implements OnInit {
    * @param result the result object that will be added
    **/
   resultClicked(item, result) {
+    console.log(this.logTag, 'resultClicked', item, result);
+    if (!result) result = item.result;
     this.searchPvdr.addRecentSearch(item, result);
     this.showRecentSearches();
-    this.navCtrl.push('OutboxPage');
-    // TODO How to link to pages without having to import them first?
-    // if (result.href != undefined){
-    //   $location.path("/app" + result.href);
-    // } else {
-    //   console.log(logTag, "No href: ", result.status);
-    // }
+
+    // ? Should I be using this approach, or deeplinking.
+    let myNavParams: any = {};
+    myNavParams[result.navParamName] = result;
+    this.navCtrl.push(result.pageName, myNavParams);
   }
 }

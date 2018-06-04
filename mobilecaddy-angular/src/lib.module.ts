@@ -6,6 +6,7 @@ import { IonicModule } from 'ionic-angular';
 import { MobileCaddySyncIconComponent } from './mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
 import { MobileCaddySyncComponent } from './mobilecaddy-sync/mobilecaddy-sync.component';
 import { OutboxComponent } from './outbox/outbox.component';
+import { GlobalSearch } from './global-search/global-search.component';
 import { SettingsPage } from './settings-page/settings-page';
 import { MCOutboxPage } from './outbox-page/outbox-page';
 
@@ -13,6 +14,7 @@ import { MCOutboxPage } from './outbox-page/outbox-page';
 import { MobileCaddySyncService } from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { RecentItemsService } from './recent-items-service/recent-items-service';
 import { SalesforceRestService } from './salesforce-rest-service/salesforce-rest-service';
+import { GlobalSearchProvider } from './global-search-service/global-search.service';
 import { MobileCaddyConfigService } from './config-service/config.service';
 import { Network } from '@ionic-native/network';
 
@@ -22,6 +24,7 @@ import { Network } from '@ionic-native/network';
     MobileCaddySyncComponent,
     MobileCaddySyncIconComponent,
     OutboxComponent,
+    GlobalSearch,
     SettingsPage,
     MCOutboxPage
   ],
@@ -29,6 +32,7 @@ import { Network } from '@ionic-native/network';
     MobileCaddySyncComponent,
     MobileCaddySyncIconComponent,
     OutboxComponent,
+    GlobalSearch,
     SettingsPage,
     MCOutboxPage
   ],
@@ -42,7 +46,8 @@ export class MobileCaddyModule {
         MobileCaddySyncService,
         RecentItemsService,
         MobileCaddyConfigService,
-        SalesforceRestService
+        SalesforceRestService,
+        GlobalSearchProvider
       ]
     };
   }

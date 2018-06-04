@@ -95,15 +95,8 @@ export const AppConfig: IAppConfig = {
         fieldsToQuery: ['Name', 'Description'],
         fieldsToShow: ['Name', 'BillingCountry'],
         icon: 'folder',
-        href: '/accounts/:Id'
-      },
-      {
-        table: 'Contact__ap',
-        name: 'Contacts',
-        fieldsToQuery: ['Name', 'Email'],
-        fieldsToShow: ['Name', 'Title'],
-        icon: 'person',
-        href: '/accounts/:AccountId/contact/:Id'
+        pageName: 'AccountDetailPage',
+        navParamName: 'account'
       }
     ]
   }

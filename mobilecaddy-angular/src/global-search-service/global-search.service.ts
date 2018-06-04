@@ -3,9 +3,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';
-import * as _ from 'underscore';
 
-import { MobileCaddyConfigService } from '../../../mobilecaddy-angular/src/config-service/config.service';
+import { MobileCaddyConfigService } from '../config-service/config.service';
 
 // TODO Use config service and export an interface for this
 interface tableConfig {
@@ -14,7 +13,9 @@ interface tableConfig {
   fieldsToQuery: Array<string>;
   fieldsToShow: Array<string>;
   icon: string;
-  href: string;
+  // href: string;
+  pageName: string;
+  navParamName: string;
 }
 
 interface config {
@@ -42,10 +43,10 @@ export class GlobalSearchProvider {
    * max number is reached the oldest item will be deleted.
    *
    * @param item contains the config information of the result
-   *                      {icon, href}
+   *                      {icon}
    * @param {Object} result the Salesforce object that will be added
    **/
-  addRecentSearch(item: { icon: string; href: string }, result) {
+  addRecentSearch(item: { icon: string }, result) {
     let maxRecentSearches;
     if (this.config.maxItems === null) {
       maxRecentSearches = 10;
@@ -55,7 +56,6 @@ export class GlobalSearchProvider {
     }
     const search = {
       icon: item.icon,
-      href: item.href,
       result: result
     };
 
@@ -170,7 +170,7 @@ export class GlobalSearchProvider {
   private searchTable(element: tableConfig, str: string): Promise<any> {
     return new Promise((resolve, reject) => {
       // TODO These are not being used for the moment because the query only works when doing a SELECT * for now.
-      const fieldsToShow = element.fieldsToShow.join(', ');
+      // const fieldsToShow = element.fieldsToShow.join(', ');
       let selectCondition = '';
       element.fieldsToShow.forEach((field, index) => {
         selectCondition += '{' + element.table + ':' + field + '}';
@@ -245,123 +245,28 @@ export class GlobalSearchProvider {
   private createResultsArray(
     results: Array<{ Id: string }>,
     configElement: tableConfig
-  ): Array<{ Id: string; string: string; href?: string; status?: string }> {
+  ): Array<{
+    Id: string;
+    string: string;
+    pageName: string;
+    navParamName: string;
+  }> {
     let resultsArray: Array<{
       Id: string;
       string: string;
-      href?: string;
-      status?: string;
+      pageName: string;
+      navParamName: string;
     }> = [];
     results.forEach(result => {
-      const obtainedHref = this.setHref(result, configElement.href);
       const resultString = this.setString(result, configElement.fieldsToShow);
-      if (obtainedHref.status === undefined) {
-        resultsArray.push({
-          Id: result.Id,
-          string: resultString,
-          href: obtainedHref
-        });
-      } else {
-        resultsArray.push({
-          Id: result.Id,
-          string: resultString,
-          status: obtainedHref.status
-        });
-      }
+      resultsArray.push({
+        Id: result.Id,
+        string: resultString,
+        pageName: configElement.pageName,
+        navParamName: configElement.navParamName
+      });
     });
     return resultsArray;
-  }
-
-  /**
-   * @description It adds an href element to the result object or a status
-   * element if an error occurred
-   *
-   * @param result represents the result object
-   * @param href the href String with placeholders, that should be
-   * used when the result is clicked
-   * @return if the Id values are found on the object, then
-   * it returns the String with the href, if they weren't, then an object with
-   * the status is returned
-   **/
-  private setHref(result: object, href: string): any {
-    //Splitting the href String so I can have each part in a separate
-    //position of an array.
-    let splitHref = href.split('/');
-
-    //Removes the empty String generated in the first position
-    splitHref.splice(0, 1);
-
-    //idNames will have the names of the Strings that represent Ids
-    //in the href String, such as AccountId, or Id
-    let idNames = [];
-
-    //indexOfIds will have the indexes of the idNames that are in
-    //splitHref
-    let indexOfIds = [];
-
-    // Run through splitHref to save in idNames only the Strings that
-    // have a ':' at the beginning, which are the ones that should
-    // contain a placeholer
-    splitHref.forEach((hrefItem, index) => {
-      if (hrefItem.substring(0, 1) === ':') {
-        indexOfIds.push(index);
-        idNames.push(hrefItem.substring(1, hrefItem.length));
-      }
-    });
-
-    //idValues are the actual Ids of the result Object
-    //It might be only one
-    let idValues = [];
-    let statusObj;
-    for (let i = 0; i < idNames.length; i++) {
-      let id = this.findId(result, idNames[i]);
-      if (id != '') {
-        idValues.push(id);
-      } else {
-        //If at least one idName wasn't found, set the status message
-        //so that the developer knows what happened
-        statusObj = { status: 'At least one id of the href was not found' };
-        break;
-      }
-    }
-
-    //If the status wasn't set, it means the Id values were found,
-    //so we form the href String using the indexOfIds and the values
-    //in idValues
-    if (!statusObj) {
-      for (let i = 0; i < indexOfIds.length; i++) {
-        splitHref[indexOfIds[i]] = idValues[i];
-      }
-      //An '/' is added to the first String of the href String
-      splitHref[0] = '/' + splitHref[0];
-      //The splitHref is joined to form the complete href String
-      return splitHref.join('/');
-    } else {
-      return statusObj;
-    }
-  }
-
-  /**
-   * @description Auxiliar function that searches through the object,
-   * to try to find the value of the corresponding idName
-   *
-   * @param object represents a result object of the globlal search
-   * @param idName name of the placeholder containing an Id,
-   * e.g.: AccountId
-   * @return value of the Id placeholder in the object
-   **/
-  private findId(object: object, idName: string): string {
-    let idValue = '';
-    //Searching for the idName in the keys of the Object
-    Object.keys(object).find(objKey => {
-      if (objKey === idName) {
-        //If the idName was found in the Object, then save its value
-        idValue = object[objKey];
-        //Stop searching after finding the element that meets the condition
-        return true;
-      }
-    });
-    return idValue;
   }
 
   /**

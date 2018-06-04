@@ -8,7 +8,7 @@ import { MobileCaddyModule } from '../../mobilecaddy-angular/src/lib.module';
 import { InitPage } from '../pages/init/init';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { AccountDetailPage } from '../pages/accountDetail/accountDetail';
+// import { AccountDetailPage } from '../pages/accountDetail/accountDetail';
 import { OutboxPage } from '../pages/outbox/outbox';
 import { SearchPage } from '../pages/search/search';
 
@@ -20,24 +20,24 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 // Components
-import { GlobalSearch } from '../components/global-search/global-search.component';
+// import { GlobalSearch } from '../components/global-search/global-search.component';
 
 // Providers
 import { APP_CONFIG, AppConfig } from './app.config';
 import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { RecentItemsService } from '../../mobilecaddy-angular/src/recent-items-service/recent-items-service';
 import { SalesforceRestService } from '../../mobilecaddy-angular/src/salesforce-rest-service/salesforce-rest-service';
-import { GlobalSearchProvider } from '../providers/global-search/global-search';
+import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-search-service/global-search.service';
 
 @NgModule({
   declarations: [
     MyApp,
     InitPage,
     HomePage,
-    AccountDetailPage,
+    // AccountDetailPage,
     OutboxPage,
-    SearchPage,
-    GlobalSearch
+    SearchPage
+    // GlobalSearch
   ],
   imports: [
     BrowserModule,
@@ -50,7 +50,7 @@ import { GlobalSearchProvider } from '../providers/global-search/global-search';
     MyApp,
     InitPage,
     HomePage,
-    AccountDetailPage,
+    // AccountDetailPage,
     OutboxPage,
     SearchPage,
     SettingsPage,

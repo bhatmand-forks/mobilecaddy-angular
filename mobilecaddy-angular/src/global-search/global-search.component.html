@@ -2,7 +2,7 @@
   <ion-row>
     <ion-col>
       <ion-item>
-        <ion-input type="text" placeholder="Search" [(ngModel)]="query" #searchBox></ion-input>
+        <ion-input type="text" placeholder="Search" [(ngModel)]="query" #searchBox [formControl]="searchControl"></ion-input>
       </ion-item>
     </ion-col>
     <ion-col col-auto>
