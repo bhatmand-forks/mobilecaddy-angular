@@ -42,9 +42,9 @@ export class GlobalSearchProvider {
    * Any repeated item will be deleted before adding the same one. Also if the
    * max number is reached the oldest item will be deleted.
    *
-   * @param item contains the config information of the result
+   * @param contains the config information of the result
    *                      {icon}
-   * @param {Object} result the Salesforce object that will be added
+   * @param result the Salesforce object that will be added
    **/
   addRecentSearch(item: { icon: string }, result) {
     let maxRecentSearches;
@@ -93,7 +93,7 @@ export class GlobalSearchProvider {
    * recent results clicked. If encryptedStore is false then it will be
    * obtained from localStorage
    *
-   * @return {[Object]} represents the most recent results clicked
+   * @return represents the most recent results clicked
    **/
   getRecentSearches(): Array<any> {
     // if (encryptedStore === false){

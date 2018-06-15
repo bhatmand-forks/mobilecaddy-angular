@@ -99,8 +99,7 @@ export class GlobalSearch implements OnInit {
     this.searchPvdr.addRecentSearch(item, result);
     this.showRecentSearches();
 
-    // ? Should I be using this approach, or deeplinking.
-    let myNavParams: any = {};
+    let myNavParams: any = {id: result.Id};
     myNavParams[result.navParamName] = result;
     this.navCtrl.push(result.pageName, myNavParams);
   }

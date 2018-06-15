@@ -30,7 +30,44 @@ const logTag: string = 'mobilecaddy-sync-icon.component.ts';
   selector: 'mobilecaddy-sync-icon',
   templateUrl: 'mobilecaddy-sync-icon.component.html',
   styles: [
-    `ion-buttons{display:block;float:right}@-webkit-keyframes anim-rotate{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes anim-rotate{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.spinner{-webkit-animation:1.6s linear infinite anim-rotate;animation:1.6s linear infinite anim-rotate}.spinner--steps{-webkit-animation:.8s steps(8) infinite anim-rotate;animation:.8s steps(8) infinite anim-rotate}.spinner--steps2{-webkit-animation:.8s steps(12) infinite anim-rotate;animation:.8s steps(12) infinite anim-rotate}`
+    `
+      ion-buttons {
+        display: block;
+        float: right;
+      }
+      @-webkit-keyframes anim-rotate {
+        0% {
+          -webkit-transform: rotate(0);
+          transform: rotate(0);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes anim-rotate {
+        0% {
+          -webkit-transform: rotate(0);
+          transform: rotate(0);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      .spinner {
+        -webkit-animation: 1.6s linear infinite anim-rotate;
+        animation: 1.6s linear infinite anim-rotate;
+      }
+      .spinner--steps {
+        -webkit-animation: 0.8s steps(8) infinite anim-rotate;
+        animation: 0.8s steps(8) infinite anim-rotate;
+      }
+      .spinner--steps2 {
+        -webkit-animation: 0.8s steps(12) infinite anim-rotate;
+        animation: 0.8s steps(12) infinite anim-rotate;
+      }
+    `
   ],
   /*  Using Inline styles at the moment. Doing this as I can't work out how to use scss
    or css, and still have the module live-reload. Maybe I could do this using custom sass scripts also. */
@@ -53,7 +90,7 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
   ngOnInit() {
     console.log(this.network.type);
     this.mobilecaddySyncService.getSyncState().subscribe(res => {
-      console.log(logTag, 'SyncState Update1', res);
+      console.log(logTag, 'SyncState', res);
       switch (res) {
         case 'complete':
           switch (this.network.type) {

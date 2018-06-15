@@ -6,5 +6,7 @@ export * from './outbox-page/outbox-page';
 export * from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 export * from './recent-items-service/recent-items-service';
 export * from './salesforce-rest-service/salesforce-rest-service';
+export * from './global-search/global-search.component';
+export * from './global-search-service/global-search.service';
 export * from './config-service/config.service';
 export * from './lib.module';

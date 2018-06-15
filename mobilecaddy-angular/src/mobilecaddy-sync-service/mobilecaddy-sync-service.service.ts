@@ -13,8 +13,12 @@ interface SyncTableConfig {
 export class MobileCaddySyncService {
   private logTag: string = 'mobilecaddy-sync.service.ts';
   initialSyncState: BehaviorSubject<string> = new BehaviorSubject('');
-  syncState: BehaviorSubject<string> = new BehaviorSubject('');
+  syncState: BehaviorSubject<string | any> = new BehaviorSubject('');
   _syncState: string = '';
+  // This callback is fired when a table starts syncing, and when it completes
+  private syncCallback: Function = state => {
+    this.syncState.next(state);
+  };
 
   constructor(private MobileCaddyConfigService: MobileCaddyConfigService) {
     this.initialSyncState.next(localStorage.getItem('initialSyncState'));
@@ -25,7 +29,10 @@ export class MobileCaddySyncService {
     console.log(this.logTag, 'Calling initialSync');
     this.syncState.next('InitialSyncInProgress');
     devUtils
-      .initialSync(this.MobileCaddyConfigService.getConfig('initialSyncTables'))
+      .initialSync(
+        this.MobileCaddyConfigService.getConfig('initialSyncTables'),
+        this.syncCallback
+      )
       .then(res => {
         localStorage.setItem('initialSyncState', 'InitialLoadComplete');
         console.log(this.logTag, 'InitialLoadComplete');
@@ -81,8 +88,15 @@ export class MobileCaddySyncService {
       const sequence = Promise.resolve();
 
       return tablesToSync.reduce((sequence, table) => {
+        // Set Defaults
         if (typeof table.maxTableAge == 'undefined') {
           table.maxTableAge = 1000 * 60 * 1; // 3 minutes
+        }
+        if (typeof table.maxRecsPerCall == 'undefined') {
+          table.maxRecsPerCall = 200;
+        }
+        if (typeof table.skipP2M == 'undefined') {
+          table.skipP2M = false;
         }
         return sequence
           .then(res => {
@@ -100,7 +114,10 @@ export class MobileCaddySyncService {
               return devUtils.syncMobileTable(
                 table.Name,
                 table.syncWithoutLocalUpdates,
-                table.maxTableAge
+                table.maxTableAge,
+                table.maxRecsPerCall,
+                table.skipP2M,
+                this.syncCallback
               );
             } else {
               //console.log("skipping sync");
@@ -167,7 +184,7 @@ export class MobileCaddySyncService {
     return localStorage.getItem('initialSyncState') ? true : false;
   }
 
-  getSyncState(): BehaviorSubject<String> {
+  getSyncState(): BehaviorSubject<String | any> {
     var syncState = localStorage.getItem('syncState');
     if (syncState === null) {
       syncState = 'complete';

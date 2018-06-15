@@ -30,6 +30,7 @@ const logTag: string = 'mobilecaddy-sync.ts';
 })
 export class MobileCaddySyncComponent implements OnInit {
   @Input() config: any;
+  @Input() showLoader: boolean;
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -57,18 +58,21 @@ export class MobileCaddySyncComponent implements OnInit {
 
   doInitialSync(): void {
     console.log(logTag, 'Calling initialSync');
-    let loader = this.loadingCtrl.create({
-      content: 'Running Sync...',
-      duration: 120000
-    });
-    loader.present();
+    console.log('this.showLoader', this.showLoader);
+    if (this.showLoader !== false) {
+      let loader = this.loadingCtrl.create({
+        content: 'Running Sync...',
+        duration: 120000
+      });
+      loader.present();
 
-    this.mobilecaddySyncService.getSyncState().subscribe(res => {
-      console.log(logTag, 'SyncState Update', res);
-      if (res == 'complete') {
-        loader.dismiss();
-      }
-    });
+      this.mobilecaddySyncService.getSyncState().subscribe(res => {
+        console.log(logTag, 'SyncState Update', res);
+        if (res == 'complete') {
+          loader.dismiss();
+        }
+      });
+    }
 
     this.mobilecaddySyncService.doInitialSync();
   }

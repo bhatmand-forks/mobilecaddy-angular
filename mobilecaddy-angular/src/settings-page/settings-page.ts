@@ -21,7 +21,16 @@ export interface vsnInfo {
 @Component({
   selector: 'page-settings-page',
   templateUrl: 'settings-page.html',
-  styles: [`.button{display: block;}.button ion-icon {margin-right: 0.5em;}`]
+  styles: [
+    `
+      .button {
+        display: block;
+      }
+      .button ion-icon {
+        margin-right: 0.5em;
+      }
+    `
+  ]
 })
 export class SettingsPage {
   private logTag: string = 'mc.settings-page.ts';
