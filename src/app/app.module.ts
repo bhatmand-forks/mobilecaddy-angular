@@ -30,15 +30,7 @@ import { SalesforceRestService } from '../../mobilecaddy-angular/src/salesforce-
 import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-search-service/global-search.service';
 
 @NgModule({
-  declarations: [
-    MyApp,
-    InitPage,
-    HomePage,
-    // AccountDetailPage,
-    OutboxPage,
-    SearchPage
-    // GlobalSearch
-  ],
+  declarations: [MyApp, InitPage, HomePage, OutboxPage, SearchPage],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -50,7 +42,6 @@ import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-searc
     MyApp,
     InitPage,
     HomePage,
-    // AccountDetailPage,
     OutboxPage,
     SearchPage,
     SettingsPage,

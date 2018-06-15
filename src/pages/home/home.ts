@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 // import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync.service';
 import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
@@ -17,15 +17,28 @@ export class HomePage implements OnInit {
   accounts;
   accountTable: string = 'Account__ap';
   config: IAppConfig;
+  private loader: any;
 
   constructor(
     public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
     private mobilecaddySyncService: MobileCaddySyncService,
     @Inject(APP_CONFIG) private appConfig: IAppConfig
   ) {}
 
   ngOnInit() {
     // As we are the first page, we check to see when the initialSync is completed.
+    this.loader = this.loadingCtrl.create({
+      content: 'Preparing data...',
+      duration: 120000
+    });
+    this.loader.present();
+
+    this.mobilecaddySyncService.getSyncState().subscribe(res => {
+      console.log(logTag, 'SyncState Update', res);
+      if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
+    });
+
     this.mobilecaddySyncService
       .getInitialSyncState()
       .subscribe(initialSyncState => {
@@ -38,6 +51,7 @@ export class HomePage implements OnInit {
   }
 
   showAccounts(): void {
+    this.loader.setContent('Fetching records');
     let soql =
       'SELECT {' +
       this.accountTable +
@@ -48,16 +62,31 @@ export class HomePage implements OnInit {
       '} ORDER BY NAME';
     devUtils.smartSql(soql).then(res => {
       console.log('res', res);
+      this.loader.dismiss();
       this.accounts = res.records;
     });
   }
 
   doSync(event): void {
     console.log(logTag, 'doSync');
+
+    // You're unlikely to really want to show a loader whilst a background sync takes place,
+    // but this is an example of using the mobilecaddySyncService.getSyncState() observable.
+    this.loader = this.loadingCtrl.create({
+      content: 'Syncing...',
+      duration: 120000
+    });
+    this.loader.present();
+
+    this.mobilecaddySyncService.getSyncState().subscribe(res => {
+      console.log(logTag, 'SyncState Update', res);
+      if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
+    });
+
     this.mobilecaddySyncService
       .syncTables([{ Name: this.accountTable }])
-      .then(function(r) {
-        alert(r.status);
+      .then(r => {
+        this.loader.dismiss();
       });
   }
 

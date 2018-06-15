@@ -15,6 +15,8 @@ export interface SyncTableConfig {
   Name: string;
   syncWithoutLocalUpdates?: boolean;
   maxTableAge?: number;
+  maxRecsPerCall?: number;
+  skipP2M?: boolean;
 }
 
 export interface OutBoxTableConfig {
