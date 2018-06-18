@@ -169,7 +169,7 @@ export class GlobalSearchProvider {
    */
   private searchTable(element: tableConfig, str: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      // TODO These are not being used for the moment because the query only works when doing a SELECT * for now.
+      // TODO These are not being used for the moment because we're concerned about these being in the indexSpecs.
       // const fieldsToShow = element.fieldsToShow.join(', ');
       let selectCondition = '';
       element.fieldsToShow.forEach((field, index) => {
@@ -194,13 +194,16 @@ export class GlobalSearchProvider {
         }
       });
 
+      // NOTE - DOING "SELECT * " as 'fieldsToShow' might not be in indexSpecs
       var smartSql =
-        'SELECT ' +
-        selectCondition +
-        ' from {' +
-        element.table +
-        '} WHERE ' +
-        whereCondition;
+        'SELECT * from {' + element.table + '} WHERE ' + whereCondition;
+      // var smartSql =
+      //   'SELECT ' +
+      //   selectCondition +
+      //   ' from {' +
+      //   element.table +
+      //   '} WHERE ' +
+      //   whereCondition;
 
       console.log('smartSql', smartSql);
 
@@ -257,6 +260,8 @@ export class GlobalSearchProvider {
       pageName: string;
       navParamName: string;
     }> = [];
+    // TODO Need to update as soql replies with items in an array, not as probs of objects
+    // * somehow this currently works in CodeFlow
     results.forEach(result => {
       const resultString = this.setString(result, configElement.fieldsToShow);
       resultsArray.push({

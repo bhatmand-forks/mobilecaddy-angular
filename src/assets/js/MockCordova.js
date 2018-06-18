@@ -1838,8 +1838,17 @@
                 });
                 // console.log("matchFound", matchFound);
                 if (matchFound) {
-                  row = [el._soupEntryId];
-                  row.push(el);
+                  // row = [el._soupEntryId];
+                  // row.push(el);
+                  var row = [];
+                  if (selectFields == '*') {
+                    row = [el._soupEntryId];
+                    row.push(el);
+                  } else {
+                    // filteredEl = {};
+                    selectFields.forEach(attr => row.push(el[attr]));
+                    // row.push(filteredEl);
+                  }
                   matchedSoups2.push(row);
                 }
               });

@@ -30,10 +30,15 @@ CACHE:
 {!URLFOR($Resource.<MY_APP_RESOURCE>, 'assets/fonts/ionicons.woff2')}
 {!URLFOR($Resource.<MY_APP_RESOURCE>, 'assets/fonts/roboto-regular.woff2')}
 {!URLFOR($Resource.<MY_APP_RESOURCE>, 'assets/fonts/roboto-medium.woff2')}
+{!URLFOR($Resource.<MY_APP_RESOURCE>, 'assets/fonts/roboto-bold.woff2')}
+
 
 {!URLFOR($Resource.<MY_APP_RESOURCE>, 'build/vendor.js')}
 {!URLFOR($Resource.<MY_APP_RESOURCE>, 'build/main.js')}
 {!URLFOR($Resource.<MY_APP_RESOURCE>, 'build/polyfills.js')}
+
+#FOLLOWING COMMENT IS REPLACED WITH RELEVANT FILES FROM THE WWW/BUILD DIR
+<!-- BUILD-SCRIPTS-DO-NOT-REMOVE -->
 
 
 

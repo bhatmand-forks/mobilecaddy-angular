@@ -4,6 +4,7 @@ import * as devUtils from 'mobilecaddy-utils/devUtils';
 // import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync.service';
 import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
+import * as _ from 'underscore';
 
 import { AccountDetailPage } from '../accountDetail/accountDetail';
 
@@ -50,6 +51,12 @@ export class HomePage implements OnInit {
     this.config = this.appConfig;
   }
 
+  ionViewDidEnter() {
+    // As we are the root our URL may not be updated if coming here via the 'back' button.
+    // Maybe we can get rid of this is we Lazy load the home page?
+    history.pushState({}, 'Home', '/');
+  }
+
   showAccounts(): void {
     this.loader.setContent('Fetching records');
     let soql =
@@ -59,11 +66,15 @@ export class HomePage implements OnInit {
       this.accountTable +
       ':Name} FROM {' +
       this.accountTable +
-      '} ORDER BY NAME';
+      '}';
     devUtils.smartSql(soql).then(res => {
       console.log('res', res);
-      this.loader.dismiss();
+      // Sort by Name
+      this.accounts = _.sortBy(res.records, el => {
+        return el[1];
+      });
       this.accounts = res.records;
+      this.loader.dismiss();
     });
   }
 
@@ -93,6 +104,7 @@ export class HomePage implements OnInit {
   goToAccount(a): void {
     console.log(logTag, 'goToAccount', a);
     this.navCtrl.push('AccountDetailPage', {
+      id: a[0], // We set this as well, for our IonicPage segment
       account: { Id: a[0], Name: a[1] }
     });
   }

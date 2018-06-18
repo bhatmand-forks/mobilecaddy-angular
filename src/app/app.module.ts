@@ -8,9 +8,6 @@ import { MobileCaddyModule } from '../../mobilecaddy-angular/src/lib.module';
 import { InitPage } from '../pages/init/init';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-// import { AccountDetailPage } from '../pages/accountDetail/accountDetail';
-import { OutboxPage } from '../pages/outbox/outbox';
-import { SearchPage } from '../pages/search/search';
 
 // MobileCaddy
 import { SettingsPage } from '../../mobilecaddy-angular/src/settings-page/settings-page';
@@ -30,7 +27,7 @@ import { SalesforceRestService } from '../../mobilecaddy-angular/src/salesforce-
 import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-search-service/global-search.service';
 
 @NgModule({
-  declarations: [MyApp, InitPage, HomePage, OutboxPage, SearchPage],
+  declarations: [MyApp, InitPage, HomePage],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -38,15 +35,7 @@ import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-searc
     MobileCaddyModule.forRoot()
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    InitPage,
-    HomePage,
-    OutboxPage,
-    SearchPage,
-    SettingsPage,
-    MCOutboxPage
-  ],
+  entryComponents: [MyApp, InitPage, HomePage, SettingsPage, MCOutboxPage],
   providers: [
     StatusBar,
     SplashScreen,
