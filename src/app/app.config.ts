@@ -3,12 +3,24 @@ import { InjectionToken } from '@angular/core';
 export let APP_CONFIG = new InjectionToken('app.config');
 
 export interface IAppConfig {
+  indexSpecs?: indexSpecConfig[];
   initialSyncTables: string[];
   coldStartSyncTables: SyncTableConfig[];
   forceSyncTables: SyncTableConfig[];
+  syncPoints?: SyncPointConfig[];
   outboxTables?: OutBoxTableConfig[];
   recentItems?: RecentItemsConfig;
   globalSearch?: any;
+}
+
+export interface indexSpecConfig {
+  table: string;
+  specs: Array<{ path: string; type: string }>;
+}
+
+export interface SyncPointConfig {
+  name: string;
+  tableConfig: SyncTableConfig[];
 }
 
 export interface SyncTableConfig {
@@ -34,6 +46,19 @@ export interface RecentItemsConfig {
 const oneMinute: number = 1000 * 60;
 
 export const AppConfig: IAppConfig = {
+  // Set our own indexSpecs
+  indexSpecs: [
+    {
+      table: 'Account__ap',
+      specs: [
+        { path: 'Id', type: 'string' },
+        { path: 'Name', type: 'string' },
+        { path: 'Description', type: 'string' },
+        { path: 'BillingCountry', type: 'string' }
+      ]
+    }
+  ],
+
   // Tables to sync on initialSync
   initialSyncTables: ['Account__ap', 'Contact__ap'],
 
@@ -62,6 +87,17 @@ export const AppConfig: IAppConfig = {
       Name: 'Contact__ap',
       syncWithoutLocalUpdates: true,
       maxTableAge: 0
+    }
+  ],
+
+  syncPoints: [
+    {
+      name: 'mySync',
+      tableConfig: [
+        {
+          Name: 'Account__ap'
+        }
+      ]
     }
   ],
 

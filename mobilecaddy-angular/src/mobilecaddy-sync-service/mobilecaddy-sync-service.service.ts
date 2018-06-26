@@ -58,7 +58,7 @@ export class MobileCaddySyncService {
       console.log(this.logTag, 'syncTables');
       let myTablestoSync =
         typeof tablesToSync == 'string'
-          ? this.MobileCaddyConfigService.getConfig(tablesToSync)
+          ? this.getTablesToSyncFromSyncPoint(tablesToSync)
           : tablesToSync;
       // TODO - put some local notification stuff in here.
       this.doSyncTables(myTablestoSync).then(res => {
@@ -198,5 +198,18 @@ export class MobileCaddySyncService {
     localStorage.setItem('syncState', status);
     this._syncState = status;
     this.syncState.next(status);
+  }
+
+  getTablesToSyncFromSyncPoint(name: string): Array<any> {
+    const syncPoints = this.MobileCaddyConfigService.getConfig('syncPoints');
+    let tableConf = [];
+    if (syncPoints) {
+      syncPoints.forEach(el => {
+        if (el.name == name) tableConf = el.tableConfig;
+      });
+      return tableConf;
+    } else {
+      return tableConf;
+    }
   }
 }

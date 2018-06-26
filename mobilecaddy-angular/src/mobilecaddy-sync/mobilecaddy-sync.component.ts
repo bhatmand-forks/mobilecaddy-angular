@@ -22,6 +22,8 @@ import { LoadingController } from 'ionic-angular';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { MobileCaddyConfigService } from '../config-service/config.service';
 
+declare var cordova;
+
 const logTag: string = 'mobilecaddy-sync.ts';
 
 @Component({
@@ -74,11 +76,45 @@ export class MobileCaddySyncComponent implements OnInit {
       });
     }
 
-    this.mobilecaddySyncService.doInitialSync();
+    this.maybeAlterIndexSpecs().then(_ => {
+      this.mobilecaddySyncService.doInitialSync();
+    });
   }
 
   doColdStartSync(): void {
     console.log(logTag, 'doColdStartSync');
     this.mobilecaddySyncService.doColdStartSync();
+  }
+
+  private maybeAlterIndexSpecs(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log('maybeAlterIndexSpecs', this.config.indexSpecs);
+      if (this.config.indexSpecs) {
+        const smartstore = cordova.require('com.salesforce.plugin.smartstore');
+        const pArray = this.config.indexSpecs.map(element => {
+          return new Promise((resolve, reject) => {
+            smartstore.alterSoup(
+              element.table,
+              element.specs,
+              true,
+              function(r) {
+                console.log('AlteredSoup OK');
+                resolve('OK');
+              },
+              function(r) {
+                console.error('AlteredSoup FAILED');
+                reject(r);
+              }
+            );
+          });
+        });
+        Promise.all(pArray).then(results => {
+          console.log('results', results);
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
   }
 }

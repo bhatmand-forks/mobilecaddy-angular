@@ -91,7 +91,7 @@ export class SettingsPage {
           text: 'Yes',
           handler: () => {
             console.log('Yes clicked');
-            vsnUtils.upgradeIfAvailable().then(function(res) {
+            vsnUtils.upgradeIfAvailable().then(res => {
               console.log('upgrade: upgradeIfAvailable? ' + res);
               if (res) {
                 let loader = this.loadingCtrl.create({
@@ -100,7 +100,7 @@ export class SettingsPage {
                 });
                 loader.present();
               } else {
-                alert = this.alertCtrl.create({
+                let alert = this.alertCtrl.create({
                   title: 'Upgrade failed',
                   subTitle:
                     'The upgrade could not take place due to sync in progress. Please try again later.',
