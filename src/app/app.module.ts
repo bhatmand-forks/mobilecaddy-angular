@@ -5,7 +5,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { MobileCaddyModule } from '../../mobilecaddy-angular/src/lib.module';
 
 // Pages
-import { InitPage } from '../pages/init/init';
+// import { InitPage } from '../pages/init/init';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 
@@ -27,7 +27,7 @@ import { SalesforceRestService } from '../../mobilecaddy-angular/src/salesforce-
 import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-search-service/global-search.service';
 
 @NgModule({
-  declarations: [MyApp, InitPage, HomePage],
+  declarations: [MyApp, HomePage],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -35,7 +35,7 @@ import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/global-searc
     MobileCaddyModule.forRoot()
   ],
   bootstrap: [IonicApp],
-  entryComponents: [MyApp, InitPage, HomePage, SettingsPage, MCOutboxPage],
+  entryComponents: [MyApp, HomePage, SettingsPage, MCOutboxPage],
   providers: [
     StatusBar,
     SplashScreen,

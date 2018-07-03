@@ -3,10 +3,9 @@ import { NavController, LoadingController } from 'ionic-angular';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 // import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync.service';
 import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddyStartupService } from '../../../mobilecaddy-angular/src/startup-service/startup.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import * as _ from 'underscore';
-
-import { AccountDetailPage } from '../accountDetail/accountDetail';
 
 const logTag: string = 'home.ts';
 
@@ -24,6 +23,7 @@ export class HomePage implements OnInit {
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     private mobilecaddySyncService: MobileCaddySyncService,
+    private mobilecaddyStartupService: MobileCaddyStartupService,
     @Inject(APP_CONFIG) private appConfig: IAppConfig
   ) {}
 
@@ -35,9 +35,14 @@ export class HomePage implements OnInit {
     });
     this.loader.present();
 
-    this.mobilecaddySyncService.getSyncState().subscribe(res => {
-      console.log(logTag, 'SyncState Update', res);
-      if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
+    this.mobilecaddyStartupService.startup(this.appConfig);
+
+    this.mobilecaddyStartupService.getInitState().subscribe(res => {
+      console.log(logTag, 'Init Update', res);
+      if (res) {
+        if (res.status === -1) this.loader.setContent(res.info);
+        if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
+      }
     });
 
     this.mobilecaddySyncService
@@ -48,7 +53,6 @@ export class HomePage implements OnInit {
           this.showAccounts();
         }
       });
-    this.config = this.appConfig;
   }
 
   ionViewDidEnter() {

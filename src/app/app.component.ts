@@ -3,7 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { InitPage } from '../pages/init/init';
+// import { InitPage } from '../pages/init/init';
 
 import { HomePage } from '../pages/home/home';
 import { SettingsPage } from '../../mobilecaddy-angular/src/settings-page/settings-page';
@@ -27,7 +27,7 @@ if (isDevMode()) {
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = InitPage;
+  rootPage: any = HomePage;
 
   pages: Array<{ title: string; component: any }>;
 
