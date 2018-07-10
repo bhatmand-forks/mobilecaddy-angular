@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 
-import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-import { MobileCaddyConfigService } from '../config-service/config.service';
+import { MobileCaddySyncService } from '../../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddyConfigService } from '../../config-service/config.service';
 
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';
@@ -66,7 +66,8 @@ export class OutboxComponent implements OnInit {
       devUtils
         .readRecords('recsToSync', [])
         .then(resObject => {
-          let tableCount = _.chain(resObject.records)
+          let tableCount = _
+            .chain(resObject.records)
             .filter(function(el) {
               return knownTables.includes(el.Mobile_Table_Name) ? true : false;
             })

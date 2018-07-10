@@ -1,5 +1,5 @@
 {
-  "name": "@mobilecaddy/angular",
+  "name": "mobilecaddy-angular",
   "version": "0.0.1",
   "repository": "",
   "author": "",
@@ -14,7 +14,10 @@
     "workingDirectory": "../.ng_build",
     "lib": {
       "entryFile": "src/public_api.ts",
-      "languageLevel": ["dom", "es2017"]
+      "languageLevel": [
+        "dom",
+        "es2017"
+      ]
     },
     "dest": "../dist/mobilecaddy-angular"
   }

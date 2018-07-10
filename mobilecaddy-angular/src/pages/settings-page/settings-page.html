@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Settings</ion-title>
+    <ion-buttons end>
+      <mobilecaddy-sync-icon></mobilecaddy-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <ion-item (click)="logout()">
+      <ion-icon name="log-out" item-start></ion-icon>
+      Log Out
+    </ion-item>
+    <ion-item (click)="openAdminFunctions()">
+      <ion-icon name="construct" item-start></ion-icon>
+      Admin Functions
+    </ion-item>
+    <ion-item (click)="openAdminFunctions2()">
+      <ion-icon name="construct" item-start></ion-icon>
+      Admin Functions (with PIN Challenge)
+    </ion-item>
+    <ion-item (click)="openDiagnostics()">
+      <ion-icon name="speedometer" item-start></ion-icon>
+      Diagnostics
+    </ion-item>
+    <!-- TODO <mc-logging-level></mc-logging-level> -->
+    <ion-item *ngIf="isUpgradeAvailable" (click)="upgrade()">
+      <ion-icon name="cloud-download" item-start></ion-icon>
+      Upgrade
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-item>
+    Version 0.0.2i
+  </ion-item>
+</ion-footer>

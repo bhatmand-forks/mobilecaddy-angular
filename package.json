@@ -17,7 +17,7 @@
   "config": {
     "ionic_watch": "./ionic-watch.config.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "@angular/animations": "5.2.9",
     "@angular/common": "5.2.9",
     "@angular/compiler": "5.2.9",
@@ -37,9 +37,7 @@
     "rxjs": "5.5.7",
     "sw-toolbox": "3.6.0",
     "underscore": "^1.8.3",
-    "zone.js": "0.8.20"
-  },
-  "devDependencies": {
+    "zone.js": "0.8.20",
     "@angular/cli": "^1.7.4",
     "@ionic-native/network": "^4.7.0",
     "@ionic/app-scripts": "3.1.8",

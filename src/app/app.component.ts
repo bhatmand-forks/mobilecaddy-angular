@@ -6,7 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 // import { InitPage } from '../pages/init/init';
 
 import { HomePage } from '../pages/home/home';
-import { SettingsPage } from '../../mobilecaddy-angular/src/settings-page/settings-page';
+import { SettingsPage } from '../../mobilecaddy-angular/src/pages/settings-page/settings-page';
 
 // DEV STUFF
 import { isDevMode } from '@angular/core';

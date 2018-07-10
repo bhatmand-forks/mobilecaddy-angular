@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from 'ionic-angular';
 
 // Components
-import { MobileCaddySyncIconComponent } from './mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
-import { OutboxComponent } from './outbox/outbox.component';
-import { GlobalSearch } from './global-search/global-search.component';
-import { SettingsPage } from './settings-page/settings-page';
-import { MCOutboxPage } from './outbox-page/outbox-page';
+import { MobileCaddySyncIconComponent } from './components/mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
+import { OutboxComponent } from './components/outbox/outbox.component';
+import { GlobalSearch } from './components/global-search/global-search.component';
+import { SettingsPage } from './pages/settings-page/settings-page';
+import { SettingsDevToolsPage } from './pages/settings-dev-tools-page/settings-dev-tools-page';
+import { MCOutboxPage } from './pages/outbox-page/outbox-page';
 
 // Providers
 import { MobileCaddySyncService } from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
@@ -25,6 +26,7 @@ import { Network } from '@ionic-native/network';
     OutboxComponent,
     GlobalSearch,
     SettingsPage,
+    SettingsDevToolsPage,
     MCOutboxPage
   ],
   exports: [
@@ -32,8 +34,10 @@ import { Network } from '@ionic-native/network';
     OutboxComponent,
     GlobalSearch,
     SettingsPage,
+    SettingsDevToolsPage,
     MCOutboxPage
   ],
+  entryComponents: [MCOutboxPage, SettingsPage, SettingsDevToolsPage],
   providers: [Network]
 })
 export class MobileCaddyModule {

@@ -5,7 +5,7 @@ import { debounceTime } from 'rxjs/operators/debounceTime';
 
 // import { MobileCaddyConfigService } from '../config-service/config.service';
 
-import { GlobalSearchProvider } from '../global-search-service/global-search.service';
+import { GlobalSearchProvider } from '../../global-search-service/global-search.service';
 
 @Component({
   selector: 'mobilecaddy-global-search',
@@ -99,7 +99,7 @@ export class GlobalSearch implements OnInit {
     this.searchPvdr.addRecentSearch(item, result);
     this.showRecentSearches();
 
-    let myNavParams: any = {id: result.Id};
+    let myNavParams: any = { id: result.Id };
     myNavParams[result.navParamName] = result;
     this.navCtrl.push(result.pageName, myNavParams);
   }
