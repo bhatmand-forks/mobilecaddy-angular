@@ -1,0 +1,51 @@
+<ion-header no-shadow>
+
+  <ion-navbar>
+    <ion-title>{{tableName}}</ion-title>
+  </ion-navbar>
+
+  <ion-toolbar>
+    <ion-searchbar (ionInput)="getSearchRecords($event)"></ion-searchbar>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngIf="filteredRecords.length === 0 && hasTableReadFinished">
+    <ion-item text-center>
+      No Records
+    </ion-item>
+  </ion-card>
+
+  <ion-card *ngFor="let rec of filteredRecords; let i = index">
+    <ion-card-header>
+      <b>Record {{i + 1}} of {{filteredRecords.length}}</b>
+      <span class="filtered-marker" *ngIf="filteredRecords.length!==allRecords.length"> *filtered</span>
+    </ion-card-header>
+    <ion-list>
+      <ion-item text-wrap *ngFor="let field of rec">
+        <div>
+          <strong>{{field.Name}}:</strong>
+        </div>
+        <ion-grid no-padding>
+          <ion-row>
+            <ion-col col-auto align-self-center>
+              <div class="field-value" (click)="showFieldValue(field.Value)">
+                {{field.Value}}
+              </div>
+            </ion-col>
+            <ion-col *ngIf="field.Name==='SOUP_Record_Id'" align-self-center>
+              <div padding-left>
+                <button ion-button small (click)="showRecord(rec, field.Value)" color="light">
+                  Show Record
+                </button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+</ion-content>

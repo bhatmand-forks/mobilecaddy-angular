@@ -1,0 +1,70 @@
+<ion-header no-shadow>
+
+  <ion-navbar>
+    <ion-title>
+      <span *ngIf="!isRecovery">Mobile Table Inspector</span>
+      <span *ngIf="isRecovery">Force Sync</span>
+    </ion-title>
+  </ion-navbar>
+
+  <ion-toolbar>
+    <div class="header-helper-text">
+      <ion-icon name="information-circle" item-start small></ion-icon>
+      Slide table name to the left to reveal options.
+    </div>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngIf="isRecovery">
+    <ion-card-header>
+      <b>Tables References in RTS</b>
+    </ion-card-header>
+    <ion-list>
+
+      <ion-item-sliding *ngFor="let table of rtsTables">
+        <button ion-item (click)="showTable(table.name)">
+          {{table.name}} ({{table.count}})
+          <ion-icon name="information-circle" item-end small></ion-icon>
+        </button>
+        <ion-item-options side="right">
+          <button (click)="confirmSyncTable(table.name)" ion-button color="primary">
+            <ion-icon name="sync"></ion-icon>
+              Force Sync
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <b>Tables</b>
+    </ion-card-header>
+    <ion-list>
+      <ion-item-sliding *ngFor="let table of tables">
+        <button ion-item (click)="showTable(table.Name)">
+          {{table.Name}}
+          <ion-icon *ngIf="isSyncAvailable(table)||isSaveToMLAvailable(table)" name="information-circle" item-end small></ion-icon>
+        </button>
+        <ion-item-options side="right">
+          <button *ngIf="isSyncAvailable(table)"
+                  (click)="confirmSyncTable(table.Name)" ion-button color="primary">
+            <ion-icon name="sync"></ion-icon>
+              <span *ngIf="!isRecovery">Sync</span>
+              <span *ngIf="isRecovery">Force Sync</span>
+          </button>
+          <button *ngIf="isSaveToMLAvailable(table)"
+                  (click)="confirmSaveTable(table.Name)" ion-button color="secondary">
+            <ion-icon name="arrow-round-up"></ion-icon>
+              Save to ML
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-card>
+
+</ion-content>

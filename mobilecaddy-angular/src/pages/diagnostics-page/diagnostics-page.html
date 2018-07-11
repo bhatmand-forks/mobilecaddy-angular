@@ -1,0 +1,73 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Diagnostics</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+  <ion-card>
+
+    <ion-card-header>
+      <b>Application Info</b>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            Cached Flag
+          </ion-col>
+          <ion-col>
+            {{cachedFlag}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            Network Status
+          </ion-col>
+          <ion-col>
+            {{networkStatus}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-card>
+
+    <ion-card-header>
+      <b>Diagnostic Tools</b>
+    </ion-card-header>
+
+    <ion-list>
+      <button ion-item (click)="openMobileLogsViewer()">
+        <ion-icon name="book" item-start></ion-icon>
+        View Mobile Logs
+      </button>
+      <button ion-item (click)="testHeartbeat()">
+        <ion-icon name="heart" item-start></ion-icon>
+        Test Heartbeat
+      </button>
+      <ion-card *ngIf="testTitle!==''">
+        <ion-card-header>{{testTitle}}</ion-card-header>
+        <ion-item text-wrap>
+          <p><b>Result</b></p>
+          {{testResults.result}}
+          <p><b>Event</b></p>
+          {{testResults.event}}
+          <span *ngIf="testResults.error!==''">
+            <p><b>Error</b></p>
+            {{testResults.error}}
+          </span>
+        </ion-item>
+      </ion-card>
+    </ion-list>
+
+  </ion-card>
+
+</ion-content>

@@ -19,7 +19,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { MobileCaddySyncService } from '../../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { Network } from '@ionic-native/network';
 import { Observer } from 'rxjs/Observer';
 import { Subscription } from 'rxjs/Subscription';

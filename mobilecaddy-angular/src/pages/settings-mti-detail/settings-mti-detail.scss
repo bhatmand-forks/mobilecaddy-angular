@@ -1,0 +1,23 @@
+.md, .ios, .wp {
+
+  page-settings-mti-detail {
+
+    ion-content {
+      background-color: map-get($colors,mc-content-bg);
+    }
+
+    ion-label {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .filtered-marker {
+      color: map-get($colors,danger);
+    }
+
+    .field-value {
+      color: map-get($colors,secondary);
+    }
+  }
+
+}

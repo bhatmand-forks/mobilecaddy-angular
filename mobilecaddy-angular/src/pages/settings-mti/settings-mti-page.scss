@@ -1,0 +1,15 @@
+.md, .ios, .wp {
+
+  page-settings-mti {
+
+    ion-content {
+      background-color: map-get($colors,mc-content-bg);
+    }
+
+    .header-helper-text {
+      color: #fff;
+      text-align: center;
+    }
+  }
+
+}

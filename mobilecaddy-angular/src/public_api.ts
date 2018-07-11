@@ -1,13 +1,31 @@
+// Components
 export * from './components/mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
 export * from './components/outbox/outbox.component';
+export * from './components/global-search/global-search.component';
+
+// Pages
 export * from './pages/settings-page/settings-page';
 export * from './pages/settings-dev-tools-page/settings-dev-tools-page';
+export * from './pages/diagnostics-page/diagnostics-page';
+export * from './pages/settings-mti/settings-mti-page';
+export * from './pages/settings-mti-detail/settings-mti-detail';
+export * from './pages/settings-mti-table-record/settings-mti-table-record';
+export * from './pages/settings-raw-view/settings-raw-view';
+export * from './pages/settings-raw-view-modal/settings-raw-view-modal';
 export * from './pages/outbox-page/outbox-page';
-export * from './startup-service/startup.service';
-export * from './mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-export * from './recent-items-service/recent-items-service';
-export * from './salesforce-rest-service/salesforce-rest-service';
-export * from './components/global-search/global-search.component';
-export * from './global-search-service/global-search.service';
-export * from './config-service/config.service';
+
+// Providers
+export * from './providers/startup-service/startup.service';
+export * from './providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+export * from './providers/recent-items-service/recent-items-service';
+export * from './providers/salesforce-rest-service/salesforce-rest-service';
+export * from './providers/global-search-service/global-search.service';
+export * from './providers/config-service/config.service';
+export * from './providers/mc-pin-challenge/mc-pin-challenge';
+export * from './providers/mc-loading/mc-loading';
+export * from './providers/mc-settings/mc-settings';
+export * from './providers/mc-upgrade/mc-upgrade';
+export * from './providers/mc-recovery/mc-recovery';
+export * from './providers/mc-diagnostics/mc-diagnostics';
+
 export * from './lib.module';

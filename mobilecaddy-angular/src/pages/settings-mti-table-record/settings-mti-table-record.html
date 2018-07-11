@@ -1,0 +1,42 @@
+<ion-header no-shadow>
+
+  <ion-navbar>
+    <ion-title>Soup Record {{data.soupRecordId}}</ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismissShowTableRecord()">
+        <span ion-text color="primary" showWhen="ios">Close</span>
+        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+  <ion-toolbar>
+    <ion-title>Table {{data.tableName}}</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+    <ion-list>
+
+      <ion-item *ngIf="!data.record">
+        No Record Found
+      </ion-item>
+
+      <span *ngIf="data.record">
+        <ion-item text-wrap *ngFor="let field of rec">
+          <div>
+            <strong>{{field.name}}:</strong>
+          </div>
+          <div class="field-value" (click)="showFieldValue(field.value)">
+            {{field.value}}
+          </div>
+        </ion-item>
+      </span>
+
+    </ion-list>
+  </ion-card>
+
+</ion-content>

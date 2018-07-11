@@ -5,7 +5,7 @@ import { debounceTime } from 'rxjs/operators/debounceTime';
 
 // import { MobileCaddyConfigService } from '../config-service/config.service';
 
-import { GlobalSearchProvider } from '../../global-search-service/global-search.service';
+import { GlobalSearchProvider } from '../../providers/global-search-service/global-search.service';
 
 @Component({
   selector: 'mobilecaddy-global-search',

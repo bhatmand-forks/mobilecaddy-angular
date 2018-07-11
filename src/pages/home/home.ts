@@ -2,8 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { NavController, LoadingController } from 'ionic-angular';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 // import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync.service';
-import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-import { MobileCaddyStartupService } from '../../../mobilecaddy-angular/src/startup-service/startup.service';
+import { MobileCaddySyncService } from '../../../mobilecaddy-angular/src/providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddyStartupService } from '../../../mobilecaddy-angular/src/providers/startup-service/startup.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import * as _ from 'underscore';
 

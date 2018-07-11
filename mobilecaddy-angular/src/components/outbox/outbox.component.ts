@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 
-import { MobileCaddySyncService } from '../../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-import { MobileCaddyConfigService } from '../../config-service/config.service';
+import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { MobileCaddyConfigService } from '../../providers/config-service/config.service';
 
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';

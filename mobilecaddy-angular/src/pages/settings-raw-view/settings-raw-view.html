@@ -1,0 +1,39 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Data Viewer ({{type}})</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showRawData()">
+        <ion-icon name="swap"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <div *ngIf="isPrettyDisplay">
+    <ion-card *ngFor="let item of viewContent; let i = index;">
+      <ion-card-header text-wrap>
+        <button ion-button icon-only clear item-start (click)="toggleExpanded(i)">
+          <ion-icon *ngIf="!expanded[i]" name="add-circle"></ion-icon>
+          <ion-icon *ngIf="expanded[i]" name="remove-circle"></ion-icon>
+        </button>
+        {{item.key}}
+      </ion-card-header>
+      <ion-card-content *ngIf="expanded[i]">
+        <div (click)="showRawDataModal(item.key,item.data)">
+          {{item.data}}
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!isPrettyDisplay">
+    <ion-item>
+      <ion-textarea value="{{rawData}}" rows="30"></ion-textarea>
+    </ion-item>
+  </div>
+
+</ion-content>
