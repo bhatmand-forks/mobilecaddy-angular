@@ -172,37 +172,55 @@ export class SettingsMtiPage {
         syncRefresh
           .m2pRecoveryUpdateMobileTable(tableName)
           .then(resObject => {
-            let resJson = JSON.parse(resObject.result);
-            let resMsg = '';
-            if (resJson.is) {
-              resMsg += '<p>Insert Success: ' + resJson.is.length + '</p>';
-            }
-            if (resObject.us) {
-              resMsg += '<p>Update Success: ' + resJson.us.length + '</p>';
-            }
-            let alert = this.alertCtrl.create({
-              title: 'Force Sync Success',
-              message: resMsg,
-              buttons: [
-                {
-                  text: 'Done',
-                  role: 'cancel'
-                },
-                {
-                  text: 'Show Full Resp',
-                  handler: () => {
-                    let alert = this.alertCtrl.create({
-                      title: 'Full Response',
-                      message:
-                        '<p>Returned with:</p><p><pre>' +
-                        JSON.stringify(resObject) +
-                        '</pre></p>'
-                    });
-                    alert.present();
+            let alert;
+            if (resObject.status == devUtils.SYNC_OK) {
+              let resJson = JSON.parse(resObject.result);
+              let resMsg = '';
+              if (resJson.is) {
+                resMsg += '<p>Insert Success: ' + resJson.is.length + '</p>';
+              }
+              if (resObject.us) {
+                resMsg += '<p>Update Success: ' + resJson.us.length + '</p>';
+              }
+              alert = this.alertCtrl.create({
+                title: 'Force Sync Success',
+                message: resMsg,
+                buttons: [
+                  {
+                    text: 'Done',
+                    role: 'cancel'
+                  },
+                  {
+                    text: 'Show Full Resp',
+                    handler: () => {
+                      let alert = this.alertCtrl.create({
+                        title: 'Full Response',
+                        message:
+                          '<p>Returned with:</p><p><pre>' +
+                          JSON.stringify(resObject) +
+                          '</pre></p>'
+                      });
+                      alert.present();
+                    }
                   }
-                }
-              ]
-            });
+                ]
+              });
+            } else {
+              alert = this.alertCtrl.create({
+                title: 'Force Sync Success',
+                message:
+                  'Status: ' +
+                  resObject.status +
+                  '<br/>Additional Status: ' +
+                  resObject.mc_add_status,
+                buttons: [
+                  {
+                    text: 'Done',
+                    role: 'cancel'
+                  }
+                ]
+              });
+            }
             loader.dismiss();
             this.mcSettingsProvider.setHasForceSyncRun(true);
             alert.present();
