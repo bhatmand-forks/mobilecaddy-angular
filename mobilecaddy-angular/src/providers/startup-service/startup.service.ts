@@ -44,9 +44,9 @@ export class MobileCaddyStartupService {
 
   ngOnInit() {}
 
-  startup(config): void {
+  startup(config): boolean {
     console.log(this.logTag, 'startup', this.runAlready);
-
+    let isAlreadyRun = false;
     if (this.runAlready !== true) {
       this.runAlready = true;
       // Set our config in config.service, so that it is available to all
@@ -117,7 +117,10 @@ export class MobileCaddyStartupService {
             console.error(this.logTag, e);
           });
       }
+    } else {
+      isAlreadyRun = true;
     }
+    return isAlreadyRun;
   }
 
   getInitState(): BehaviorSubject<String | any> {
