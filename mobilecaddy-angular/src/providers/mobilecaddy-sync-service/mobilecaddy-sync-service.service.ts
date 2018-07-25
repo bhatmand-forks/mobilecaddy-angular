@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { MobileCaddyConfigService } from '../config-service/config.service';
+import * as _ from 'underscore';
 
 interface SyncPointConfig {
   name: string;
@@ -46,6 +47,9 @@ export class MobileCaddySyncService {
         console.log(this.logTag, 'InitialLoadComplete');
         this.initialSyncState.next('InitialLoadComplete');
         this.syncState.next('complete');
+
+        let timeNow = new Date().valueOf().toString();
+        localStorage.setItem('lastSyncSuccess', timeNow);
       });
   }
 
@@ -70,59 +74,36 @@ export class MobileCaddySyncService {
    */
   syncTables(tablesToSync: SyncTableConfig[] | string): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(this.logTag, 'syncTables', this.syncTables);
+      console.log(this.logTag, 'syncTables', tablesToSync);
       if (typeof tablesToSync == 'string') {
         // We have a syncPoint name
         let syncPointConfig: SyncPointConfig = this.getConfigFromSyncPoint(
           tablesToSync
         );
-        if (
-          syncPointConfig.skipSyncPeriod &&
-          localStorage.getItem('lastSyncSuccess')
-        ) {
-          var timeNow = new Date().valueOf();
-          console.log(
-            this.logTag,
-            timeNow,
-            localStorage.getItem('lastSyncSuccess'),
-            syncPointConfig.skipSyncPeriod
-          );
+        this.getDirtyTables().then(dirtyTables => {
           if (
-            timeNow >
-            parseInt(localStorage.getItem('lastSyncSuccess')) +
-              syncPointConfig.skipSyncPeriod * 1000
+            syncPointConfig.skipSyncPeriod &&
+            localStorage.getItem('lastSyncSuccess') &&
+            dirtyTables.length === 0
           ) {
-            this.doSyncTables(syncPointConfig.tableConfig).then(res => {
-              this.setSyncState('complete');
-              console.log('doSyncTables res', res);
-              console.log('doSyncTables res', res);
-              if (
-                res.length == syncPointConfig.tableConfig.length &&
-                res[res.length - 1].status == 100400
-              ) {
-                let timeNow = new Date().valueOf().toString();
-                localStorage.setItem('lastSyncSuccess', timeNow);
-              }
-              resolve(res);
-            });
-          } else {
-            resolve('not-syncing:too-soon');
-          }
-        } else {
-          this.doSyncTables(syncPointConfig.tableConfig).then(res => {
-            // returns an array of results for each table;
-            this.setSyncState('complete');
-            console.log('doSyncTables res', res);
+            var timeNow = new Date().valueOf();
             if (
-              res.length == syncPointConfig.tableConfig.length &&
-              res[res.length - 1].status == 100400
+              timeNow >
+              parseInt(localStorage.getItem('lastSyncSuccess')) +
+                syncPointConfig.skipSyncPeriod * 1000
             ) {
-              let timeNow = new Date().valueOf().toString();
-              localStorage.setItem('lastSyncSuccess', timeNow);
+              this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
+                .then(r => resolve(r))
+                .catch(e => reject(e));
+            } else {
+              resolve('not-syncing:too-soon');
             }
-            resolve(res);
-          });
-        }
+          } else {
+            this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
+              .then(r => resolve(r))
+              .catch(e => reject(e));
+          }
+        });
       } else {
         // We have an array of tables... so let's just sync
         this.doSyncTables(tablesToSync).then(res => {
@@ -138,7 +119,34 @@ export class MobileCaddySyncService {
     });
   }
 
-  doSyncTables(tablesToSync: any[]): Promise<any> {
+  /**
+   * @description Sorts dirtyTables to front of array, calls our sync, and updates the 'lastSyncSuccess',
+   *  if applicable.
+   * @param tablesToSync Array of config for our tables that we want to sync
+   * @param dirtyTables Array of names of dirty tables.
+   */
+  doSyncTables1(
+    tablesToSync: SyncTableConfig[],
+    dirtyTables: String[]
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let tablesToSync2 = this.maybeReorderTables(tablesToSync, dirtyTables);
+      this.doSyncTables(tablesToSync2).then(res => {
+        this.setSyncState('complete');
+        if (
+          res.length == tablesToSync2.length &&
+          (res[res.length - 1].status == devUtils.SYNC_OK ||
+            res[res.length - 1].status == 100497)
+        ) {
+          let timeNow = new Date().valueOf().toString();
+          localStorage.setItem('lastSyncSuccess', timeNow);
+        }
+        resolve(res);
+      });
+    });
+  }
+
+  doSyncTables(tablesToSync: SyncTableConfig[]): Promise<any> {
     // Check that we not syncLocked or have a sync in progress
     let syncLock = this.getSyncLock();
     // let syncState = this.getSyncState();
@@ -156,7 +164,8 @@ export class MobileCaddySyncService {
       return tablesToSync.reduce((sequence, table) => {
         // Set Defaults
         if (typeof table.maxTableAge == 'undefined') {
-          table.maxTableAge = 1000 * 60 * 1; // 3 minutes
+          // table.maxTableAge = 1000 * 60 * 1; // 3 minutes
+          table.maxTableAge = 0; // 0
         }
         if (typeof table.maxRecsPerCall == 'undefined') {
           table.maxRecsPerCall = 200;
@@ -267,7 +276,7 @@ export class MobileCaddySyncService {
     this.syncState.next(status);
   }
 
-  getConfigFromSyncPoint(name: string): SyncPointConfig {
+  private getConfigFromSyncPoint(name: string): SyncPointConfig {
     const syncPoints = this.mobileCaddyConfigService.getConfig('syncPoints');
     let conf = {
       name: '',
@@ -281,5 +290,52 @@ export class MobileCaddySyncService {
     } else {
       return conf;
     }
+  }
+
+  /**
+   * @returns Promise Resolves to outboxSummary[]
+   */
+  private getDirtyTables(): Promise<String[]> {
+    return new Promise((resolve, reject) => {
+      let dirtyTables = [];
+      devUtils
+        .readRecords('recsToSync', [])
+        .then(resObject => {
+          let tableCount = _
+            .chain(resObject.records)
+            .countBy('Mobile_Table_Name')
+            .value();
+
+          let summary = [];
+          for (var p in tableCount) {
+            if (tableCount.hasOwnProperty(p) && p != 'Connection_Session__mc') {
+              dirtyTables.push(p);
+            }
+          }
+          resolve(dirtyTables);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    });
+  }
+
+  /**
+   *
+   * @param tablesToSync Array of table config from app.config
+   * @param dirtyTables Array of table names that are dirty
+   */
+  private maybeReorderTables(
+    tablesToSync: SyncTableConfig[],
+    dirtyTables: String[]
+  ) {
+    let orderedTables = [];
+    tablesToSync.forEach((t, idx) => {
+      if (dirtyTables.includes(t.Name)) {
+        orderedTables.push(t);
+        tablesToSync.splice(idx, 1);
+      }
+    });
+    return orderedTables.concat(tablesToSync);
   }
 }
