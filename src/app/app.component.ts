@@ -13,10 +13,12 @@ import { isDevMode } from '@angular/core';
 
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as syncRefresh from 'mobilecaddy-utils/syncRefresh';
+import * as logger from 'mobilecaddy-utils/logger';
 import * as _ from 'underscore';
 
 if (isDevMode()) {
   window['devUtils'] = devUtils;
+  window['logger'] = logger;
   window['syncRefresh'] = syncRefresh;
   window['_'] = _;
 }
