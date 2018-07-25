@@ -36,7 +36,7 @@ export class HomePage implements OnInit {
     this.loader.present();
 
     // Can use the result of mobilecaddyStartupService.startup() to see if coming here on coldStart
-    let isAlreadyRun = this.mobilecaddyStartupService.startup(this.appConfig);
+    let isAlreadyRun: number = this.mobilecaddyStartupService.startup(this.appConfig);
 
     this.mobilecaddyStartupService.getInitState().subscribe(res => {
       console.log(logTag, 'Init Update', res);

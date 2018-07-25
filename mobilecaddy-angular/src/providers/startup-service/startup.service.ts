@@ -22,6 +22,12 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { MobileCaddyConfigService } from '../config-service/config.service';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 
+export enum runState {
+  InitialSync = 0,
+  ColdStart = 1,
+  Running = 2
+}
+
 declare var cordova;
 
 @Injectable()
@@ -33,6 +39,7 @@ export class MobileCaddyStartupService {
   pollId;
   private config: any;
   private runAlready: boolean = false;
+  private currentRunState: runState;
 
   constructor(
     public platform: Platform,
@@ -44,17 +51,15 @@ export class MobileCaddyStartupService {
 
   ngOnInit() {}
 
-  startup(config): boolean {
-    console.log(this.logTag, 'startup', this.runAlready);
-    let isAlreadyRun = false;
-    if (this.runAlready !== true) {
+  startup(config): runState {
+    this.currentRunState = this.getRunState();
+    console.log(this.logTag, 'startup', this.runAlready, this.currentRunState);
+
+    if (this.currentRunState !== runState.Running) {
       this.runAlready = true;
       // Set our config in config.service, so that it is available to all
       this.MobileCaddyConfigService.setConfig(config);
       this.config = config;
-
-      if (!localStorage.getItem('coldStart'))
-        localStorage.setItem('coldStart', 'true');
 
       if (
         location.hostname == 'localhost' ||
@@ -117,10 +122,8 @@ export class MobileCaddyStartupService {
             console.error(this.logTag, e);
           });
       }
-    } else {
-      isAlreadyRun = true;
     }
-    return isAlreadyRun;
+    return this.currentRunState;
   }
 
   getInitState(): BehaviorSubject<String | any> {
@@ -129,16 +132,9 @@ export class MobileCaddyStartupService {
 
   private runSync() {
     // TODO Check whether we should do upgrade check prior to sync
-    if (this.mobilecaddySyncService.hasInitialSynCompleted()) {
-      const coldStart = localStorage.getItem('coldStart')
-        ? localStorage.getItem('coldStart')
-        : false;
-      if (coldStart) {
-        localStorage.removeItem('coldStart');
-        this.doColdStartSync();
-      }
+    if (this.currentRunState == runState.ColdStart) {
+      this.doColdStartSync();
     } else {
-      localStorage.removeItem('coldStart');
       this.doInitialSync();
     }
   }
@@ -194,5 +190,17 @@ export class MobileCaddyStartupService {
         resolve();
       }
     });
+  }
+
+  private getRunState(): runState {
+    if (this.runAlready) {
+      return runState.Running;
+    } else {
+      if (this.mobilecaddySyncService.hasInitialSynCompleted()) {
+        return runState.ColdStart;
+      } else {
+        return runState.InitialSync;
+      }
+    }
   }
 }

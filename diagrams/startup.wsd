@@ -1,0 +1,17 @@
+@startuml
+start
+:StartupService.startup();
+if (runAlready) then (yes)
+  :return Running(2);
+else (no)
+  if (hasInitialSynCompleted) then(yes)
+    :syncService.coldStartSync;
+    :return ColdSync(1);
+  else (no)
+    :maybeAlterIndexSpecs;
+    :syncService.initialSync;
+    :return InitialSync(0);
+  endif
+endif
+stop
+@enduml
