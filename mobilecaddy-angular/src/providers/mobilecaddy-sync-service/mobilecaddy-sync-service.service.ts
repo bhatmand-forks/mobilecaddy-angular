@@ -3,10 +3,18 @@ import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { MobileCaddyConfigService } from '../config-service/config.service';
 
+interface SyncPointConfig {
+  name: string;
+  skipSyncPeriod?: number; // Seconds
+  tableConfig: SyncTableConfig[];
+}
+
 interface SyncTableConfig {
   Name: string;
   syncWithoutLocalUpdates?: boolean;
   maxTableAge?: number;
+  maxRecsPerCall?: number; // Note, overrides the SyncPointConfig.skipSyncPeriod
+  skipP2M?: boolean;
 }
 
 @Injectable()
@@ -20,7 +28,7 @@ export class MobileCaddySyncService {
     this.syncState.next(state);
   };
 
-  constructor(private MobileCaddyConfigService: MobileCaddyConfigService) {
+  constructor(private mobileCaddyConfigService: MobileCaddyConfigService) {
     this.initialSyncState.next(localStorage.getItem('initialSyncState'));
     this.syncState.next('undefined');
   }
@@ -30,7 +38,7 @@ export class MobileCaddySyncService {
     this.syncState.next('InitialSyncInProgress');
     devUtils
       .initialSync(
-        this.MobileCaddyConfigService.getConfig('initialSyncTables'),
+        this.mobileCaddyConfigService.getConfig('initialSyncTables'),
         this.syncCallback
       )
       .then(res => {
@@ -48,28 +56,85 @@ export class MobileCaddySyncService {
       syncWithoutLocalUpdates: false
     };
     let coldStartTables = [mobileLogConfig].concat(
-      this.MobileCaddyConfigService.getConfig('coldStartSyncTables')
+      this.getConfigFromSyncPoint('coldStart').tableConfig
     );
     this.syncTables(coldStartTables);
   }
 
-  syncTables(tablesToSync: any[] | string): Promise<any> {
+  /**
+   * @description Gets the tables to sync (from param or config). If from config it also
+   *  checks for dirty records and whether or not the sync is not needed due to last sync
+   *  being within the configured window.
+   *
+   * @param tablesToSync Either a string of a syncPoint or and array of table config.
+   */
+  syncTables(tablesToSync: SyncTableConfig[] | string): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(this.logTag, 'syncTables');
-      let myTablestoSync =
-        typeof tablesToSync == 'string'
-          ? this.getTablesToSyncFromSyncPoint(tablesToSync)
-          : tablesToSync;
-      // TODO - put some local notification stuff in here.
-      this.doSyncTables(myTablestoSync).then(res => {
-        this.setSyncState('complete');
-        if (!res || res.status == 100999) {
-          // LocalNotificationService.setLocalNotification();
+      console.log(this.logTag, 'syncTables', this.syncTables);
+      if (typeof tablesToSync == 'string') {
+        // We have a syncPoint name
+        let syncPointConfig: SyncPointConfig = this.getConfigFromSyncPoint(
+          tablesToSync
+        );
+        if (
+          syncPointConfig.skipSyncPeriod &&
+          localStorage.getItem('lastSyncSuccess')
+        ) {
+          var timeNow = new Date().valueOf();
+          console.log(
+            this.logTag,
+            timeNow,
+            localStorage.getItem('lastSyncSuccess'),
+            syncPointConfig.skipSyncPeriod
+          );
+          if (
+            timeNow >
+            parseInt(localStorage.getItem('lastSyncSuccess')) +
+              syncPointConfig.skipSyncPeriod * 1000
+          ) {
+            this.doSyncTables(syncPointConfig.tableConfig).then(res => {
+              this.setSyncState('complete');
+              console.log('doSyncTables res', res);
+              console.log('doSyncTables res', res);
+              if (
+                res.length == syncPointConfig.tableConfig.length &&
+                res[res.length - 1].status == 100400
+              ) {
+                let timeNow = new Date().valueOf().toString();
+                localStorage.setItem('lastSyncSuccess', timeNow);
+              }
+              resolve(res);
+            });
+          } else {
+            resolve('not-syncing:too-soon');
+          }
         } else {
-          // LocalNotificationService.cancelNotification();
+          this.doSyncTables(syncPointConfig.tableConfig).then(res => {
+            // returns an array of results for each table;
+            this.setSyncState('complete');
+            console.log('doSyncTables res', res);
+            if (
+              res.length == syncPointConfig.tableConfig.length &&
+              res[res.length - 1].status == 100400
+            ) {
+              let timeNow = new Date().valueOf().toString();
+              localStorage.setItem('lastSyncSuccess', timeNow);
+            }
+            resolve(res);
+          });
         }
-        resolve(res);
-      });
+      } else {
+        // We have an array of tables... so let's just sync
+        this.doSyncTables(tablesToSync).then(res => {
+          this.setSyncState('complete');
+          if (!res || res.status == 100999) {
+            // LocalNotificationService.setLocalNotification();
+          } else {
+            // LocalNotificationService.cancelNotification();
+          }
+          resolve(res);
+        });
+      }
     });
   }
 
@@ -87,6 +152,7 @@ export class MobileCaddySyncService {
       let stopSyncing = false;
       const sequence = Promise.resolve();
 
+      let accum = [];
       return tablesToSync.reduce((sequence, table) => {
         // Set Defaults
         if (typeof table.maxTableAge == 'undefined') {
@@ -141,7 +207,8 @@ export class MobileCaddySyncService {
             //   table: table.Name,
             //   result: resObject.status
             // });
-            return resObject;
+            accum.push(resObject);
+            return accum;
           })
           .catch(e => {
             console.error(this.logTag, 'doSyncTables', e);
@@ -200,16 +267,19 @@ export class MobileCaddySyncService {
     this.syncState.next(status);
   }
 
-  getTablesToSyncFromSyncPoint(name: string): Array<any> {
-    const syncPoints = this.MobileCaddyConfigService.getConfig('syncPoints');
-    let tableConf = [];
+  getConfigFromSyncPoint(name: string): SyncPointConfig {
+    const syncPoints = this.mobileCaddyConfigService.getConfig('syncPoints');
+    let conf = {
+      name: '',
+      tableConfig: []
+    };
     if (syncPoints) {
       syncPoints.forEach(el => {
-        if (el.name == name) tableConf = el.tableConfig;
+        if (el.name == name) conf = el;
       });
-      return tableConf;
+      return conf;
     } else {
-      return tableConf;
+      return conf;
     }
   }
 }

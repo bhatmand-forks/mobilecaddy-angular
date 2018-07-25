@@ -36,7 +36,9 @@ export class HomePage implements OnInit {
     this.loader.present();
 
     // Can use the result of mobilecaddyStartupService.startup() to see if coming here on coldStart
-    let isAlreadyRun: number = this.mobilecaddyStartupService.startup(this.appConfig);
+    let isAlreadyRun: number = this.mobilecaddyStartupService.startup(
+      this.appConfig
+    );
 
     this.mobilecaddyStartupService.getInitState().subscribe(res => {
       console.log(logTag, 'Init Update', res);
@@ -99,8 +101,8 @@ export class HomePage implements OnInit {
       if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
     });
 
-    this.mobilecaddySyncService.syncTables('mySync2').then(r => {
-      this.loader.dismiss();
+    this.mobilecaddySyncService.syncTables('mySync').then(r => {
+      this.loader.dismiss().catch(() => {});
     });
   }
 

@@ -46,7 +46,7 @@ export class OutboxComponent implements OnInit {
     loader.present();
 
     this.mobilecaddySyncService
-      .syncTables(this.config.forceSyncTables)
+      .syncTables('forceSync')
       .then(r => {
         loader.dismiss();
       })

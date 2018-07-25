@@ -5,12 +5,16 @@ export let APP_CONFIG = new InjectionToken('app.config');
 export interface IAppConfig {
   indexSpecs?: indexSpecConfig[];
   initialSyncTables: string[];
-  coldStartSyncTables: SyncTableConfig[];
-  forceSyncTables: SyncTableConfig[];
-  syncPoints?: SyncPointConfig[];
+  syncPoints: SyncPointConfig[];
   outboxTables?: OutBoxTableConfig[];
   recentItems?: RecentItemsConfig;
   globalSearch?: any;
+  onResume?: OnResumeConfig;
+  onNavigation?: OnNavigationConfig;
+  onColdStart?: OnColdStartConfig;
+  upgradeOptions?: UpgradeOptionsConfig;
+  lockScreenOptions?: LockScreenOptionsConfig;
+  platformPinChallengeOptions?: PlatformPinChallengeOptionsConfig;
 }
 
 export interface indexSpecConfig {
@@ -20,6 +24,7 @@ export interface indexSpecConfig {
 
 export interface SyncPointConfig {
   name: string;
+  skipSyncPeriod?: number; // Seconds
   tableConfig: SyncTableConfig[];
 }
 
@@ -27,7 +32,7 @@ export interface SyncTableConfig {
   Name: string;
   syncWithoutLocalUpdates?: boolean;
   maxTableAge?: number;
-  maxRecsPerCall?: number;
+  maxRecsPerCall?: number; // Note, overrides the SyncPointConfig.skipSyncPeriod
   skipP2M?: boolean;
 }
 
@@ -40,6 +45,58 @@ export interface RecentItemsConfig {
   maxItems?: number;
   encrypted?: boolean;
   tables?: any;
+}
+
+export interface PageConfig {
+  id: string; // Name of the page from the navCtrl
+  syncPoint?: string;
+  showSyncLoader?: boolean; // default false
+  skipSyncPeriod?: number; // Number of secs - If last successful sync was in this time then we don’t sync
+}
+
+export interface OnResumeConfig {
+  checkPausePeriod?: boolean;
+  maxPausePeriod?: number;
+  presentLockScreen?: boolean;
+  pages?: PageConfig[];
+}
+
+export interface OnNavigationConfig {
+  checkPausePeriod?: boolean;
+  maxPausePeriod?: number;
+  presentLockScreen?: boolean;
+  pages?: PageConfig[];
+}
+
+export interface OnColdStartConfig {
+  checkPausePeriod?: boolean;
+  maxPausePeriod?: number;
+  presentLockScreen?: boolean;
+  showSyncLoader?: boolean;
+  showBuildMsgs?: boolean;
+}
+
+export interface UpgradeOptionsConfig {
+  ignoreRepromptPeriod?: boolean;
+  maxPostpones?: number;
+  noRepromptPeriod?: number;
+  popupText?: string[];
+}
+
+export interface LockScreenOptionsConfig {
+  lockScreenText?: string[];
+  lockScreenAttempts?: number;
+  getCodePopupText?: string[];
+}
+
+export interface PlatformPinChallengeOptionsConfig {
+  bypassChallenge?: boolean;
+  timeoutPeriod?: number;
+  showCancel?: boolean;
+  maxAttempts?: number;
+  popupText?: string[];
+  alertOptions?: any;
+  toastOptions?: any;
 }
 
 // const fourHours: number = 1000 * 60 * 60 * 4;
@@ -62,40 +119,46 @@ export const AppConfig: IAppConfig = {
   // Tables to sync on initialSync
   initialSyncTables: ['Account__ap', 'Contact__ap'],
 
-  // Tables to sync on Cold Start
-  coldStartSyncTables: [
-    {
-      Name: 'Account__ap',
-      syncWithoutLocalUpdates: true,
-      maxTableAge: oneMinute
-    },
-    {
-      Name: 'Contact__ap',
-      syncWithoutLocalUpdates: true,
-      maxTableAge: oneMinute
-    }
-  ],
-
-  // Tables used in Outbox and Settings Sync
-  forceSyncTables: [
-    {
-      Name: 'Account__ap',
-      syncWithoutLocalUpdates: true,
-      maxTableAge: 0
-    },
-    {
-      Name: 'Contact__ap',
-      syncWithoutLocalUpdates: true,
-      maxTableAge: 0
-    }
-  ],
-
   syncPoints: [
     {
+      name: 'coldStart',
+      tableConfig: [
+        {
+          Name: 'Account__ap',
+          syncWithoutLocalUpdates: true,
+          maxTableAge: oneMinute
+        },
+        {
+          Name: 'Contact__ap',
+          syncWithoutLocalUpdates: true,
+          maxTableAge: oneMinute
+        }
+      ]
+    },
+    {
+      name: 'forceSync',
+      tableConfig: [
+        {
+          Name: 'Account__ap',
+          syncWithoutLocalUpdates: true,
+          maxTableAge: 0
+        },
+        {
+          Name: 'Contact__ap',
+          syncWithoutLocalUpdates: true,
+          maxTableAge: 0
+        }
+      ]
+    },
+    {
       name: 'mySync',
+      skipSyncPeriod: 20,
       tableConfig: [
         {
           Name: 'Account__ap'
+        },
+        {
+          Name: 'Contact__ap'
         }
       ]
     }
@@ -137,5 +200,34 @@ export const AppConfig: IAppConfig = {
         navParamName: 'account'
       }
     ]
+  },
+
+  onResume: {
+    checkPausePeriod: true,
+    maxPausePeriod: 0,
+    presentLockScreen: true,
+    pages: [
+      { id: 'home.ts', syncPoint: 'full', showSyncLoader: false },
+      { id: 'cases.ts', syncPoint: 'full', showSyncLoader: false },
+      { id: 'test-resume.ts', syncPoint: 'full', showSyncLoader: true }
+    ]
+  },
+
+  onNavigation: {
+    checkPausePeriod: false,
+    maxPausePeriod: 0,
+    presentLockScreen: false,
+    pages: [
+      { id: 'home.ts', syncPoint: 'full', showSyncLoader: false },
+      { id: 'test-resume.ts', syncPoint: 'full', showSyncLoader: true }
+    ]
+  },
+
+  onColdStart: {
+    checkPausePeriod: true,
+    maxPausePeriod: 0,
+    presentLockScreen: true,
+    showSyncLoader: false,
+    showBuildMsgs: false
   }
 };
