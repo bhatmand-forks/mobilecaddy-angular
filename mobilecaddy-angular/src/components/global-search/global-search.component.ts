@@ -103,4 +103,28 @@ export class GlobalSearch implements OnInit {
     myNavParams[result.navParamName] = result;
     this.navCtrl.push(result.pageName, myNavParams);
   }
+
+  wrapField(i,j,field) {
+    // First, check if the field should be wrapped in a tag
+    if (this.displayFields[i].tags && this.displayFields[i].tags[j] && this.displayFields[i].tags[j].trim() !== '') {
+      // Now check if field should have a class applied to the tag
+      if (this.displayFields[i].classes && this.displayFields[i].classes[j] && this.displayFields[i].classes[j].trim() !== '') {
+        // Tag and class
+        return '<' + this.displayFields[i].tags[j] + ' class="' + this.displayFields[i].classes[j]+ '">' + field + '<' + this.displayFields[i].tags[j] + '/>';
+      } else {
+        // Tag but no class
+        return '<' + this.displayFields[i].tags[j] + '>' + field + '<' + this.displayFields[i].tags[j] + '/>';
+      }
+    } else {
+      // No tag wrapping field...
+      // Now check if field should have a class applied to the field
+      if (this.displayFields[i].classes && this.displayFields[i].classes[j] && this.displayFields[i].classes[j].trim() !== '') {
+        // No tag but we have a class - add a 'span' tag so we can add the class to it
+        return '<span class="' + this.displayFields[i].classes[j]+ '">' + field + '<span/>';
+      } else {
+        // No tag and no class
+        return field;
+      }
+    }
+  }
 }

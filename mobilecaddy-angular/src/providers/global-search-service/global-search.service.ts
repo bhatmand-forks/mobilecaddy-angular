@@ -246,27 +246,27 @@ export class GlobalSearchProvider {
    * @return array that contains data of the result object(s)
    **/
   private createResultsArray(
-    results: Array<{ Id: string }>,
+    results: any[],
     configElement: tableConfig
   ): Array<{
     Id: string;
-    string: string;
+    result: any[];
     pageName: string;
     navParamName: string;
   }> {
     let resultsArray: Array<{
       Id: string;
-      string: string;
+      result: any[];
       pageName: string;
       navParamName: string;
     }> = [];
     // TODO Need to update as soql replies with items in an array, not as probs of objects
     // * somehow this currently works in CodeFlow
     results.forEach(result => {
-      const resultString = this.setString(result, configElement.fieldsToShow);
+      // const resultString = this.setString(result, configElement.fieldsToShow);
       resultsArray.push({
         Id: result.Id,
-        string: resultString,
+        result: this.filterProps(result, configElement.fieldsToShow),
         pageName: configElement.pageName,
         navParamName: configElement.navParamName
       });
@@ -285,19 +285,26 @@ export class GlobalSearchProvider {
    * @return the String that contains the result information,
    * e.g. "Judy Smith, CEO"
    **/
-  private setString(result: object, fields: string[]): string {
-    let resultString = '';
-    fields.forEach((field, index) => {
-      if (index < fields.length - 1) {
-        if (result[fields[index + 1]] != '') {
-          resultString += result[field] + ', ';
-        } else {
-          resultString += result[field];
-        }
-      } else {
-        resultString += result[field];
-      }
+  // private setString(result: object, fields: string[]): string {
+  //   let resultString = '';
+  //   fields.forEach((field, index) => {
+  //     if (index < fields.length - 1) {
+  //       if (result[fields[index + 1]] != '') {
+  //         resultString += result[field] + ', ';
+  //       } else {
+  //         resultString += result[field];
+  //       }
+  //     } else {
+  //       resultString += result[field];
+  //     }
+  //   });
+  //   return resultString;
+  // }
+
+  private filterProps(result: object, fields: string[]): any[] {
+    let resultArr = fields.map(field => {
+      return result[field];
     });
-    return resultString;
+    return resultArr;
   }
 }
