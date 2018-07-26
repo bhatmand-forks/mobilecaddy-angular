@@ -10,7 +10,7 @@ interface SyncPointConfig {
   tableConfig: SyncTableConfig[];
 }
 
-interface SyncTableConfig {
+export interface SyncTableConfig {
   Name: string;
   syncWithoutLocalUpdates?: boolean;
   maxTableAge?: number;
