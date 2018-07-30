@@ -11,7 +11,7 @@ interface tableConfig {
   table: string;
   name: string;
   fieldsToQuery: Array<string>;
-  fieldsToShow: Array<string>;
+  // fieldsToShow: Array<string>;
   icon: string;
   // href: string;
   pageName: string;
@@ -169,16 +169,6 @@ export class GlobalSearchProvider {
    */
   private searchTable(element: tableConfig, str: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      // TODO These are not being used for the moment because we're concerned about these being in the indexSpecs.
-      // const fieldsToShow = element.fieldsToShow.join(', ');
-      let selectCondition = '';
-      element.fieldsToShow.forEach((field, index) => {
-        selectCondition += '{' + element.table + ':' + field + '}';
-        if (index < element.fieldsToShow.length - 1) {
-          selectCondition += ',';
-        }
-      });
-
       let whereCondition = '';
       element.fieldsToQuery.forEach((field, index) => {
         whereCondition +=
@@ -194,16 +184,8 @@ export class GlobalSearchProvider {
         }
       });
 
-      // NOTE - DOING "SELECT * " as 'fieldsToShow' might not be in indexSpecs
       var smartSql =
         'SELECT * from {' + element.table + '} WHERE ' + whereCondition;
-      // var smartSql =
-      //   'SELECT ' +
-      //   selectCondition +
-      //   ' from {' +
-      //   element.table +
-      //   '} WHERE ' +
-      //   whereCondition;
 
       console.log('smartSql', smartSql);
 
@@ -251,22 +233,25 @@ export class GlobalSearchProvider {
   ): Array<{
     Id: string;
     result: any[];
+    name: string;
     pageName: string;
     navParamName: string;
   }> {
     let resultsArray: Array<{
       Id: string;
       result: any[];
+      name: string;
       pageName: string;
       navParamName: string;
     }> = [];
     // TODO Need to update as soql replies with items in an array, not as probs of objects
     // * somehow this currently works in CodeFlow
     results.forEach(result => {
-      // const resultString = this.setString(result, configElement.fieldsToShow);
       resultsArray.push({
         Id: result.Id,
-        result: this.filterProps(result, configElement.fieldsToShow),
+        // result: this.filterProps(result, configElement.fieldsToShow),
+        result: result,
+        name: configElement.name,
         pageName: configElement.pageName,
         navParamName: configElement.navParamName
       });

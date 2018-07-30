@@ -194,10 +194,38 @@ export const AppConfig: IAppConfig = {
         table: 'Account__ap',
         name: 'Accounts',
         fieldsToQuery: ['Name', 'Description'],
-        fieldsToShow: ['Name', 'BillingCountry'],
+        displayFields: [
+          {
+            fields: ['Name'],
+            tags: ['h2']
+          },
+          {
+            fields: ['BillingState', 'Type'],
+            tags: ['', 'p'],
+            classes: ['desc']
+          }
+        ],
         icon: 'folder',
         pageName: 'AccountDetailPage',
         navParamName: 'account'
+      },
+      {
+        table: 'Contact__ap',
+        name: 'Contacts',
+        fieldsToQuery: ['Name', 'Email'],
+        displayFields: [
+          {
+            fields: ['Name'],
+            tags: ['h2']
+          },
+          {
+            fields: ['Title'],
+            tags: ['p', 'p']
+          }
+        ],
+        icon: 'folder',
+        pageName: 'ContactDetailPage',
+        navParamName: 'contact'
       }
     ]
   },

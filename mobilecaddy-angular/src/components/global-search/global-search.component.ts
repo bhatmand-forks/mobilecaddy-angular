@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular'; // ? Need this to allow us to foc
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators/debounceTime';
 
-// import { MobileCaddyConfigService } from '../config-service/config.service';
+import { MobileCaddyConfigService } from '../../providers/config-service/config.service';
 
 import { GlobalSearchProvider } from '../../providers/global-search-service/global-search.service';
 
@@ -13,6 +13,8 @@ import { GlobalSearchProvider } from '../../providers/global-search-service/glob
 })
 export class GlobalSearch implements OnInit {
   private logTag: string = 'global-search.component.ts';
+  private config;
+  private displayFields;
   recentSearches: Array<any> = [];
   searchDone: boolean = false;
   results: Array<any>;
@@ -22,12 +24,16 @@ export class GlobalSearch implements OnInit {
 
   constructor(
     private searchPvdr: GlobalSearchProvider,
+    private mcConfig: MobileCaddyConfigService,
     private navCtrl: NavController
   ) {
     this.searchControl = new FormControl();
   }
 
   ngOnInit() {
+    this.config = this.mcConfig.getConfig('globalSearch');
+    this.displayFields = this.getDisplayFields();
+    console.log('displayFields', this.displayFields);
     setTimeout(() => {
       this.searchBox.setFocus();
     }, 150);
@@ -73,7 +79,7 @@ export class GlobalSearch implements OnInit {
         // This is our results
         this.results.find((item, index) => {
           if (item.table === res.table) {
-            item.results = res.results;
+            item.results = this.enrichResult(res);
             //Stop searching after finding the element that meets the condition
             return true;
           }
@@ -100,27 +106,97 @@ export class GlobalSearch implements OnInit {
     this.showRecentSearches();
 
     let myNavParams: any = { id: result.Id };
-    myNavParams[result.navParamName] = result;
+    myNavParams[result.navParamName] = result.result;
     this.navCtrl.push(result.pageName, myNavParams);
   }
 
-  wrapField(i,j,field) {
+  private getDisplayFields(): any {
+    let tmp = {};
+    this.config.tables.forEach(element => {
+      tmp[element.name] = {
+        fields: element.displayFields
+      };
+    });
+    return tmp;
+  }
+
+  /**
+   * @description Add a markup string for each result, based upon the config.
+   * @param result Object from DB
+   */
+  private enrichResult(result: any): any {
+    console.log('enrichResult', result);
+    let resultArr = result.results.map(r => {
+      let tmpStr = '';
+      this.displayFields[r.name].fields.forEach((fieldDiv, divIdx) => {
+        tmpStr += '<div>';
+        fieldDiv.fields.forEach((field, fieldIdx) => {
+          tmpStr += this.wrapField(r.name, divIdx, fieldIdx, r.result[field]);
+        });
+        tmpStr += '</div>';
+      });
+      r.string = tmpStr;
+      return r;
+    });
+    return resultArr;
+  }
+
+  private wrapField(name, divIdx, fieldIdx, field) {
+    console.log('wrapField', name, divIdx, fieldIdx, field);
+    console.log('this.displayFields', this.displayFields);
+    let fieldConfig = this.displayFields[name].fields;
     // First, check if the field should be wrapped in a tag
-    if (this.displayFields[i].tags && this.displayFields[i].tags[j] && this.displayFields[i].tags[j].trim() !== '') {
+    if (
+      fieldConfig[divIdx].tags &&
+      fieldConfig[divIdx].tags[fieldIdx] &&
+      fieldConfig[divIdx].tags[fieldIdx].trim() !== ''
+    ) {
       // Now check if field should have a class applied to the tag
-      if (this.displayFields[i].classes && this.displayFields[i].classes[j] && this.displayFields[i].classes[j].trim() !== '') {
+      if (
+        fieldConfig[divIdx].classes &&
+        fieldConfig[divIdx].classes[fieldIdx] &&
+        fieldConfig[divIdx].classes[fieldIdx].trim() !== ''
+      ) {
         // Tag and class
-        return '<' + this.displayFields[i].tags[j] + ' class="' + this.displayFields[i].classes[j]+ '">' + field + '<' + this.displayFields[i].tags[j] + '/>';
+        return (
+          '<' +
+          fieldConfig[divIdx].tags[fieldIdx] +
+          ' class="' +
+          fieldConfig[divIdx].classes[fieldIdx] +
+          '">' +
+          field +
+          '<' +
+          fieldConfig[divIdx].tags[fieldIdx] +
+          '/>'
+        );
       } else {
         // Tag but no class
-        return '<' + this.displayFields[i].tags[j] + '>' + field + '<' + this.displayFields[i].tags[j] + '/>';
+        return (
+          '<' +
+          fieldConfig[divIdx].tags[fieldIdx] +
+          '>' +
+          field +
+          '<' +
+          fieldConfig[divIdx].tags[fieldIdx] +
+          '/>'
+        );
       }
     } else {
       // No tag wrapping field...
       // Now check if field should have a class applied to the field
-      if (this.displayFields[i].classes && this.displayFields[i].classes[j] && this.displayFields[i].classes[j].trim() !== '') {
+      if (
+        fieldConfig[divIdx].classes &&
+        fieldConfig[divIdx].classes[fieldIdx] &&
+        fieldConfig[divIdx].classes[fieldIdx].trim() !== ''
+      ) {
         // No tag but we have a class - add a 'span' tag so we can add the class to it
-        return '<span class="' + this.displayFields[i].classes[j]+ '">' + field + '<span/>';
+        return (
+          '<span class="' +
+          fieldConfig[divIdx].classes[fieldIdx] +
+          '">' +
+          field +
+          '<span/>'
+        );
       } else {
         // No tag and no class
         return field;

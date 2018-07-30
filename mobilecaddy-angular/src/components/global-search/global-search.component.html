@@ -21,7 +21,7 @@
   <ion-list>
     <ion-item *ngFor="let item of recentSearches" (click)="resultClicked(item, result)">
       <ion-icon name="{{item?.icon}}" item-start></ion-icon>
-      {{ item.result.string }}
+      <div [innerHTML]="item.result?.string"></div>
     </ion-item>
   </ion-list>
 </div>
@@ -41,7 +41,7 @@
         <em>No matches</em>
       </ion-item>
       <ion-item *ngFor="let result of item.results" (click)="resultClicked(item, result)">
-        {{ result?.string }}
+        <div [innerHTML]="result?.string"></div>
       </ion-item>
     </ion-list>
   </div>
