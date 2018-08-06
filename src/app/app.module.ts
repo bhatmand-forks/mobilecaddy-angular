@@ -25,7 +25,7 @@ import { File } from '@ionic-native/file';
 import { APP_CONFIG, AppConfig } from './app.config';
 import { McSyncService } from '../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
 import { McRecentItemsService } from '../../mobilecaddy-angular/src/providers/mc-recent-items/mc-recent-items.service';
-import { SalesforceRestService } from '../../mobilecaddy-angular/src/providers/salesforce-rest-service/salesforce-rest-service';
+import { McSfRestService } from '../../mobilecaddy-angular/src/providers/mc-sf-rest/mc-sf-rest.service';
 import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/mc-global-search/mc-global-search.service';
 
 @NgModule({
@@ -45,7 +45,7 @@ import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/
     { provide: APP_CONFIG, useValue: AppConfig },
     McSyncService,
     McRecentItemsService,
-    SalesforceRestService,
+    McSfRestService,
     McGlobalSearchProvider,
     Device,
     File

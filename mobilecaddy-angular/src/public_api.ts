@@ -18,7 +18,7 @@ export * from './pages/outbox-page/outbox-page';
 export * from './providers/mc-startup/mc-startup.service';
 export * from './providers/mc-sync/mc-sync.service';
 export * from './providers/mc-recent-items/mc-recent-items.service';
-export * from './providers/salesforce-rest-service/salesforce-rest-service';
+export * from './providers/mc-sf-rest/mc-sf-rest.service';
 export * from './providers/mc-global-search/mc-global-search.service';
 export * from './providers/mc-config/mc-config.service';
 export * from './providers/mc-pin-challenge/mc-pin-challenge';
