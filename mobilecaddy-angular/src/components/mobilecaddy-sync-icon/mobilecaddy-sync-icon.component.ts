@@ -77,6 +77,7 @@ const logTag: string = 'mobilecaddy-sync-icon.component.ts';
 export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
   iconName: string = 'cloud-done';
   spinnerClass: string = '';
+  private syncStateSubscription: Subscription;
   private disconnectSubscription: Subscription;
   private connectSubscription: Subscription;
 
@@ -89,30 +90,32 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log(this.network.type);
-    this.mobilecaddySyncService.getSyncState().subscribe(res => {
-      console.log(logTag, 'SyncState', res);
-      switch (res) {
-        case 'complete':
-          switch (this.network.type) {
-            case 'none':
-              this.iconName = 'cloud-outline';
-              break;
-            default:
-              this.iconName = 'cloud-done';
-          }
-          this.spinnerClass = '';
-          break;
-        case 'InitialSyncInProgress':
-        case 'syncing':
-          this.iconName = 'refresh';
-          this.spinnerClass = 'spinner';
-          break;
-      }
-      // Below line errors when syncing when coming back to the page
-      if (!this.cd['destroyed']) {
-        this.cd.detectChanges();
-      }
-    });
+    this.syncStateSubscription = this.mobilecaddySyncService
+      .getSyncState()
+      .subscribe(res => {
+        console.log(logTag, 'SyncState', res);
+        switch (res) {
+          case 'complete':
+            switch (this.network.type) {
+              case 'none':
+                this.iconName = 'cloud-outline';
+                break;
+              default:
+                this.iconName = 'cloud-done';
+            }
+            this.spinnerClass = '';
+            break;
+          case 'InitialSyncInProgress':
+          case 'syncing':
+            this.iconName = 'refresh';
+            this.spinnerClass = 'spinner';
+            break;
+        }
+        // Below line errors when syncing when coming back to the page
+        if (!this.cd['destroyed']) {
+          this.cd.detectChanges();
+        }
+      });
 
     // watch network for a disconnect
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
@@ -145,6 +148,7 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // stop watching for online/offline
     console.log('ngnOnDestroy');
+    this.syncStateSubscription.unsubscribe();
     this.cd.detach();
     this.disconnectSubscription.unsubscribe();
     this.connectSubscription.unsubscribe();

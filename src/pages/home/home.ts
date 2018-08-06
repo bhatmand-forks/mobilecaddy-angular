@@ -18,6 +18,9 @@ export class HomePage implements OnInit {
   accountTable: string = 'Account__ap';
   config: IAppConfig;
   private loader: any;
+  private mcInitStateSub;
+  private mcInitSyncSub;
+  private syncSub;
 
   constructor(
     public navCtrl: NavController,
@@ -40,15 +43,17 @@ export class HomePage implements OnInit {
       this.appConfig
     );
 
-    this.mobilecaddyStartupService.getInitState().subscribe(res => {
-      console.log(logTag, 'Init Update', res);
-      if (res) {
-        if (res.status === -1) this.loader.setContent(res.info);
-        if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
-      }
-    });
+    this.mcInitStateSub = this.mobilecaddyStartupService
+      .getInitState()
+      .subscribe(res => {
+        console.log(logTag, 'Init Update', res);
+        if (res) {
+          if (res.status === -1) this.loader.setContent(res.info);
+          if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
+        }
+      });
 
-    this.mobilecaddySyncService
+    this.mcInitSyncSub = this.mobilecaddySyncService
       .getInitialSyncState()
       .subscribe(initialSyncState => {
         console.log(logTag, 'initialSyncState Update', initialSyncState);
@@ -96,7 +101,8 @@ export class HomePage implements OnInit {
     });
     this.loader.present();
 
-    this.mobilecaddySyncService.getSyncState().subscribe(res => {
+    if (this.syncSub) this.syncSub.unsubscribe();
+    this.syncSub = this.mobilecaddySyncService.getSyncState().subscribe(res => {
       console.log(logTag, 'SyncState Update', res);
       if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
     });
@@ -112,5 +118,11 @@ export class HomePage implements OnInit {
       id: a[0], // We set this as well, for our IonicPage segment
       account: { Id: a[0], Name: a[1] }
     });
+  }
+
+  ionViewDidLeave() {
+    console.log(logTag, 'ionViewDidLeave');
+    this.mcInitStateSub.unsubscribe();
+    this.mcInitSyncSub.unsubscribe();
   }
 }
