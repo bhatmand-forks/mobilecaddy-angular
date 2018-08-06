@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { NavController, LoadingController } from 'ionic-angular';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
-// import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync.service';
+// import { mcSyncService } from '../../providers/mobilecaddy-sync.service';
 import { McSyncService } from '../../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
 import { McStartupService } from '../../../mobilecaddy-angular/src/providers/mc-startup/mc-startup.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
@@ -25,8 +25,8 @@ export class HomePage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
-    private mobilecaddySyncService: McSyncService,
-    private mobilecaddyStartupService: McStartupService,
+    private mcSyncService: McSyncService,
+    private mcStartupService: McStartupService,
     @Inject(APP_CONFIG) private appConfig: IAppConfig
   ) {}
 
@@ -38,12 +38,10 @@ export class HomePage implements OnInit {
     });
     this.loader.present();
 
-    // Can use the result of mobilecaddyStartupService.startup() to see if coming here on coldStart
-    let isAlreadyRun: number = this.mobilecaddyStartupService.startup(
-      this.appConfig
-    );
+    // Can use the result of mcStartupService.startup() to see if coming here on coldStart
+    let isAlreadyRun: number = this.mcStartupService.startup(this.appConfig);
 
-    this.mcInitStateSub = this.mobilecaddyStartupService
+    this.mcInitStateSub = this.mcStartupService
       .getInitState()
       .subscribe(res => {
         console.log(logTag, 'Init Update', res);
@@ -53,7 +51,7 @@ export class HomePage implements OnInit {
         }
       });
 
-    this.mcInitSyncSub = this.mobilecaddySyncService
+    this.mcInitSyncSub = this.mcSyncService
       .getInitialSyncState()
       .subscribe(initialSyncState => {
         console.log(logTag, 'initialSyncState Update', initialSyncState);
@@ -94,7 +92,7 @@ export class HomePage implements OnInit {
     console.log(logTag, 'doSync');
 
     // You're unlikely to really want to show a loader whilst a background sync takes place,
-    // but this is an example of using the mobilecaddySyncService.getSyncState() observable.
+    // but this is an example of using the mcSyncService.getSyncState() observable.
     this.loader = this.loadingCtrl.create({
       content: 'Syncing...',
       duration: 120000
@@ -102,12 +100,12 @@ export class HomePage implements OnInit {
     this.loader.present();
 
     if (this.syncSub) this.syncSub.unsubscribe();
-    this.syncSub = this.mobilecaddySyncService.getSyncState().subscribe(res => {
+    this.syncSub = this.mcSyncService.getSyncState().subscribe(res => {
       console.log(logTag, 'SyncState Update', res);
       if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
     });
 
-    this.mobilecaddySyncService.syncTables('mySync').then(r => {
+    this.mcSyncService.syncTables('mySync').then(r => {
       this.loader.dismiss().catch(() => {});
     });
   }
