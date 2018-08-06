@@ -1,6 +1,6 @@
 // Components
 export * from './components/mc-sync-icon/mc-sync-icon.component';
-export * from './components/outbox/outbox.component';
+export * from './components/mc-outbox/mc-outbox.component';
 export * from './components/mc-global-search/mc-global-search.component';
 
 // Pages

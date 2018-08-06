@@ -4,7 +4,7 @@ import { IonicModule } from 'ionic-angular';
 
 // Components
 import { MobileCaddySyncIconComponent } from './components/mc-sync-icon/mc-sync-icon.component';
-import { OutboxComponent } from './components/outbox/outbox.component';
+import { OutboxComponent } from './components/mc-outbox/mc-outbox.component';
 import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
 
 // Pages

@@ -15,12 +15,12 @@ export interface outboxSummary {
 }
 
 @Component({
-  selector: 'mobilecaddy-outbox',
-  templateUrl: './outbox.component.html'
-  // styleUrls: ['./outbox.component.css']
+  selector: 'mc-outbox',
+  templateUrl: './mc-outbox.component.html'
+  // styleUrls: ['./mc-outbox.component.css']
 })
 export class OutboxComponent implements OnInit {
-  private logTag: string = 'outbox.component.ts';
+  private logTag: string = 'mc-outbox.component.ts';
   dirtyRecordsSummary: outboxSummary[];
   private config: any;
 
