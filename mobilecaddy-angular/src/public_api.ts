@@ -1,7 +1,7 @@
 // Components
-export * from './components/mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
+export * from './components/mc-sync-icon/mc-sync-icon.component';
 export * from './components/outbox/outbox.component';
-export * from './components/global-search/global-search.component';
+export * from './components/mc-global-search/mc-global-search.component';
 
 // Pages
 export * from './pages/settings-page/settings-page';

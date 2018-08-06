@@ -4,32 +4,34 @@
 	Sets env up for running in codefow.
  */
 
+
 window.LOCAL_DEV = true;
 
 setScrub();
 setLocalDev();
-importScripts()
-  .then(function(result) {
-    // Cool
-  })
-  .catch(function(e) {
-    console.error(e);
-  });
+importScripts().then(function(result){
+	// Cool
+}).catch(function(e){
+	console.error(e);
+});
 
 // maybeScrub();
+
+
+
 
 // Import of JS libs that are needed
 function importScripts() {
   return new Promise(function(resolve, reject) {
-    let imported2 = document.createElement('script');
-    imported2.src = './assets/js/mockVFRemote.js';
-    document.head.appendChild(imported2);
+		let imported2 = document.createElement('script');
+		imported2.src = './assets/js/mockVFRemote.js';
+		document.head.appendChild(imported2);
 
-    let imported3 = document.createElement('script');
-    imported3.src = './assets/js/force.js';
-    document.head.appendChild(imported3);
-    resolve();
-  });
+		let imported3 = document.createElement('script');
+		imported3.src = './assets/js/force.js';
+		document.head.appendChild(imported3);
+		resolve();
+	});
 }
 
 function setScrub() {
@@ -84,6 +86,7 @@ function setScrub() {
   }
 }
 
+
 function setLocalDev() {
   // Setup whether to use Mock, or to init forcejs
   window.USE_FORCETK = true;
@@ -126,3 +129,4 @@ function setLocalDev() {
     };
   }
 }
+

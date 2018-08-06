@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from 'ionic-angular';
 
 // Components
-import { MobileCaddySyncIconComponent } from './components/mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
+import { MobileCaddySyncIconComponent } from './components/mc-sync-icon/mc-sync-icon.component';
 import { OutboxComponent } from './components/outbox/outbox.component';
-import { GlobalSearch } from './components/global-search/global-search.component';
+import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
 
 // Pages
 import { SettingsPage } from './pages/settings-page/settings-page';

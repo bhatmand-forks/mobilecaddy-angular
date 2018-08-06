@@ -9,7 +9,7 @@ import { GlobalSearchProvider } from '../../providers/global-search-service/glob
 
 @Component({
   selector: 'mobilecaddy-global-search',
-  templateUrl: './global-search.component.html'
+  templateUrl: './mc-global-search.component.html'
 })
 export class GlobalSearch implements OnInit {
   private logTag: string = 'global-search.component.ts';
