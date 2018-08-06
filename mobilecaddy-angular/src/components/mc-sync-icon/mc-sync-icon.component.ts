@@ -19,7 +19,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { McSyncService } from '../../providers/mc-sync/mc-sync.service';
 import { Network } from '@ionic-native/network';
 import { Observer } from 'rxjs/Observer';
 import { Subscription } from 'rxjs/Subscription';
@@ -82,7 +82,7 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
   private connectSubscription: Subscription;
 
   constructor(
-    private mobilecaddySyncService: MobileCaddySyncService,
+    private mobilecaddySyncService: McSyncService,
     private network: Network,
     private cd: ChangeDetectorRef
   ) {}

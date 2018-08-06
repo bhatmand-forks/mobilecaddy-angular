@@ -19,7 +19,7 @@ import { SettingsRawViewModalPage } from './pages/settings-raw-view-modal/settin
 import { MCOutboxPage } from './pages/outbox-page/outbox-page';
 
 // Providers
-import { MobileCaddySyncService } from './providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { McSyncService } from './providers/mc-sync/mc-sync.service';
 import { RecentItemsService } from './providers/recent-items-service/recent-items-service';
 import { SalesforceRestService } from './providers/salesforce-rest-service/salesforce-rest-service';
 import { McGlobalSearchProvider } from './providers/mc-global-search/mc-global-search.service';
@@ -82,7 +82,7 @@ export class MobileCaddyModule {
       ngModule: MobileCaddyModule,
       providers: [
         MobileCaddyStartupService,
-        MobileCaddySyncService,
+        McSyncService,
         RecentItemsService,
         McConfigService,
         SalesforceRestService,

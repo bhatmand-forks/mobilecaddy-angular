@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 
-import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { McSyncService } from '../../providers/mc-sync/mc-sync.service';
 import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
 import * as devUtils from 'mobilecaddy-utils/devUtils';
@@ -26,7 +26,7 @@ export class OutboxComponent implements OnInit {
 
   constructor(
     public loadingCtrl: LoadingController,
-    private mobilecaddySyncService: MobileCaddySyncService,
+    private mobilecaddySyncService: McSyncService,
     private McConfigService: McConfigService
   ) {}
 

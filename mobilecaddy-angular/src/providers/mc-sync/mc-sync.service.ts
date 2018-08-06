@@ -19,8 +19,8 @@ export interface SyncTableConfig {
 }
 
 @Injectable()
-export class MobileCaddySyncService {
-  private logTag: string = 'mobilecaddy-sync.service.ts';
+export class McSyncService {
+  private logTag: string = 'mc-sync.service.ts';
   initialSyncState: BehaviorSubject<string> = new BehaviorSubject('');
   syncState: BehaviorSubject<string | any> = new BehaviorSubject('');
   _syncState: string = '';
