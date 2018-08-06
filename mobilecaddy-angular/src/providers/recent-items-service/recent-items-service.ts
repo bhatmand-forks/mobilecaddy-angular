@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MobileCaddyConfigService } from '../config-service/config.service';
+import { McConfigService } from '../mc-config/mc-config.service';
 import * as _ from 'underscore';
 
 export interface recentItemsTypeConfig {
@@ -14,7 +14,7 @@ export class RecentItemsService {
   private recentItemsKey: string = 'recentItems';
   private config;
 
-  constructor(private MobileCaddyConfigService: MobileCaddyConfigService) {}
+  constructor(private MobileCaddyConfigService: McConfigService) {}
 
   /**
    * @description Adds an item to the recent items list. It can be added to the

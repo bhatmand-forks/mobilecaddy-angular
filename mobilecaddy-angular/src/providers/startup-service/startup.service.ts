@@ -19,7 +19,7 @@ import { startup, getStatus } from 'mobilecaddy-utils/startup';
 import { Platform } from 'ionic-angular';
 // import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { MobileCaddyConfigService } from '../config-service/config.service';
+import { McConfigService } from '../mc-config/mc-config.service';
 import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 
 export enum runState {
@@ -43,7 +43,7 @@ export class MobileCaddyStartupService {
 
   constructor(
     public platform: Platform,
-    private MobileCaddyConfigService: MobileCaddyConfigService,
+    private MobileCaddyConfigService: McConfigService,
     private mobilecaddySyncService: MobileCaddySyncService
   ) {
     this.initStatus.next(undefined);

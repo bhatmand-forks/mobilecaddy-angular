@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';
 
-import { MobileCaddyConfigService } from '../config-service/config.service';
+import { McConfigService } from '../mc-config/mc-config.service';
 
 // TODO Use config service and export an interface for this
 interface tableConfig {
@@ -32,7 +32,7 @@ export class GlobalSearchProvider {
   > = new BehaviorSubject([]);
   private config: config;
 
-  constructor(public mcConfig: MobileCaddyConfigService) {}
+  constructor(public mcConfig: McConfigService) {}
 
   // * P U B L I C    M E T H O D S
 

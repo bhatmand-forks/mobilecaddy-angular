@@ -23,7 +23,7 @@ import { MobileCaddySyncService } from './providers/mobilecaddy-sync-service/mob
 import { RecentItemsService } from './providers/recent-items-service/recent-items-service';
 import { SalesforceRestService } from './providers/salesforce-rest-service/salesforce-rest-service';
 import { GlobalSearchProvider } from './providers/global-search-service/global-search.service';
-import { MobileCaddyConfigService } from './providers/config-service/config.service';
+import { McConfigService } from './providers/mc-config/mc-config.service';
 import { MobileCaddyStartupService } from './providers/startup-service/startup.service';
 import { McPinChallengeProvider } from './providers/mc-pin-challenge/mc-pin-challenge';
 import { McLoadingProvider } from './providers/mc-loading/mc-loading';
@@ -84,7 +84,7 @@ export class MobileCaddyModule {
         MobileCaddyStartupService,
         MobileCaddySyncService,
         RecentItemsService,
-        MobileCaddyConfigService,
+        McConfigService,
         SalesforceRestService,
         GlobalSearchProvider,
         McPinChallengeProvider,

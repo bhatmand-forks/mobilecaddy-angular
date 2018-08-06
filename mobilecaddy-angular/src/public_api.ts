@@ -20,7 +20,7 @@ export * from './providers/mobilecaddy-sync-service/mobilecaddy-sync-service.ser
 export * from './providers/recent-items-service/recent-items-service';
 export * from './providers/salesforce-rest-service/salesforce-rest-service';
 export * from './providers/global-search-service/global-search.service';
-export * from './providers/config-service/config.service';
+export * from './providers/mc-config/mc-config.service';
 export * from './providers/mc-pin-challenge/mc-pin-challenge';
 export * from './providers/mc-loading/mc-loading';
 export * from './providers/mc-settings/mc-settings';

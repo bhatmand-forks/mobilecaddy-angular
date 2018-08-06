@@ -7,8 +7,8 @@ import { Injectable } from '@angular/core';
 // }
 
 @Injectable()
-export class MobileCaddyConfigService {
-  private logTag: string = 'mc.config.service.ts';
+export class McConfigService {
+  private logTag: string = 'mc-config.service.ts';
   private config;
   private configKey: string = 'mc-config';
   test: string;
