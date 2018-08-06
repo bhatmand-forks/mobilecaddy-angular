@@ -5,14 +5,14 @@ import { debounceTime } from 'rxjs/operators/debounceTime';
 
 import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
-import { GlobalSearchProvider } from '../../providers/global-search-service/global-search.service';
+import { McGlobalSearchProvider } from '../../providers/mc-global-search/mc-global-search.service';
 
 @Component({
-  selector: 'mobilecaddy-global-search',
+  selector: 'mc-global-search',
   templateUrl: './mc-global-search.component.html'
 })
 export class GlobalSearch implements OnInit {
-  private logTag: string = 'global-search.component.ts';
+  private logTag: string = 'mc-global-search.component.ts';
   private config;
   private displayFields;
   recentSearches: Array<any> = [];
@@ -23,7 +23,7 @@ export class GlobalSearch implements OnInit {
   @ViewChild('searchBox') searchBox;
 
   constructor(
-    private searchPvdr: GlobalSearchProvider,
+    private searchPvdr: McGlobalSearchProvider,
     private mcConfig: McConfigService,
     private navCtrl: NavController
   ) {

@@ -26,7 +26,7 @@ import { APP_CONFIG, AppConfig } from './app.config';
 import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 import { RecentItemsService } from '../../mobilecaddy-angular/src/providers/recent-items-service/recent-items-service';
 import { SalesforceRestService } from '../../mobilecaddy-angular/src/providers/salesforce-rest-service/salesforce-rest-service';
-import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/global-search-service/global-search.service';
+import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/mc-global-search/mc-global-search.service';
 
 @NgModule({
   declarations: [MyApp, HomePage],
@@ -46,7 +46,7 @@ import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/gl
     MobileCaddySyncService,
     RecentItemsService,
     SalesforceRestService,
-    GlobalSearchProvider,
+    McGlobalSearchProvider,
     Device,
     File
   ]

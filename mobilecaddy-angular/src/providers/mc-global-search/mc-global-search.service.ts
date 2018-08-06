@@ -25,8 +25,8 @@ interface config {
 }
 
 @Injectable()
-export class GlobalSearchProvider {
-  private logTag: string = 'globalSearch.service.ts';
+export class McGlobalSearchProvider {
+  private logTag: string = 'mc-global-search.service.ts';
   searchRes: BehaviorSubject<
     any[] | { table: string; results: Array<string> }
   > = new BehaviorSubject([]);

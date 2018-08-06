@@ -19,7 +19,7 @@ export * from './providers/startup-service/startup.service';
 export * from './providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
 export * from './providers/recent-items-service/recent-items-service';
 export * from './providers/salesforce-rest-service/salesforce-rest-service';
-export * from './providers/global-search-service/global-search.service';
+export * from './providers/mc-global-search/mc-global-search.service';
 export * from './providers/mc-config/mc-config.service';
 export * from './providers/mc-pin-challenge/mc-pin-challenge';
 export * from './providers/mc-loading/mc-loading';
