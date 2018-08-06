@@ -9,8 +9,8 @@ export interface recentItemsTypeConfig {
 }
 
 @Injectable()
-export class RecentItemsService {
-  // private logTag: string = 'recent-items.service.ts';
+export class McRecentItemsService {
+  // private logTag: string = 'mc-recent-items.service.ts';
   private recentItemsKey: string = 'recentItems';
   private config;
 

@@ -20,7 +20,7 @@ import { MCOutboxPage } from './pages/outbox-page/outbox-page';
 
 // Providers
 import { McSyncService } from './providers/mc-sync/mc-sync.service';
-import { RecentItemsService } from './providers/recent-items-service/recent-items-service';
+import { McRecentItemsService } from './providers/mc-recent-items/mc-recent-items.service';
 import { SalesforceRestService } from './providers/salesforce-rest-service/salesforce-rest-service';
 import { McGlobalSearchProvider } from './providers/mc-global-search/mc-global-search.service';
 import { McConfigService } from './providers/mc-config/mc-config.service';
@@ -83,7 +83,7 @@ export class MobileCaddyModule {
       providers: [
         MobileCaddyStartupService,
         McSyncService,
-        RecentItemsService,
+        McRecentItemsService,
         McConfigService,
         SalesforceRestService,
         McGlobalSearchProvider,
