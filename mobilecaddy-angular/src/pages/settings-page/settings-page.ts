@@ -5,6 +5,7 @@ import { McUpgradeProvider } from '../../providers/mc-upgrade/mc-upgrade';
 import { SettingsDevToolsPage } from '../settings-dev-tools-page/settings-dev-tools-page';
 import { McDiagnosticsPage } from '../diagnostics-page/diagnostics-page';
 import { McSettingsProvider } from '../../providers/mc-settings/mc-settings';
+import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
 @Component({
   selector: 'page-settings',
@@ -13,16 +14,19 @@ import { McSettingsProvider } from '../../providers/mc-settings/mc-settings';
 export class SettingsPage implements OnInit {
   readonly logTag: string = 'settings-page.ts';
   isUpgradeAvailable: boolean = false;
+  appVsn: string;
 
   constructor(
     public navCtrl: NavController,
     private mcPinChallengeProvider: McPinChallengeProvider,
     private mcUpgradeProvider: McUpgradeProvider,
-    private mcSettingsProvider: McSettingsProvider
+    private mcSettingsProvider: McSettingsProvider,
+    private mcConfigService: McConfigService
   ) {}
 
   ngOnInit() {
     this.checkIfUpgradeAvailable();
+    this.appVsn = this.mcConfigService.getConfig('version');
   }
 
   openAdminFunctions() {
