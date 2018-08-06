@@ -31,8 +31,8 @@ export enum runState {
 declare var cordova;
 
 @Injectable()
-export class MobileCaddyStartupService {
-  private logTag: string = 'startup.service.ts';
+export class McStartupService {
+  private logTag: string = 'mc-startup.service.ts';
   initStatus: BehaviorSubject<string | any> = new BehaviorSubject('');
   private internalInitStatus: '';
   statusPoll: () => void;

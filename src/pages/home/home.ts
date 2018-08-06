@@ -3,7 +3,7 @@ import { NavController, LoadingController } from 'ionic-angular';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 // import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync.service';
 import { McSyncService } from '../../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
-import { MobileCaddyStartupService } from '../../../mobilecaddy-angular/src/providers/startup-service/startup.service';
+import { McStartupService } from '../../../mobilecaddy-angular/src/providers/mc-startup/mc-startup.service';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import * as _ from 'underscore';
 
@@ -26,7 +26,7 @@ export class HomePage implements OnInit {
     public navCtrl: NavController,
     public loadingCtrl: LoadingController,
     private mobilecaddySyncService: McSyncService,
-    private mobilecaddyStartupService: MobileCaddyStartupService,
+    private mobilecaddyStartupService: McStartupService,
     @Inject(APP_CONFIG) private appConfig: IAppConfig
   ) {}
 

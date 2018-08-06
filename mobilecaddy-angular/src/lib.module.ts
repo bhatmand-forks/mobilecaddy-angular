@@ -24,7 +24,7 @@ import { McRecentItemsService } from './providers/mc-recent-items/mc-recent-item
 import { SalesforceRestService } from './providers/salesforce-rest-service/salesforce-rest-service';
 import { McGlobalSearchProvider } from './providers/mc-global-search/mc-global-search.service';
 import { McConfigService } from './providers/mc-config/mc-config.service';
-import { MobileCaddyStartupService } from './providers/startup-service/startup.service';
+import { McStartupService } from './providers/mc-startup/mc-startup.service';
 import { McPinChallengeProvider } from './providers/mc-pin-challenge/mc-pin-challenge';
 import { McLoadingProvider } from './providers/mc-loading/mc-loading';
 import { McSettingsProvider } from './providers/mc-settings/mc-settings';
@@ -81,7 +81,7 @@ export class MobileCaddyModule {
     return {
       ngModule: MobileCaddyModule,
       providers: [
-        MobileCaddyStartupService,
+        McStartupService,
         McSyncService,
         McRecentItemsService,
         McConfigService,

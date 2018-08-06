@@ -15,7 +15,7 @@ export * from './pages/settings-raw-view-modal/settings-raw-view-modal';
 export * from './pages/outbox-page/outbox-page';
 
 // Providers
-export * from './providers/startup-service/startup.service';
+export * from './providers/mc-startup/mc-startup.service';
 export * from './providers/mc-sync/mc-sync.service';
 export * from './providers/mc-recent-items/mc-recent-items.service';
 export * from './providers/salesforce-rest-service/salesforce-rest-service';
