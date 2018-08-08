@@ -19,7 +19,7 @@ export interface requestObject {
 }
 
 @Injectable()
-export class SalesforceRestService {
+export class McSfRestService {
   private logTag: string = 'salesforce-rest-service.ts';
   private oauth;
   private failCount: number = 0;

@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from 'ionic-angular';
 
 // Components
-import { MobileCaddySyncIconComponent } from './components/mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
-import { OutboxComponent } from './components/outbox/outbox.component';
-import { GlobalSearch } from './components/global-search/global-search.component';
+import { MobileCaddySyncIconComponent } from './components/mc-sync-icon/mc-sync-icon.component';
+import { OutboxComponent } from './components/mc-outbox/mc-outbox.component';
+import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
 
 // Pages
 import { SettingsPage } from './pages/settings-page/settings-page';
@@ -19,12 +19,12 @@ import { SettingsRawViewModalPage } from './pages/settings-raw-view-modal/settin
 import { MCOutboxPage } from './pages/outbox-page/outbox-page';
 
 // Providers
-import { MobileCaddySyncService } from './providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-import { RecentItemsService } from './providers/recent-items-service/recent-items-service';
-import { SalesforceRestService } from './providers/salesforce-rest-service/salesforce-rest-service';
-import { GlobalSearchProvider } from './providers/global-search-service/global-search.service';
-import { MobileCaddyConfigService } from './providers/config-service/config.service';
-import { MobileCaddyStartupService } from './providers/startup-service/startup.service';
+import { McSyncService } from './providers/mc-sync/mc-sync.service';
+import { McRecentItemsService } from './providers/mc-recent-items/mc-recent-items.service';
+import { McSfRestService } from './providers/mc-sf-rest/mc-sf-rest.service';
+import { McGlobalSearchProvider } from './providers/mc-global-search/mc-global-search.service';
+import { McConfigService } from './providers/mc-config/mc-config.service';
+import { McStartupService } from './providers/mc-startup/mc-startup.service';
 import { McPinChallengeProvider } from './providers/mc-pin-challenge/mc-pin-challenge';
 import { McLoadingProvider } from './providers/mc-loading/mc-loading';
 import { McSettingsProvider } from './providers/mc-settings/mc-settings';
@@ -81,12 +81,12 @@ export class MobileCaddyModule {
     return {
       ngModule: MobileCaddyModule,
       providers: [
-        MobileCaddyStartupService,
-        MobileCaddySyncService,
-        RecentItemsService,
-        MobileCaddyConfigService,
-        SalesforceRestService,
-        GlobalSearchProvider,
+        McStartupService,
+        McSyncService,
+        McRecentItemsService,
+        McConfigService,
+        McSfRestService,
+        McGlobalSearchProvider,
         McPinChallengeProvider,
         McLoadingProvider,
         McSettingsProvider,

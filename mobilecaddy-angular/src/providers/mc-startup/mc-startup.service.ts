@@ -19,8 +19,8 @@ import { startup, getStatus } from 'mobilecaddy-utils/startup';
 import { Platform } from 'ionic-angular';
 // import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { MobileCaddyConfigService } from '../config-service/config.service';
-import { MobileCaddySyncService } from '../mobilecaddy-sync-service/mobilecaddy-sync-service.service';
+import { McConfigService } from '../mc-config/mc-config.service';
+import { McSyncService } from '../mc-sync/mc-sync.service';
 
 export enum runState {
   InitialSync = 0,
@@ -31,8 +31,8 @@ export enum runState {
 declare var cordova;
 
 @Injectable()
-export class MobileCaddyStartupService {
-  private logTag: string = 'startup.service.ts';
+export class McStartupService {
+  private logTag: string = 'mc-startup.service.ts';
   initStatus: BehaviorSubject<string | any> = new BehaviorSubject('');
   private internalInitStatus: '';
   statusPoll: () => void;
@@ -43,8 +43,8 @@ export class MobileCaddyStartupService {
 
   constructor(
     public platform: Platform,
-    private MobileCaddyConfigService: MobileCaddyConfigService,
-    private mobilecaddySyncService: MobileCaddySyncService
+    private MobileCaddyConfigService: McConfigService,
+    private mobilecaddySyncService: McSyncService
   ) {
     this.initStatus.next(undefined);
   }

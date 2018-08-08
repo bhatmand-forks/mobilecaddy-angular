@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { MobileCaddyConfigService } from '../config-service/config.service';
+import { McConfigService } from '../mc-config/mc-config.service';
 import * as _ from 'underscore';
 
 interface SyncPointConfig {
@@ -19,8 +19,8 @@ export interface SyncTableConfig {
 }
 
 @Injectable()
-export class MobileCaddySyncService {
-  private logTag: string = 'mobilecaddy-sync.service.ts';
+export class McSyncService {
+  private logTag: string = 'mc-sync.service.ts';
   initialSyncState: BehaviorSubject<string> = new BehaviorSubject('');
   syncState: BehaviorSubject<string | any> = new BehaviorSubject('');
   _syncState: string = '';
@@ -29,7 +29,7 @@ export class MobileCaddySyncService {
     this.syncState.next(state);
   };
 
-  constructor(private mobileCaddyConfigService: MobileCaddyConfigService) {
+  constructor(private mobileCaddyConfigService: McConfigService) {
     this.initialSyncState.next(localStorage.getItem('initialSyncState'));
     this.syncState.next('undefined');
   }

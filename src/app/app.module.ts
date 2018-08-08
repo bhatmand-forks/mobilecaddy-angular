@@ -23,10 +23,10 @@ import { File } from '@ionic-native/file';
 
 // Providers
 import { APP_CONFIG, AppConfig } from './app.config';
-import { MobileCaddySyncService } from '../../mobilecaddy-angular/src/providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-import { RecentItemsService } from '../../mobilecaddy-angular/src/providers/recent-items-service/recent-items-service';
-import { SalesforceRestService } from '../../mobilecaddy-angular/src/providers/salesforce-rest-service/salesforce-rest-service';
-import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/global-search-service/global-search.service';
+import { McSyncService } from '../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
+import { McRecentItemsService } from '../../mobilecaddy-angular/src/providers/mc-recent-items/mc-recent-items.service';
+import { McSfRestService } from '../../mobilecaddy-angular/src/providers/mc-sf-rest/mc-sf-rest.service';
+import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/mc-global-search/mc-global-search.service';
 
 @NgModule({
   declarations: [MyApp, HomePage],
@@ -43,10 +43,10 @@ import { GlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/gl
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     { provide: APP_CONFIG, useValue: AppConfig },
-    MobileCaddySyncService,
-    RecentItemsService,
-    SalesforceRestService,
-    GlobalSearchProvider,
+    McSyncService,
+    McRecentItemsService,
+    McSfRestService,
+    McGlobalSearchProvider,
     Device,
     File
   ]

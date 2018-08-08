@@ -3,16 +3,16 @@ import { NavController } from 'ionic-angular'; // ? Need this to allow us to foc
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators/debounceTime';
 
-import { MobileCaddyConfigService } from '../../providers/config-service/config.service';
+import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
-import { GlobalSearchProvider } from '../../providers/global-search-service/global-search.service';
+import { McGlobalSearchProvider } from '../../providers/mc-global-search/mc-global-search.service';
 
 @Component({
-  selector: 'mobilecaddy-global-search',
-  templateUrl: './global-search.component.html'
+  selector: 'mc-global-search',
+  templateUrl: './mc-global-search.component.html'
 })
 export class GlobalSearch implements OnInit {
-  private logTag: string = 'global-search.component.ts';
+  private logTag: string = 'mc-global-search.component.ts';
   private config;
   private displayFields;
   recentSearches: Array<any> = [];
@@ -23,8 +23,8 @@ export class GlobalSearch implements OnInit {
   @ViewChild('searchBox') searchBox;
 
   constructor(
-    private searchPvdr: GlobalSearchProvider,
-    private mcConfig: MobileCaddyConfigService,
+    private searchPvdr: McGlobalSearchProvider,
+    private mcConfig: McConfigService,
     private navCtrl: NavController
   ) {
     this.searchControl = new FormControl();

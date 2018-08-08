@@ -1,7 +1,7 @@
 // Components
-export * from './components/mobilecaddy-sync-icon/mobilecaddy-sync-icon.component';
-export * from './components/outbox/outbox.component';
-export * from './components/global-search/global-search.component';
+export * from './components/mc-sync-icon/mc-sync-icon.component';
+export * from './components/mc-outbox/mc-outbox.component';
+export * from './components/mc-global-search/mc-global-search.component';
 
 // Pages
 export * from './pages/settings-page/settings-page';
@@ -15,12 +15,12 @@ export * from './pages/settings-raw-view-modal/settings-raw-view-modal';
 export * from './pages/outbox-page/outbox-page';
 
 // Providers
-export * from './providers/startup-service/startup.service';
-export * from './providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-export * from './providers/recent-items-service/recent-items-service';
-export * from './providers/salesforce-rest-service/salesforce-rest-service';
-export * from './providers/global-search-service/global-search.service';
-export * from './providers/config-service/config.service';
+export * from './providers/mc-startup/mc-startup.service';
+export * from './providers/mc-sync/mc-sync.service';
+export * from './providers/mc-recent-items/mc-recent-items.service';
+export * from './providers/mc-sf-rest/mc-sf-rest.service';
+export * from './providers/mc-global-search/mc-global-search.service';
+export * from './providers/mc-config/mc-config.service';
 export * from './providers/mc-pin-challenge/mc-pin-challenge';
 export * from './providers/mc-loading/mc-loading';
 export * from './providers/mc-settings/mc-settings';

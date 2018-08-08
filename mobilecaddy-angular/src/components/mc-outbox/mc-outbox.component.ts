@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 
-import { MobileCaddySyncService } from '../../providers/mobilecaddy-sync-service/mobilecaddy-sync-service.service';
-import { MobileCaddyConfigService } from '../../providers/config-service/config.service';
+import { McSyncService } from '../../providers/mc-sync/mc-sync.service';
+import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as logger from 'mobilecaddy-utils/logger';
@@ -15,23 +15,23 @@ export interface outboxSummary {
 }
 
 @Component({
-  selector: 'mobilecaddy-outbox',
-  templateUrl: './outbox.component.html'
-  // styleUrls: ['./outbox.component.css']
+  selector: 'mc-outbox',
+  templateUrl: './mc-outbox.component.html'
+  // styleUrls: ['./mc-outbox.component.css']
 })
 export class OutboxComponent implements OnInit {
-  private logTag: string = 'outbox.component.ts';
+  private logTag: string = 'mc-outbox.component.ts';
   dirtyRecordsSummary: outboxSummary[];
   private config: any;
 
   constructor(
     public loadingCtrl: LoadingController,
-    private mobilecaddySyncService: MobileCaddySyncService,
-    private MobileCaddyConfigService: MobileCaddyConfigService
+    private mobilecaddySyncService: McSyncService,
+    private McConfigService: McConfigService
   ) {}
 
   async ngOnInit() {
-    this.config = this.MobileCaddyConfigService.getConfig();
+    this.config = this.McConfigService.getConfig();
     console.log(this.logTag, 'ngOnInit');
     this.dirtyRecordsSummary = await this.getDirtyRecords();
     console.log(this.logTag, this.dirtyRecordsSummary);
