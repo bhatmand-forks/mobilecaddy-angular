@@ -46,5 +46,8 @@
     "typescript": "~2.6.2",
     "underscore": "^1.8.3",
     "zone.js": "0.8.20"
+  },
+  "dependencies": {
+    "mobilecaddy": "git+https://github.com/MobileCaddy/mobilecaddy-cli.git#unstable-v2"
   }
 }
