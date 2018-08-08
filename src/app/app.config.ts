@@ -121,7 +121,12 @@ export const AppConfig: IAppConfig = {
   ],
 
   // Tables to sync on initialSync
-  initialSyncTables: ['Account__ap', 'Contact__ap'],
+  initialSyncTables: [
+    'Account__ap',
+    'Contact__ap',
+    'Form_Version__ap',
+    'Form_Response__ap'
+  ],
 
   syncPoints: [
     {

@@ -1,0 +1,58 @@
+<ion-content>
+  <div #fixedSearchContainer ion-fixed class="mc-list-search-container">
+    <ng-container *ngIf="showSearch">
+      <ion-searchbar [debounce]="500" [placeholder]="searchPlaceholder" (ionInput)="filterRecs($event)"></ion-searchbar>
+    </ng-container>
+  </div>
+
+  <ion-list #list class="mc-list-container">
+
+    <ion-list-header *ngIf="headerTitle">
+      {{headerTitle}}
+      <button *ngIf="showAddButton" ion-button clear item-right icon-only (click)="clickAdd()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-list-header>
+
+    <div *ngIf="recs&&recs.length===0&&noDataMsg" [ngClass]="noDataMsgClass ? noDataMsgClass : ''">{{noDataMsg}}</div>
+
+    <ng-container *ngIf="!isCardList">
+      <button *ngFor="let rec of recs" ion-item detail-none text-wrap (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">
+        <ion-icon *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)" [color]="getIconStartColor(rec)"
+          [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
+        <div *ngFor="let item of displayFields; let i = index">
+          <span *ngFor="let field of item.fields; let j = index">
+            <span [innerHtml]='wrapField(i,j,rec[field])'></span>
+          </span>
+        </div>
+        <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)" [ngClass]="getButtonEndClass(rec)"
+          item-end>
+          <span [innerHtml]='getButtonEndName(rec)'></span>
+        </button>
+        <ion-icon *ngIf="iconsEnd" (click)="clickIconEnd($event,rec)" [name]="getIconEndName(rec)" [color]="getIconEndColor(rec)"
+          [ngClass]="getIconEndClass(rec)" item-end></ion-icon>
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="isCardList">
+      <ion-card *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">
+        <ion-item text-wrap>
+          <ion-icon *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)" [color]="getIconStartColor(rec)"
+            [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
+          <div *ngFor="let item of displayFields; let i = index">
+            <span *ngFor="let field of item.fields; let j = index">
+              <span [innerHtml]='wrapField(i,j,rec[field])'></span>
+            </span>
+          </div>
+          <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)" [ngClass]="getButtonEndClass(rec)"
+            item-end>
+            <span [innerHtml]='getButtonEndName(rec)'></span>
+          </button>
+          <ion-icon *ngIf="iconsEnd" (click)="clickIconEnd($event,rec)" [name]="getIconEndName(rec)" [color]="getIconEndColor(rec)"
+            [ngClass]="getIconEndClass(rec)" item-end></ion-icon>
+        </ion-item>
+      </ion-card>
+    </ng-container>
+
+  </ion-list>
+</ion-content>

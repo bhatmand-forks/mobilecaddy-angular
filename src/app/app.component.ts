@@ -45,6 +45,8 @@ export class MyApp {
       { title: 'Accounts', component: HomePage },
       { title: 'Outbox', component: 'OutboxPage' },
       { title: 'Search', component: 'SearchPage' },
+      { title: 'Test mc-list', component: 'TestMcListPage' },
+      { title: 'Test mc-form', component: 'TestMcFormPage' },
       { title: 'Settings', component: SettingsPage }
     ];
   }

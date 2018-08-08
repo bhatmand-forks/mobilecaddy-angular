@@ -1,0 +1,31 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Test mc-list</ion-title>
+    <ion-buttons end>
+      <mc-sync-icon></mc-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <div padding-left>
+    <h4>Accounts</h4>
+  </div>
+  <mc-list [recs]="accounts" [displayFields]="accountFields" (recordClicked)="showDetail($event)"></mc-list>
+
+  <div padding-left>
+    <h4>Contacts</h4>
+  </div>
+  <mc-list [sqlParms]="sqlParms" [displayFields]="contactFields" [iconsStart]="iconsStart" [iconsEnd]="iconsEnd"
+    [buttonsEnd]="buttonsEnd" [itemClass]="itemClass" [loaderMsg]="loaderMsg" noDataMsg="No contacts" noDataMsgClass="no-data"
+    showSearch="true" isCardList="true" searchPlaceholder="Search contacts" (recordClicked)="showDetail($event)" (buttonEndClicked)="buttonEndClicked($event)"
+    (iconStartClicked)="iconStartClicked($event)" (iconEndClicked)="iconEndClicked($event)">
+  </mc-list>
+
+</ion-content>

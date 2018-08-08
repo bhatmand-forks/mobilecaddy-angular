@@ -6,6 +6,8 @@ import { IonicModule } from 'ionic-angular';
 import { MobileCaddySyncIconComponent } from './components/mc-sync-icon/mc-sync-icon.component';
 import { OutboxComponent } from './components/mc-outbox/mc-outbox.component';
 import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
+import { McListComponent } from './components/mc-list/mc-list';
+import { McFormComponent } from './components/mc-form/mc-form';
 
 // Pages
 import { SettingsPage } from './pages/settings-page/settings-page';
@@ -31,6 +33,8 @@ import { McSettingsProvider } from './providers/mc-settings/mc-settings';
 import { McUpgradeProvider } from './providers/mc-upgrade/mc-upgrade';
 import { McRecoveryProvider } from './providers/mc-recovery/mc-recovery';
 import { McDiagnosticsProvider } from './providers/mc-diagnostics/mc-diagnostics';
+import { McDataProvider } from './providers/mc-data/mc-data';
+import { McFormProvider } from './providers/mc-form/mc-form';
 import { Network } from '@ionic-native/network';
 
 @NgModule({
@@ -39,6 +43,8 @@ import { Network } from '@ionic-native/network';
     MobileCaddySyncIconComponent,
     OutboxComponent,
     GlobalSearch,
+    McListComponent,
+    McFormComponent,
     SettingsPage,
     SettingsDevToolsPage,
     McDiagnosticsPage,
@@ -53,6 +59,8 @@ import { Network } from '@ionic-native/network';
     MobileCaddySyncIconComponent,
     OutboxComponent,
     GlobalSearch,
+    McListComponent,
+    McFormComponent,
     SettingsPage,
     SettingsDevToolsPage,
     McDiagnosticsPage,
@@ -92,7 +100,9 @@ export class MobileCaddyModule {
         McSettingsProvider,
         McUpgradeProvider,
         McRecoveryProvider,
-        McDiagnosticsProvider
+        McDiagnosticsProvider,
+        McDataProvider,
+        McFormProvider
       ]
     };
   }
