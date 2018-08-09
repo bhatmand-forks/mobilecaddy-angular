@@ -16,6 +16,10 @@ export class SettingsPage implements OnInit, OnDestroy {
   readonly logTag: string = 'settings-page.ts';
   isUpgradeAvailable: boolean = false;
   appVsn: string;
+  loggingLevelTitle: string;
+  loggingLevelOptions: any = [];
+  loggingLevelCssClass: string;
+  loggingLevel: string;
 
   // So we can unsubscribe subscriptions on destroy
   private pinChallenge1Subscription: Subscription;
@@ -32,6 +36,38 @@ export class SettingsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.checkIfUpgradeAvailable();
     this.appVsn = this.mcConfigService.getConfig('version');
+
+    // Get any settings page config
+    let settingPageConfig = this.mcConfigService.getConfig('settingsPage');
+    console.log('settingPageConfig',settingPageConfig);
+    
+    // Logging level.
+    // Get any existing logging level
+    this.loggingLevel = this.getLoggingLevel();
+
+    // Logging level - check to see if options text has been set in config
+    if (!settingPageConfig.loggingLevelOptionsText) {
+      this.loggingLevelOptions = this.setDefaultLoggingLevelOptions();
+    } else{
+      // If we have loggingLevelOptionsText set in config then we expect an array of the text (for use in multi-language apps)
+      if (settingPageConfig.loggingLevelOptionsText.constructor !== Array || settingPageConfig.loggingLevelOptionsText.length !== 4) {
+        this.loggingLevelOptions = this.setDefaultLoggingLevelOptions();
+      } else {
+        this.loggingLevelOptions = this.buildLoggingLevelOptionsFromConfig(settingPageConfig.loggingLevelOptionsText);
+      }
+    }
+
+    // Logging level - check if we have a title set in config
+    if (settingPageConfig.loggingLevelTitle) {
+      this.loggingLevelTitle = settingPageConfig.loggingLevelTitle;
+    } else {
+      this.loggingLevelTitle = 'Logging Level';
+    }
+
+    // Logging level - check if we have a css class set in config
+    if (settingPageConfig.loggingLevelCssClass) {
+      this.loggingLevelCssClass = settingPageConfig.loggingLevelCssClass;
+    }
   }
 
   ngOnDestroy() {
@@ -107,6 +143,41 @@ export class SettingsPage implements OnInit, OnDestroy {
 
   logout() {
     this.mcSettingsProvider.logout();
+  }
+
+  setLoggingLevel(event) {
+    // console.log(event);
+    if (event == "Off") {
+      localStorage.removeItem('logLevel');
+    } else {
+      localStorage.setItem('logLevel', event);
+    }
+  }
+
+  getLoggingLevel(): string {
+    var loggingLevel = localStorage.getItem('logLevel');
+    if (loggingLevel === null) {
+      loggingLevel = "Off";
+    }
+    return loggingLevel;
+  }
+
+  setDefaultLoggingLevelOptions(): any {
+    let options = [];
+    options.push({text: 'Off', value: 'Off', selected: true});
+    options.push({text: 'Errors', value: '0', selected: false});
+    options.push({text: 'Warnings', value: '1', selected: false});
+    options.push({text: 'Logs', value: '2', selected: false});
+    return options;
+  }
+
+  buildLoggingLevelOptionsFromConfig(loggingLevelOptionsText: any): any {
+    let options = [];
+    options.push({text: loggingLevelOptionsText[0], value: 'Off', selected: true});
+    options.push({text: loggingLevelOptionsText[1], value: '0', selected: false});
+    options.push({text: loggingLevelOptionsText[2], value: '1', selected: false});
+    options.push({text: loggingLevelOptionsText[3], value: '2', selected: false});
+    return options;
   }
 
   pinChallenge1Example() {

@@ -16,6 +16,7 @@ export interface IAppConfig {
   upgradeOptions?: UpgradeOptionsConfig;
   lockScreenOptions?: LockScreenOptionsConfig;
   platformPinChallengeOptions?: PlatformPinChallengeOptionsConfig;
+  settingsPage: settingsPageConfig;
 }
 
 export interface indexSpecConfig {
@@ -98,6 +99,12 @@ export interface PlatformPinChallengeOptionsConfig {
   popupText?: string[];
   alertOptions?: any;
   toastOptions?: any;
+}
+
+export interface settingsPageConfig {
+  loggingLevelTitle?: string;
+  loggingLevelOptionsText?: string[];
+  loggingLevelCssClass?: string;
 }
 
 // const fourHours: number = 1000 * 60 * 60 * 4;
@@ -271,5 +278,16 @@ export const AppConfig: IAppConfig = {
     presentLockScreen: true,
     showSyncLoader: false,
     showBuildMsgs: false
+  },
+
+  upgradeOptions: {
+    ignoreRepromptPeriod: false,
+    maxPostpones: 5,
+    noRepromptPeriod: 1000 * 60 * 5,
+    popupText: []
+  },
+
+  settingsPage: {
   }
+
 };

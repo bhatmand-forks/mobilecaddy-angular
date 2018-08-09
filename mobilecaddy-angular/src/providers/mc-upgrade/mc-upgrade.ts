@@ -5,31 +5,37 @@ import * as vsnUtils from 'mobilecaddy-utils/vsnUtils';
 import * as logger from 'mobilecaddy-utils/logger';
 import { McLoadingProvider } from '../mc-loading/mc-loading';
 import { AlertController, AlertOptions, Loading } from 'ionic-angular';
+import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
 @Injectable()
 export class McUpgradeProvider {
-  options: any = {
+  
+  upgradeOptions = {
     ignoreRepromptPeriod: false,
     maxPostpones: 5,
     noRepromptPeriod: 1000 * 60 * 5,
     popupText: []
   };
-  private readonly defaultNoRepromptPeriod: number = 1000 * 60 * 5; // 5 minutes
-  private readonly defaultMaxPostpones: number = 5;
   private postponesCount: number = 0;
 
   constructor(
     private alertCtrl: AlertController,
-    private loadingProvider: McLoadingProvider
-  ) {}
+    private loadingProvider: McLoadingProvider,
+    public mcConfig: McConfigService
+  ) { }
 
   upgrade(options?: any): Observable<boolean> {
     return Observable.create(observer => {
+      // Check for any config options and merge/override the class options
+      let config = this.mcConfig.getConfig();
+      if (config.upgradeOptions) {
+        Object.assign(this.upgradeOptions, config.upgradeOptions);
+      }
       // Check for any option parameters and merge/override the class options
       if (options) {
-        Object.assign(this.options, options);
+        Object.assign(this.upgradeOptions, options);
       }
-      console.log('upgrade options', this.options);
+      console.log('upgrade options', this.upgradeOptions);
       // Check for 'dirty' tables (i.e. device hasn't been synced with platform)
       devUtils.dirtyTables().then(tables => {
         console.log('dirtyTables check');
@@ -38,54 +44,30 @@ export class McUpgradeProvider {
           vsnUtils.upgradeAvailable().then(res => {
             console.log('upgradeAvailable?', res);
             if (res) {
-              // We can choose to ignore the upgrade prompt period.
-              // If true, then user is always prompted to upgrade reagrdless of reprompt period.
-              // This is useful when in Settings area and upgrade popup needs to be displayed everytime button is tapped
-              if (
-                this.options.ignoreRepromptPeriod == 'undefined' ||
-                this.options.ignoreRepromptPeriod == 'null'
-              ) {
-                this.options.ignoreRepromptPeriod = false;
-              }
-              // Have many times can the user postpone the upgrade?
-              if (
-                this.options.maxPostpones == 'undefined' ||
-                this.options.maxPostpones == 'null'
-              ) {
-                this.options.maxPostpones = this.defaultMaxPostpones;
-              }
-              // Determine whether the user should be prompted to upgrade.
-              // User can postpone the upgrade for a period of time (determined by 'noRepromptPeriod')
-              if (
-                this.options.noRepromptPeriod == 'undefined' ||
-                this.options.noRepromptPeriod == 'null'
-              ) {
-                this.options.noRepromptPeriod = this.defaultNoRepromptPeriod;
-              }
               let prevUpgradeNotification = this.getPrevUpgradeNotification();
               let timeNow = Date.now();
               let repromptPeriodOver: boolean =
                 parseInt(prevUpgradeNotification) <
-                timeNow - this.options.noRepromptPeriod;
+                timeNow - this.upgradeOptions.noRepromptPeriod;
               console.log('repromptPeriodOver', repromptPeriodOver);
               console.log(
                 'ignoreRepromptPeriod',
-                this.options.ignoreRepromptPeriod
+                this.upgradeOptions.ignoreRepromptPeriod
               );
-              if (repromptPeriodOver || this.options.ignoreRepromptPeriod) {
+              if (repromptPeriodOver || this.upgradeOptions.ignoreRepromptPeriod) {
                 // If we don't have any popup text (or it doesn't have enough items in the array) then set defaults
                 // ('popupText' parameter primarily used for apps with translations)
                 if (
-                  !this.options.popupText ||
-                  this.options.popupText.constructor !== Array ||
-                  this.options.popupText.length !== 8
+                  !this.upgradeOptions.popupText ||
+                  this.upgradeOptions.popupText.constructor !== Array ||
+                  this.upgradeOptions.popupText.length !== 8
                 ) {
-                  this.options.popupText = this.setDefaultPopupText();
+                  this.upgradeOptions.popupText = this.setDefaultPopupText();
                 }
                 // Confirm upgrade
                 this.confirmUpgrade(
-                  this.options.maxPostpones,
-                  this.options.popupText,
+                  this.upgradeOptions.maxPostpones,
+                  this.upgradeOptions.popupText,
                   timeNow,
                   observer
                 );
