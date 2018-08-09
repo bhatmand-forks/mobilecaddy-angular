@@ -1,0 +1,23 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Test Lock Screen</ion-title>
+    <ion-buttons end>
+      <mc-sync-icon></mc-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <button ion-button round block [disabled]="pinSet" (click)="setCode()">Set Code</button>
+  <br/>
+  <button ion-button color="secondary" round block [disabled]="!pinSet" (click)="removeCode()">Remove Code</button>
+  <br/>
+  <button ion-button color="dark" round block [disabled]="!pinSet" (click)="presentLockScreen()">Present Lock Screen</button>
+
+</ion-content>

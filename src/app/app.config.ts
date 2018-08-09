@@ -244,9 +244,11 @@ export const AppConfig: IAppConfig = {
     maxPausePeriod: 0,
     presentLockScreen: true,
     pages: [
-      { id: 'home.ts', syncPoint: 'full', showSyncLoader: false },
-      { id: 'cases.ts', syncPoint: 'full', showSyncLoader: false },
-      { id: 'test-resume.ts', syncPoint: 'full', showSyncLoader: true }
+      {
+        id: 'test-mc-resume.ts',
+        syncPoint: 'mySync',
+        showSyncLoader: true
+      }
     ]
   },
 
@@ -255,8 +257,11 @@ export const AppConfig: IAppConfig = {
     maxPausePeriod: 0,
     presentLockScreen: false,
     pages: [
-      { id: 'home.ts', syncPoint: 'full', showSyncLoader: false },
-      { id: 'test-resume.ts', syncPoint: 'full', showSyncLoader: true }
+      {
+        id: 'test-mc-resume.ts',
+        syncPoint: 'mySync',
+        showSyncLoader: true
+      }
     ]
   },
 

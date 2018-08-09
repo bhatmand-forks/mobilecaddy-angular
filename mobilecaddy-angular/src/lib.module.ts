@@ -8,6 +8,7 @@ import { OutboxComponent } from './components/mc-outbox/mc-outbox.component';
 import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
 import { McListComponent } from './components/mc-list/mc-list';
 import { McFormComponent } from './components/mc-form/mc-form';
+import { McLockScreenComponent } from './components/mc-lock-screen/mc-lock-screen';
 
 // Pages
 import { SettingsPage } from './pages/settings-page/settings-page';
@@ -35,6 +36,8 @@ import { McRecoveryProvider } from './providers/mc-recovery/mc-recovery';
 import { McDiagnosticsProvider } from './providers/mc-diagnostics/mc-diagnostics';
 import { McDataProvider } from './providers/mc-data/mc-data';
 import { McFormProvider } from './providers/mc-form/mc-form';
+import { McLockScreenProvider } from './providers/mc-lock-screen/mc-lock-screen';
+import { McResumeProvider } from './providers/mc-resume/mc-resume';
 import { Network } from '@ionic-native/network';
 
 @NgModule({
@@ -45,6 +48,7 @@ import { Network } from '@ionic-native/network';
     GlobalSearch,
     McListComponent,
     McFormComponent,
+    McLockScreenComponent,
     SettingsPage,
     SettingsDevToolsPage,
     McDiagnosticsPage,
@@ -61,6 +65,7 @@ import { Network } from '@ionic-native/network';
     GlobalSearch,
     McListComponent,
     McFormComponent,
+    McLockScreenComponent,
     SettingsPage,
     SettingsDevToolsPage,
     McDiagnosticsPage,
@@ -80,7 +85,8 @@ import { Network } from '@ionic-native/network';
     SettingsMtiDetailPage,
     SettingsRawViewPage,
     SettingsRawViewModalPage,
-    McDiagnosticsPage
+    McDiagnosticsPage,
+    McLockScreenComponent
   ],
   providers: [Network]
 })
@@ -102,7 +108,9 @@ export class MobileCaddyModule {
         McRecoveryProvider,
         McDiagnosticsProvider,
         McDataProvider,
-        McFormProvider
+        McFormProvider,
+        McLockScreenProvider,
+        McResumeProvider
       ]
     };
   }

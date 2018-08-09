@@ -47,6 +47,8 @@ export class MyApp {
       { title: 'Search', component: 'SearchPage' },
       { title: 'Test mc-list', component: 'TestMcListPage' },
       { title: 'Test mc-form', component: 'TestMcFormPage' },
+      { title: 'Test Lock Screen', component: 'TestMcLockScreenPage' },
+      { title: 'Test Resume/Nav/Cold', component: 'TestMcResumePage' },
       { title: 'Settings', component: SettingsPage }
     ];
   }

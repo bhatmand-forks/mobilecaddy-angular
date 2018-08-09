@@ -4,6 +4,7 @@ export * from './components/mc-outbox/mc-outbox.component';
 export * from './components/mc-global-search/mc-global-search.component';
 export * from './components/mc-list/mc-list';
 export * from './components/mc-form/mc-form';
+export * from './components/mc-lock-screen/mc-lock-screen';
 
 // Pages
 export * from './pages/settings-page/settings-page';
@@ -31,5 +32,7 @@ export * from './providers/mc-recovery/mc-recovery';
 export * from './providers/mc-diagnostics/mc-diagnostics';
 export * from './providers/mc-data/mc-data';
 export * from './providers/mc-form/mc-form';
+export * from './providers/mc-lock-screen/mc-lock-screen';
+export * from './providers/mc-resume/mc-resume';
 
 export * from './lib.module';

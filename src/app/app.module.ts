@@ -29,7 +29,10 @@ import { McSfRestService } from '../../mobilecaddy-angular/src/providers/mc-sf-r
 import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/mc-global-search/mc-global-search.service';
 
 @NgModule({
-  declarations: [MyApp, HomePage],
+  declarations: [
+    MyApp,
+    HomePage
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -37,7 +40,10 @@ import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/
     MobileCaddyModule.forRoot()
   ],
   bootstrap: [IonicApp],
-  entryComponents: [MyApp, HomePage],
+  entryComponents: [
+    MyApp,
+    HomePage
+  ],
   providers: [
     StatusBar,
     SplashScreen,
@@ -51,4 +57,4 @@ import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/
     File
   ]
 })
-export class AppModule {}
+export class AppModule { }

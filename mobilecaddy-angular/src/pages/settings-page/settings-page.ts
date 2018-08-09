@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavController, AlertOptions, ToastOptions } from 'ionic-angular';
+import { Subscription } from 'rxjs/Subscription';
 import { McPinChallengeProvider } from '../../providers/mc-pin-challenge/mc-pin-challenge';
 import { McUpgradeProvider } from '../../providers/mc-upgrade/mc-upgrade';
 import { SettingsDevToolsPage } from '../settings-dev-tools-page/settings-dev-tools-page';
@@ -11,10 +12,14 @@ import { McConfigService } from '../../providers/mc-config/mc-config.service';
   selector: 'page-settings',
   templateUrl: 'settings-page.html'
 })
-export class SettingsPage implements OnInit {
+export class SettingsPage implements OnInit, OnDestroy {
   readonly logTag: string = 'settings-page.ts';
   isUpgradeAvailable: boolean = false;
   appVsn: string;
+
+  // So we can unsubscribe subscriptions on destroy
+  private pinChallenge1Subscription: Subscription;
+  private pinChallenge2Subscription: Subscription;
 
   constructor(
     public navCtrl: NavController,
@@ -22,16 +27,37 @@ export class SettingsPage implements OnInit {
     private mcUpgradeProvider: McUpgradeProvider,
     private mcSettingsProvider: McSettingsProvider,
     private mcConfigService: McConfigService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.checkIfUpgradeAvailable();
     this.appVsn = this.mcConfigService.getConfig('version');
   }
 
+  ngOnDestroy() {
+    if (this.pinChallenge1Subscription) {
+      this.pinChallenge1Subscription.unsubscribe();
+    }
+    if (this.pinChallenge2Subscription) {
+      this.pinChallenge2Subscription.unsubscribe();
+    }
+  }
+
   openAdminFunctions() {
-    this.mcPinChallengeProvider
-      .presentPinChallenge(true, 30000, true, undefined, undefined)
+    let platformPinChallengeOptions = {
+      bypassChallenge: true,
+      timeoutPeriod: 30000,
+      showCancel: true,
+      maxAttempts: 5,
+      popupText: [],
+      alertOptions: null,
+      toastOptions: null
+    };
+
+    this.mcPinChallengeProvider.setOptions(platformPinChallengeOptions);
+
+    this.pinChallenge1Subscription = this.mcPinChallengeProvider
+      .presentPinChallenge()
       .subscribe(result => {
         if (result) {
           this.navCtrl.push(SettingsDevToolsPage);
@@ -40,14 +66,20 @@ export class SettingsPage implements OnInit {
   }
 
   openAdminFunctions2() {
-    this.mcPinChallengeProvider
-      .presentPinChallenge(
-        window['LOCAL_DEV'],
-        30000,
-        true,
-        undefined,
-        undefined
-      )
+    let platformPinChallengeOptions = {
+      bypassChallenge: window['LOCAL_DEV'],
+      timeoutPeriod: 30000,
+      showCancel: true,
+      maxAttempts: 5,
+      popupText: [],
+      alertOptions: null,
+      toastOptions: null
+    };
+
+    this.mcPinChallengeProvider.setOptions(platformPinChallengeOptions);
+
+    this.pinChallenge2Subscription = this.mcPinChallengeProvider
+      .presentPinChallenge()
       .subscribe(result => {
         console.log('openAdminFunctions2', result);
         if (result) {
@@ -66,7 +98,7 @@ export class SettingsPage implements OnInit {
   upgrade() {
     this.mcUpgradeProvider
       .upgrade({ ignoreRepromptPeriod: true })
-      .subscribe(res => {});
+      .subscribe(res => { });
   }
 
   openDiagnostics() {
@@ -95,34 +127,25 @@ export class SettingsPage implements OnInit {
       // message: 'My toast message',
       duration: 2000
     };
-    this.mcPinChallengeProvider
-      .presentPinChallenge(
-        false,
-        0,
-        false,
-        3,
-        undefined,
-        alertOptions,
-        toastOptions
-      )
-      .subscribe(result => {
-        console.log('pinChallenge1', result);
-        if (result) {
-          // alert('Good PIN');
-        }
-      });
+
+    let platformPinChallengeOptions = {
+      bypassChallenge: false,
+      timeoutPeriod: 0,
+      showCancel: false,
+      maxAttempts: 5,
+      popupText: [],
+      alertOptions: alertOptions,
+      toastOptions: toastOptions
+    };
+
+    this.mcPinChallengeProvider.setOptions(platformPinChallengeOptions);
+
+    this.pinChallenge1Subscription = this.mcPinChallengeProvider.presentPinChallenge().subscribe(result => {
+      console.log('pinChallenge1', result)
+      if (result) {
+        // alert('Good PIN');
+      }
+    });
   }
 
-  pinChallenge2Example() {
-    // pin example, 10 second 'window' in which no pin isrequired again
-    //
-    this.mcPinChallengeProvider
-      .presentPinChallenge(false, 10000, true, undefined, undefined)
-      .subscribe(result => {
-        console.log('pinChallenge2', result);
-        if (result) {
-          // alert('Good PIN');
-        }
-      });
-  }
 }

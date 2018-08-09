@@ -1,0 +1,31 @@
+<div class="ILS_lock" [ngClass]="!_showLockScreen ?  'ILS_lock-hidden' : ''">
+  <div class="ILS_label-row">
+    {{passcodeLabel}}
+  </div>
+  <div class="ILS_circles-row" [ngClass]="passcodeWrong ?  'ILS_shake' : ''">
+    <div class="ILS_circle" [ngClass]=" enteredPasscode.length>0 ? 'ILS_full' : ''"></div>
+    <div class="ILS_circle" [ngClass]=" enteredPasscode.length>1 ? 'ILS_full' : ''"></div>
+    <div class="ILS_circle" [ngClass]=" enteredPasscode.length>2 ? 'ILS_full' : ''"></div>
+    <div class="ILS_circle" [ngClass]=" enteredPasscode.length>3 ? 'ILS_full' : ''"></div>
+  </div>
+  <div class="ILS_numbers-row">
+    <div tappable (click)="digit(1)" class="ILS_digit">1</div>
+    <div tappable (click)="digit(2)" class="ILS_digit">2</div>
+    <div tappable (click)="digit(3)" class="ILS_digit">3</div>
+  </div>
+  <div class="ILS_numbers-row">
+    <div tappable (click)="digit(4)" class="ILS_digit">4</div>
+    <div tappable (click)="digit(5)" class="ILS_digit">5</div>
+    <div tappable (click)="digit(6)" class="ILS_digit">6</div>
+  </div>
+  <div class="ILS_numbers-row">
+    <div tappable (click)="digit(7)" class="ILS_digit">7</div>
+    <div tappable (click)="digit(8)" class="ILS_digit">8</div>
+    <div tappable (click)="digit(9)" class="ILS_digit">9</div>
+  </div>
+  <div class="ILS_numbers-row">
+    <div *ngIf="ACDelbuttons" tappable (click)="allClear()" class="ILS_digit ILS_ac">{{acLabel}}</div>
+    <div tappable (click)="digit(0)" class="ILS_digit">0</div>
+    <div *ngIf="ACDelbuttons" tappable (click)="remove()" class="ILS_digit ILS_del">{{delLabel}}</div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Test Resume/Nav/Cold</ion-title>
+    <ion-buttons end>
+      <mc-sync-icon></mc-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+    <button ion-button color="dark" round block (click)="pause()">Pause App (background)</button>
+    <br/>
+    <button ion-button color="primary" round block (click)="resume('nolock')">On Resume (no lock screen)</button>
+    <br/>
+    <button ion-button color="primary" round block (click)="resume('lock')">On Resume (with lock screen)</button>
+    <br/>
+    <button ion-button color="light" round block (click)="navigation()">On Navigation (to this page)</button>
+    <br/>
+    <button ion-button color="secondary" round block (click)="coldstart('nolock')">On Cold Start (no lock screen)</button>
+    <br/>
+    <button ion-button color="secondary" round block (click)="coldstart('lock')">On Cold Start (with lock screen)</button>
+  
+  </ion-content>
+  
