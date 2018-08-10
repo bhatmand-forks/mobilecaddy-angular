@@ -16,6 +16,7 @@
     "ionic-native",
     "sw-toolbox",
     "mobilecaddy-utils",
+    "mobilecaddy",
     "underscore"
   ]
 }

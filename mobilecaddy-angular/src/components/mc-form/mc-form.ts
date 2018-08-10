@@ -5,7 +5,67 @@ import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'mc-form',
-  templateUrl: 'mc-form.html'
+  templateUrl: 'mc-form.html',
+  styles: [
+    `
+      .mc-form-tab-container {
+        width: 100%;
+      }
+      .mc-form-tab-container ion-grid {
+        background-color: lightgray;
+      }
+      .mc-form-tab-container ion-grid,
+      .mc-form-tab-container ion-col {
+        padding: 0;
+      }
+      .mc-form-tab-container ion-col {
+        text-align: center;
+      }
+      .mc-form-tab-container .tab {
+        padding: 10px 10px;
+      }
+      .mc-form-tab-container .tab.active {
+        color: gray;
+        font-weight: 700;
+      }
+      .mc-form-tab-container .tab.inactive {
+        color: #FFFFFF;
+      }
+
+      .mc-form-list .field-heading {
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .mc-form-list .field-separator {
+        height: 1px;
+        width: 100%;
+        background-color: #000000;
+      }
+
+      .mc-form-list .picklist-item {
+        padding-right: 8px;
+      }
+
+      /* Left align the checkbox (the label is stacked above it) */
+      .mc-form-list .checkbox-item div[item-content] {
+        align-self: start;
+      }
+
+      /* Remove the line under input fields */
+      .mc-form-list .item-inner,
+      .mc-form-list ion-item {
+        border-bottom-color: transparent !important;
+        box-shadow: none !important;
+      }
+
+      /* Used to disable labels when form is read only */
+      .disabled {
+        opacity: .4;
+        pointer-events: none;
+      }
+    `
+  ]
 })
 export class McFormComponent implements OnInit, OnDestroy {
 
