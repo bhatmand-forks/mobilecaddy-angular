@@ -37,10 +37,14 @@ export class McPinChallengeProvider {
     public mcConfig: McConfigService
   ) { }
 
-  presentPinChallenge(): Observable<boolean> {
+  presentPinChallenge(options?: any): Observable<boolean> {
     return Observable.create(observer => {
       // Override/merge config options with the class defaults
       this.setOptions();
+      // Override/merge any parameter options with the class defaults
+      if (options) {
+        Object.assign(this.platformPinChallengeOptions, options);
+      }
       // Check to see if we can bypass the pin challenge (e.g. in codeflow)
       if (this.platformPinChallengeOptions.bypassChallenge) {
         // Emit result
@@ -101,10 +105,7 @@ export class McPinChallengeProvider {
     });
   }
 
-  setOptions(options?: any) {
-    if (options) {
-      Object.assign(this.platformPinChallengeOptions, options);
-    }
+  setOptions() {
     let config = this.mcConfig.getConfig();
     // Check for any config options and merge/override the class options
     if (config.platformPinChallengeOptions) {

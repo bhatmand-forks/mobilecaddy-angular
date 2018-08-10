@@ -90,10 +90,8 @@ export class SettingsPage implements OnInit, OnDestroy {
       toastOptions: null
     };
 
-    this.mcPinChallengeProvider.setOptions(platformPinChallengeOptions);
-
     this.pinChallenge1Subscription = this.mcPinChallengeProvider
-      .presentPinChallenge()
+      .presentPinChallenge(platformPinChallengeOptions)
       .subscribe(result => {
         if (result) {
           this.navCtrl.push(SettingsDevToolsPage);
@@ -112,10 +110,8 @@ export class SettingsPage implements OnInit, OnDestroy {
       toastOptions: null
     };
 
-    this.mcPinChallengeProvider.setOptions(platformPinChallengeOptions);
-
     this.pinChallenge2Subscription = this.mcPinChallengeProvider
-      .presentPinChallenge()
+      .presentPinChallenge(platformPinChallengeOptions)
       .subscribe(result => {
         console.log('openAdminFunctions2', result);
         if (result) {
@@ -209,14 +205,14 @@ export class SettingsPage implements OnInit, OnDestroy {
       toastOptions: toastOptions
     };
 
-    this.mcPinChallengeProvider.setOptions(platformPinChallengeOptions);
-
-    this.pinChallenge1Subscription = this.mcPinChallengeProvider.presentPinChallenge().subscribe(result => {
-      console.log('pinChallenge1', result)
-      if (result) {
-        // alert('Good PIN');
-      }
-    });
+    this.pinChallenge1Subscription = this.mcPinChallengeProvider
+      .presentPinChallenge(platformPinChallengeOptions)
+      .subscribe(result => {
+        console.log('pinChallenge1', result)
+        if (result) {
+          // alert('Good PIN');
+        }
+      });
   }
 
 }

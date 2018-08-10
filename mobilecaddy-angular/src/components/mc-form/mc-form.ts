@@ -60,7 +60,7 @@ import { Subscription } from 'rxjs/Subscription';
       }
 
       /* Used to disable labels when form is read only */
-      .disabled {
+      .mc-form-list .disabled {
         opacity: .4;
         pointer-events: none;
       }

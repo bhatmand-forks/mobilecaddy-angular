@@ -7,7 +7,15 @@ import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'mc-list',
-  templateUrl: 'mc-list.html'
+  templateUrl: 'mc-list.html',
+  styles: [
+    `
+      .mc-list-search-container {
+        width: 100%;
+        background-color: #FFFFFF;
+      }
+    `
+  ]
 })
 export class McListComponent implements OnInit, OnDestroy {
 

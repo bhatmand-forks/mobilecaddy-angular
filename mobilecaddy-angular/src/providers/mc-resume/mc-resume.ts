@@ -192,21 +192,15 @@ export class McResumeProvider {
     return localStorage.getItem(this.PAUSE_TIME);
   }
 
-  setOptions(functionName: string, options?: any) {
+  setOptions(functionName: string) {
     let config = this.mcConfig.getConfig();
     // Check for any config options and merge/override the class options
     if (functionName === this.ON_RESUME) {
-      if (options) {
-        Object.assign(this.onResumeOptions, options);
-      }
       if (config.onResume) {
         Object.assign(this.onResumeOptions, config.onResume);
       }
       this.options = this.onResumeOptions;
     } else if (functionName === this.ON_NAVIGATION) {
-      if (options) {
-        Object.assign(this.onNavigationOptions, options);
-      }
       if (config.onNavigation) {
         Object.assign(this.onNavigationOptions, config.onNavigation);
       }
@@ -214,9 +208,6 @@ export class McResumeProvider {
       this.options = this.onNavigationOptions;
     } else {
       // On cold start
-      if (options) {
-        Object.assign(this.onColdStartOptions, options);
-      }
       if (config.onColdStart) {
         Object.assign(this.onColdStartOptions, config.onColdStart);
       }
@@ -227,14 +218,9 @@ export class McResumeProvider {
     this.setUpgradeOptions(config);
   }
 
-  setUpgradeOptions(config?: any, options?: any) {
-    if (options) {
-      Object.assign(this.upgradeOptions, options);
-    }
-    if (config) {
-      if (config.upgradeOptions) {
-        Object.assign(this.upgradeOptions, config.upgradeOptions);
-      }
+  setUpgradeOptions(config: any) {
+    if (config.upgradeOptions) {
+      Object.assign(this.upgradeOptions, config.upgradeOptions);
     }
   }
 

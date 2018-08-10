@@ -172,10 +172,7 @@ export class McLockScreenProvider {
     });
   }
 
-  setOptions(options?: any) {
-    if (options) {
-      Object.assign(this.lockScreenOptions, options);
-    }
+  setOptions() {
     let config = this.mcConfig.getConfig();
     // Check for any config options and merge/override the class options
     if (config.lockScreenOptions) {
