@@ -4,7 +4,6 @@
   "author": "MobileCaddy",
   "homepage": "http://mobilecaddy.net/",
   "description": "MobileCaddy Angular Module containing all sorts of goodness",
-  "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",

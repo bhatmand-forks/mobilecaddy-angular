@@ -4,7 +4,6 @@
   "repository": "",
   "author": "",
   "license": "MIT",
-  "private": true,
   "peerDependencies": {
     "@angular/core": "^5.0.0",
     "@angular/common": "^5.0.0"
