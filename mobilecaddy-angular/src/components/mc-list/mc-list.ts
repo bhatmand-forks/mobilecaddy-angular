@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { McDataProvider } from '../../providers/mc-data/mc-data';
 import { LoadingController, Loading } from 'ionic-angular';
@@ -17,10 +17,13 @@ import { Subscription } from 'rxjs/Subscription';
     `
   ]
 })
-export class McListComponent implements OnInit, OnDestroy {
+export class McListComponent implements OnInit, OnDestroy, OnChanges {
 
   logTag: string = 'mc-list.ts';
   @Input('headerTitle') headerTitle: string;
+  // Either 'recs' or 'sqlParms' must be specified for this component.
+  // 'recs' = data read by parent component and passed to this component.
+  // 'sqlParms' = the smart sql used by this component to read the data.
   @Input('recs') recs: any;
   @Input('sqlParms') sqlParms: any;
   @Input('displayFields') displayFields: any;
@@ -96,6 +99,15 @@ export class McListComponent implements OnInit, OnDestroy {
     // Change the list top margin after search bar html has been created
     if (this.fixedSearchContainer) {
       this.repositionList();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // If the 'recs' has been changed by the parent component (after reading data)
+    // then update 'allRecs' to reflect the records.
+    // 'allRecs' is used in search functionality
+    if (changes.recs) {
+      this.allRecs = changes.recs.currentValue;
     }
   }
 

@@ -1,0 +1,41 @@
+<ion-header>
+
+  <ion-navbar hideBackButton="true">
+    <ion-title>{{title}}</ion-title>
+  </ion-navbar>
+  <ion-toolbar *ngIf="readOnly">
+    <ion-title>{{subTitle}}</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+
+  <mc-form [readOnly]="readOnly" [generateForm]="generateForm" (editingBegan)="onEditingBegan($event)" [submit]="submit" (submitResult)="onSubmit($event)"
+    [populateForm]="populateForm">
+  </mc-form>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar *ngIf="!readOnly">
+    <ion-buttons left>
+      <button ion-button outline (click)="cancel()">
+        Cancel
+      </button>
+    </ion-buttons>
+    <ion-buttons right>
+      <button ion-button solid color="primary" (click)="confirmSubmit()">
+        Submit
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="readOnly">
+    <ion-buttons left>
+      <button ion-button outline (click)="cancel()">
+        Close
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { HomePage } from '../pages/home/home';
 import { SettingsPage } from '../../mobilecaddy-angular/src/pages/settings-page/settings-page';
+import { McMenuFormsPage } from '../../mobilecaddy-angular/src/pages/mc-menu-forms/mc-menu-forms';
 
 // DEV STUFF
 import { isDevMode } from '@angular/core';
@@ -49,6 +50,7 @@ export class MyApp {
       { title: 'Test mc-form', component: 'TestMcFormPage' },
       { title: 'Test Lock Screen', component: 'TestMcLockScreenPage' },
       { title: 'Test Resume/Nav/Cold', component: 'TestMcResumePage' },
+      { title: 'Menu Forms', component: McMenuFormsPage },
       { title: 'Settings', component: SettingsPage }
     ];
   }

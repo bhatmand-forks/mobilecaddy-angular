@@ -16,7 +16,9 @@ export interface IAppConfig {
   upgradeOptions?: UpgradeOptionsConfig;
   lockScreenOptions?: LockScreenOptionsConfig;
   platformPinChallengeOptions?: PlatformPinChallengeOptionsConfig;
-  settingsPage: settingsPageConfig;
+  settingsPage?: settingsPageConfig;
+  mcMenuFormsPage?: McMenuFormsPageConfig;
+  mcCompletedFormsPage?: McCompletedFormsPageConfig;
 }
 
 export interface indexSpecConfig {
@@ -105,6 +107,24 @@ export interface settingsPageConfig {
   loggingLevelTitle?: string;
   loggingLevelOptionsText?: string[];
   loggingLevelCssClass?: string;
+}
+export interface McMenuFormsPageConfig {
+  formVersionFields?: any;
+  iconsStart?: any;
+  buttonsEnd?: any;
+  showSearch?: boolean;
+  searchPlaceholder?: string;
+  noDataMsg?: string;
+  loaderMsg?: string;
+}
+
+export interface McCompletedFormsPageConfig {
+  formVersionFields?: any;
+  showSearch?: boolean;
+  searchPlaceholder?: string;
+  noDataMsg?: string;
+  loaderMsg?: string;
+  subTitleField?: string;
 }
 
 // const fourHours: number = 1000 * 60 * 60 * 4;
@@ -288,6 +308,12 @@ export const AppConfig: IAppConfig = {
   },
 
   settingsPage: {
+  },
+
+  mcMenuFormsPage: {
+  },
+
+  mcCompletedFormsPage: {
   }
 
 };

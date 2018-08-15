@@ -80,30 +80,36 @@ export class McSyncService {
         let syncPointConfig: SyncPointConfig = this.getConfigFromSyncPoint(
           tablesToSync
         );
-        this.getDirtyTables().then(dirtyTables => {
-          if (
-            syncPointConfig.skipSyncPeriod &&
-            localStorage.getItem('lastSyncSuccess') &&
-            dirtyTables.length === 0
-          ) {
-            var timeNow = new Date().valueOf();
+        // Make sure sync point name is in config
+        if (syncPointConfig.name !== '') {
+          this.getDirtyTables().then(dirtyTables => {
             if (
-              timeNow >
-              parseInt(localStorage.getItem('lastSyncSuccess')) +
-                syncPointConfig.skipSyncPeriod * 1000
+              syncPointConfig.skipSyncPeriod &&
+              localStorage.getItem('lastSyncSuccess') &&
+              dirtyTables.length === 0
             ) {
+              var timeNow = new Date().valueOf();
+              if (
+                timeNow >
+                parseInt(localStorage.getItem('lastSyncSuccess')) +
+                  syncPointConfig.skipSyncPeriod * 1000
+              ) {
+                this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
+                  .then(r => resolve(r))
+                  .catch(e => reject(e));
+              } else {
+                resolve('not-syncing:too-soon');
+              }
+            } else {
               this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
                 .then(r => resolve(r))
                 .catch(e => reject(e));
-            } else {
-              resolve('not-syncing:too-soon');
             }
-          } else {
-            this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
-              .then(r => resolve(r))
-              .catch(e => reject(e));
-          }
-        });
+          });
+        } else {
+          // No sync point name found in config
+          resolve('not-syncing:no-sync-point-config');
+        }
       } else {
         // We have an array of tables... so let's just sync
         this.doSyncTables(tablesToSync).then(res => {

@@ -14,7 +14,7 @@
       </button>
     </ion-list-header>
 
-    <div *ngIf="recs&&recs.length===0&&noDataMsg" [ngClass]="noDataMsgClass ? noDataMsgClass : ''">{{noDataMsg}}</div>
+    <div padding *ngIf="recs&&recs.length===0&&noDataMsg" [ngClass]="noDataMsgClass ? noDataMsgClass : ''">{{noDataMsg}}</div>
 
     <ng-container *ngIf="!isCardList">
       <button *ngFor="let rec of recs" ion-item detail-none text-wrap (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">

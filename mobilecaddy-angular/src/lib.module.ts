@@ -20,6 +20,9 @@ import { SettingsMtiPage } from './pages/settings-mti/settings-mti-page';
 import { SettingsRawViewPage } from './pages/settings-raw-view/settings-raw-view';
 import { SettingsRawViewModalPage } from './pages/settings-raw-view-modal/settings-raw-view-modal';
 import { MCOutboxPage } from './pages/outbox-page/outbox-page';
+import { McMenuFormsPage } from './pages/mc-menu-forms/mc-menu-forms'
+import { McFormDetailPage } from './pages/mc-form-detail/mc-form-detail'
+import { McCompletedFormsPage } from './pages/mc-completed-forms/mc-completed-forms'
 
 // Providers
 import { McSyncService } from './providers/mc-sync/mc-sync.service';
@@ -57,7 +60,10 @@ import { Network } from '@ionic-native/network';
     SettingsMtiDetailPage,
     SettingsRawViewPage,
     SettingsRawViewModalPage,
-    MCOutboxPage
+    MCOutboxPage,
+    McMenuFormsPage,
+    McFormDetailPage,
+    McCompletedFormsPage
   ],
   exports: [
     MobileCaddySyncIconComponent,
@@ -74,7 +80,10 @@ import { Network } from '@ionic-native/network';
     SettingsMtiDetailPage,
     SettingsRawViewPage,
     SettingsRawViewModalPage,
-    MCOutboxPage
+    MCOutboxPage,
+    McMenuFormsPage,
+    McFormDetailPage,
+    McCompletedFormsPage
   ],
   entryComponents: [
     MCOutboxPage,
@@ -86,7 +95,10 @@ import { Network } from '@ionic-native/network';
     SettingsRawViewPage,
     SettingsRawViewModalPage,
     McDiagnosticsPage,
-    McLockScreenComponent
+    McLockScreenComponent,
+    McMenuFormsPage,
+    McFormDetailPage,
+    McCompletedFormsPage
   ],
   providers: [Network]
 })
