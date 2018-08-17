@@ -3,9 +3,13 @@
   <div #fixedTabsContainer ion-fixed class="mc-form-tab-container" [ngClass]="tabContainerClass ? tabContainerClass : ''">
     <ion-grid>
       <ion-row>
-        <ion-col *ngFor="let tab of tabs">
-          <div tappable class="tab {{tab.active}}" (click)="tabSelected(tab.id)">
-            {{tab.name}}
+        <ion-col *ngFor="let tab of tabs" tappable (click)="tabSelected(tab.id)">
+          <div class="tab-wrapper {{tab.active}}">
+            <div class="tab {{tab.active}}">
+              {{tab.name}}
+            </div>
+            <div class="tab-border {{tab.active}}">
+            </div>
           </div>
         </ion-col>
       </ion-row>
@@ -37,7 +41,8 @@
             <!-- Added div and item-content to get label stacked above checkbox -->
             <!-- See mc-form.scss file for left aligning of checkbox -->
             <div item-content>
-              <ion-checkbox [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()" type="checkbox" [(ngModel)]="fieldsModel[field.Id]"></ion-checkbox>
+              <ion-checkbox [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()" type="checkbox"
+                [(ngModel)]="fieldsModel[field.Id]"></ion-checkbox>
             </div>
           </ion-item>
         </div>
@@ -84,8 +89,9 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-textarea [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
-              [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'" maxlength="{{field.mobilecaddy1__Length__c}}" [attr.rows]="field.rows"></ion-textarea>
+            <ion-textarea [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'" maxlength="{{field.mobilecaddy1__Length__c}}"
+              [attr.rows]="field.rows"></ion-textarea>
           </ion-item>
         </div>
 
@@ -95,7 +101,8 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-select [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'">
+            <ion-select [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'">
               <ion-option *ngFor="let opt of picklistModel[field.Id]" [value]="opt">{{opt.label}}</ion-option>
             </ion-select>
           </ion-item>
