@@ -19,6 +19,8 @@ export class TestMcListPage implements OnInit {
   accounts: any = [];
   accountFields: any;
 
+  accountsLoaded: boolean = false;
+
   // mc-list parameters for contacts
   sqlParms: any;
   contactFields: any;
@@ -27,6 +29,9 @@ export class TestMcListPage implements OnInit {
   iconsEnd: any; /* optional parameter */
   buttonsEnd: any; /* optional parameter */
   itemClass: string; /* optional parameter */
+  contactListHeight: string; /* optional parameter */
+  addCardStart: any /* optional parameter */
+  addCardEnd: any /* optional parameter */
 
   constructor(
     private loadingCtrl: LoadingController,
@@ -37,6 +42,13 @@ export class TestMcListPage implements OnInit {
 
   ngOnInit() {
     console.log(this.logTag);
+
+    setTimeout(() => {
+      console.log('test dynamically changing contact list height');
+      this.contactListHeight = "200px";
+      // Test delay showing accounts
+      this.accountsLoaded = true;
+    }, 2000);
 
     // Create/present a message to display
     let loader = this.loadingCtrl.create({
@@ -170,6 +182,16 @@ export class TestMcListPage implements OnInit {
       }
     ];
     this.itemClass = 'my-item-class';
+    this.contactListHeight = "250px";
+    this.addCardStart = {
+      text: 'Add Contact',
+      icon: 'add',
+      itemClass: 'add-card-item'
+    };
+    this.addCardEnd = {
+      text: 'Add Contact',
+      icon: 'person'
+    };
   }
 
   showDetail(rec): void {
@@ -186,6 +208,14 @@ export class TestMcListPage implements OnInit {
 
   iconEndClicked(rec) {
     console.log('iconEndClicked rec', rec);
+  }
+
+  addCardStartClicked() {
+    console.log('addCardStartClicked');
+  }
+
+  addCardEndClicked() {
+    console.log('addCardEndClicked');
   }
 
 }

@@ -17,15 +17,23 @@
   <div padding-left>
     <h4>Accounts</h4>
   </div>
-  <mc-list [recs]="accounts" [displayFields]="accountFields" (recordClicked)="showDetail($event)"></mc-list>
+  <span [class.hide]="accountsLoaded">
+    <div padding>
+      Delay showing accounts...
+    </div>
+  </span>
+  <span [class.hide]="!accountsLoaded">
+    <mc-list listScrollHeight="150px" [recs]="accounts" [displayFields]="accountFields" (recordClicked)="showDetail($event)"></mc-list>
+  </span>
 
   <div padding-left>
     <h4>Contacts</h4>
   </div>
-  <mc-list [sqlParms]="sqlParms" [displayFields]="contactFields" [iconsStart]="iconsStart" [iconsEnd]="iconsEnd"
-    [buttonsEnd]="buttonsEnd" [itemClass]="itemClass" [loaderMsg]="loaderMsg" noDataMsg="No contacts" noDataMsgClass="no-data"
-    showSearch="true" isCardList="true" searchPlaceholder="Search contacts" (recordClicked)="showDetail($event)" (buttonEndClicked)="buttonEndClicked($event)"
-    (iconStartClicked)="iconStartClicked($event)" (iconEndClicked)="iconEndClicked($event)">
+  <mc-list [listScrollHeight]="contactListHeight" [sqlParms]="sqlParms" [displayFields]="contactFields" [iconsStart]="iconsStart"
+    [iconsEnd]="iconsEnd" [buttonsEnd]="buttonsEnd" [itemClass]="itemClass" [loaderMsg]="loaderMsg" noDataMsg="No contacts"
+    noDataMsgClass="no-data" showSearch="true" isCardList="true" searchPlaceholder="Search contacts" (recordClicked)="showDetail($event)"
+    (buttonEndClicked)="buttonEndClicked($event)" (iconStartClicked)="iconStartClicked($event)" (iconEndClicked)="iconEndClicked($event)"
+    [addCardStart]="addCardStart" (addCardStartClicked)="addCardStartClicked()" [addCardEnd]="addCardEnd" (addCardEndClicked)="addCardEndClicked()">
   </mc-list>
 
 </ion-content>

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { NavController, LoadingController, Content } from 'ionic-angular';
 import { McDataProvider } from '../../providers/mc-data/mc-data';
 import { McFormDetailPage } from '../../pages/mc-form-detail/mc-form-detail'
 import { McCompletedFormsPage } from '../../pages/mc-completed-forms/mc-completed-forms'
@@ -20,7 +20,15 @@ export class McMenuFormsPage implements OnInit {
     showSearch: true,
     searchPlaceholder: 'Search...',
     noDataMsg: 'No records',
-    loaderMsg: 'Loading...'
+    loaderMsg: 'Loading...',
+    listScrollHeight: "100%",
+    mcListHeight: null
+  }
+
+  // So we can change height of list to match it's container
+  @ViewChild(Content) content: Content;
+  @HostListener('window:resize') onResize() {
+    this.setListScrollHeight()
   }
 
   // mcMenuFormsPage config read from app.config (if there is any)
@@ -96,6 +104,19 @@ export class McMenuFormsPage implements OnInit {
     this.formVersions = res;
     // Get any page config
     this.mergeConfig();
+    // Adjust list height
+    this.setListScrollHeight();
+  }
+
+  setListScrollHeight() {
+    // Guard against resize before view is rendered
+    if (this.content) {
+      console.log('getContentDimensions', this.content.getContentDimensions());
+      this.config.mcListHeight = (this.content.getContentDimensions().contentHeight - 10) + "px";
+      if (this.config.showSearch) {
+        this.config.mcListHeight = (this.content.getContentDimensions().contentHeight - 54) + "px";
+      }
+    }
   }
 
   mergeConfig() {

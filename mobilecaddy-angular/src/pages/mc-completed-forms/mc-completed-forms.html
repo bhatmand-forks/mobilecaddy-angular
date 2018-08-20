@@ -12,7 +12,7 @@
 
 <ion-content>
 
-  <mc-list [recs]="formResponses" [displayFields]="config.formResponseFields" (recordClicked)="showDetail($event)" [showSearch]="config.showSearch"
+  <mc-list [height]="config.mcListHeight" [listScrollHeight]="config.listScrollHeight" [recs]="formResponses" [displayFields]="config.formResponseFields" (recordClicked)="showDetail($event)" [showSearch]="config.showSearch"
     [searchPlaceholder]="config.searchPlaceholder" [noDataMsg]="config.noDataMsg"></mc-list>
 
 </ion-content>
