@@ -94,10 +94,10 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // If the 'recs' has been changed by the parent component (after reading data)
-    // then update 'allRecs' to reflect the records.
-    // 'allRecs' is used in search functionality
+    // Check if the 'recs' has been changed by the parent component (e.g. after reading data)
     if (changes.recs) {
+      this.recs = changes.recs.currentValue;
+      // Update 'allRecs' to reflect the records - 'allRecs' is used in search functionality
       this.allRecs = changes.recs.currentValue;
     }
   }

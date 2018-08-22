@@ -3,7 +3,7 @@ import { IonicPage, LoadingController } from 'ionic-angular';
 import { McDataProvider } from '../../../mobilecaddy-angular/src/providers/mc-data/mc-data';
 
 // Note. We populate two mc-list components in two different ways.
-// 1. Accounts mc-list is populated using the 'recs' parameter after reading the data 
+// 1. Accounts mc-list is populated using the 'recs' parameter after reading the data
 //    in the ngOnInit method below.
 // 2. Contacts mc-list is populated using the 'sqlParms' parameter
 //    (which forces the component to do the data read)
@@ -43,13 +43,6 @@ export class TestMcListPage implements OnInit {
   ngOnInit() {
     console.log(this.logTag);
 
-    setTimeout(() => {
-      console.log('test dynamically changing contact list height');
-      this.contactListHeight = "200px";
-      // Test delay showing accounts
-      this.accountsLoaded = true;
-    }, 2000);
-
     // Create/present a message to display
     let loader = this.loadingCtrl.create({
       content: this.loaderMsg,
@@ -57,14 +50,22 @@ export class TestMcListPage implements OnInit {
     });
     loader.present();
 
-    // Get accounts for the list
-    this.mcDataProvider.getByFilters('Account__ap').then(res => {
-      console.log('res', res);
-      // Accounts mc-list - sets the 'recs' component parameter which causes it to populate list
-      this.setUpAccountList(res);
-      // Dismiss loader message
-      loader.dismiss();
-    });
+    setTimeout(() => {
+      console.log('test dynamically changing contact list height');
+      this.contactListHeight = "200px";
+      // Test delay showing accounts
+      this.accountsLoaded = true;
+
+      console.log('delayed loading accounts list');
+      // Get accounts for the list
+      this.mcDataProvider.getByFilters('Account__ap').then(res => {
+        console.log('res', res);
+        // Accounts mc-list - sets the 'recs' component parameter which causes it to populate list
+        this.setUpAccountList(res);
+        // Dismiss loader message
+        loader.dismiss();
+      });
+    }, 3000);
   }
 
   setUpAccountList(res) {

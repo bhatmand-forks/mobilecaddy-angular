@@ -36,7 +36,7 @@
       </ng-container>
 
       <ng-container *ngIf="isCardList&&addCardStart">
-        <ion-card (click)="clickAddCardStart()" [ngClass]="addCardStart.cardClass ? addCardStart.cardClass : ''">
+        <ion-card tappable (click)="clickAddCardStart()" [ngClass]="addCardStart.cardClass ? addCardStart.cardClass : ''">
           <ion-item [ngClass]="addCardStart.itemClass ? addCardStart.itemClass : ''">
             <button ion-button clear icon-start [ngClass]="addCardStart.buttonClass ? addCardStart.buttonClass : ''">
               <ion-icon [name]="addCardStart.icon"></ion-icon>
@@ -47,7 +47,7 @@
       </ng-container>
 
       <ng-container *ngIf="isCardList">
-        <ion-card *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">
+        <ion-card tappable *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">
           <ion-item text-wrap>
             <ion-icon *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)" [color]="getIconStartColor(rec)"
               [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
@@ -67,7 +67,7 @@
       </ng-container>
 
       <ng-container *ngIf="isCardList&&addCardEnd">
-        <ion-card (click)="clickAddCardEnd()" [ngClass]="addCardEnd.cardClass ? addCardEnd.cardClass : ''">
+        <ion-card tappable (click)="clickAddCardEnd()" [ngClass]="addCardEnd.cardClass ? addCardEnd.cardClass : ''">
           <ion-item [ngClass]="addCardEnd.itemClass ? addCardEnd.itemClass : ''">
             <button ion-button clear icon-End [ngClass]="addCardEnd.buttonClass ? addCardEnd.buttonClass : ''">
               <ion-icon [name]="addCardEnd.icon"></ion-icon>
