@@ -72,7 +72,7 @@ export class TestMcListPage implements OnInit {
     // As we're using the 'recs' parameter to mc-list, specify the actual field names
     this.accountFields = [
       {
-        fields: ['Name']
+        fields: ['Name', 'BillingLatitude']
       },
       {
         fields: ['BillingCity', 'BillingState'],

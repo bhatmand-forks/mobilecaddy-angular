@@ -239,6 +239,9 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   formatField(i, j, field) {
+    if (field == null || field == undefined || field === '') {
+      return '';
+    }
     let result = field;
     // Check to see if field needs to be formatted using a pipe.
     // N.B. we currently only cater for a DatePipe

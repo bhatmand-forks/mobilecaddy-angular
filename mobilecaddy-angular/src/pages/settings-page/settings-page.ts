@@ -81,7 +81,7 @@ export class SettingsPage implements OnInit, OnDestroy {
 
   openAdminFunctions() {
     let platformPinChallengeOptions = {
-      bypassChallenge: true,
+      bypassChallenge: window['LOCAL_DEV'],
       timeoutPeriod: 30000,
       showCancel: true,
       maxAttempts: 5,
@@ -93,27 +93,6 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.pinChallenge1Subscription = this.mcPinChallengeProvider
       .presentPinChallenge(platformPinChallengeOptions)
       .subscribe(result => {
-        if (result) {
-          this.navCtrl.push(SettingsDevToolsPage);
-        }
-      });
-  }
-
-  openAdminFunctions2() {
-    let platformPinChallengeOptions = {
-      bypassChallenge: window['LOCAL_DEV'],
-      timeoutPeriod: 30000,
-      showCancel: true,
-      maxAttempts: 5,
-      popupText: [],
-      alertOptions: null,
-      toastOptions: null
-    };
-
-    this.pinChallenge2Subscription = this.mcPinChallengeProvider
-      .presentPinChallenge(platformPinChallengeOptions)
-      .subscribe(result => {
-        console.log('openAdminFunctions2', result);
         if (result) {
           this.navCtrl.push(SettingsDevToolsPage);
         }
