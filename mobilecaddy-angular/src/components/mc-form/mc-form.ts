@@ -84,6 +84,8 @@ export class McFormComponent implements OnInit, OnDestroy {
   @Input('dateMin') dateMin: string = "2000";
   // Is the form to be displayed as 'read only'?
   @Input('readOnly') readOnly: boolean = false;
+  // Is the placeholder shown?
+  @Input('noPlaceholder') noPlaceholder: boolean = true;
   // Indicates whether any fields have been edited (so buttons on parent can be shown/hidden)
   @Output() editingBegan = new EventEmitter<boolean>();
   // The result of a 'save in progress'

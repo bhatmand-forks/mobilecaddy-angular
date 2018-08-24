@@ -54,7 +54,7 @@
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
             <ion-datetime [(ngModel)]="fieldsModel[field.Id]" [displayFormat]="dateDisplayFormat" [pickerFormat]="datePickerFormat" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'" [pickerOptions]="addClearDateButton(field.Id)"
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" [pickerOptions]="addClearDateButton(field.Id)"
               [max]="dateMax" [min]="dateMin">
             </ion-datetime>
           </ion-item>
@@ -67,7 +67,7 @@
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
             <ion-input type="number" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'"></ion-input>
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"></ion-input>
           </ion-item>
         </div>
 
@@ -78,7 +78,7 @@
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
             <ion-input type="text" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'" maxlength="{{field.mobilecaddy1__Length__c}}">
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" maxlength="{{field.mobilecaddy1__Length__c}}">
             </ion-input>
           </ion-item>
         </div>
@@ -90,7 +90,7 @@
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
             <ion-textarea [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'" maxlength="{{field.mobilecaddy1__Length__c}}"
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" maxlength="{{field.mobilecaddy1__Length__c}}"
               [attr.rows]="field.rows"></ion-textarea>
           </ion-item>
         </div>
@@ -102,7 +102,7 @@
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
             <ion-select [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly ? '' : field.mobilecaddy1__Label__c+'...'">
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'">
               <ion-option *ngFor="let opt of picklistModel[field.Id]" [value]="opt">{{opt.label}}</ion-option>
             </ion-select>
           </ion-item>
