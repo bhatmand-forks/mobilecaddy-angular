@@ -75,11 +75,12 @@
                 <br/>
                 <div>{{field.question}}</div>
                 <!-- Use ng if/then/else to display field value -->
-                <div *ngIf="field.value=='undefined'||field.value==null||field.value=='null'||field.value==''; then thenTemplateName else elseTemplateName">
+                <div *ngIf="field.value=='undefined'||field.value==null||field.value=='null'||field.value==''||(field.value=='false'&&field.type=='Checkbox'); then thenTemplateName else elseTemplateName">
                 </div>
                 <ng-template #thenTemplateName>
                   <div>
-                    No value
+                    <span *ngIf="field.type==='Checkbox'">Unchecked</span>
+                    <span *ngIf="field.type!=='Checkbox'">No value</span>
                   </div>
                 </ng-template>
                 <ng-template #elseTemplateName>
