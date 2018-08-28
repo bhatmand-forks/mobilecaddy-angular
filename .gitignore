@@ -15,6 +15,7 @@ npm-debug.log*
 
 .idea/
 .sourcemaps/
+.sfdx/
 .sass-cache/
 .tmp/
 .versions/
