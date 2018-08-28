@@ -1,0 +1,21 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Forms</ion-title>
+    <ion-buttons end>
+      <mc-sync-icon></mc-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <div>
+    <mc-list [height]="config.mcListHeight" [listScrollHeight]="config.listScrollHeight" [recs]="formVersions" [displayFields]="config.formVersionFields"
+      [iconsStart]="config.iconsStart" [buttonsEnd]="config.buttonsEnd" (buttonEndClicked)="buttonEndClicked($event)" (iconStartClicked)="iconStartClicked($event)"
+      [showSearch]="config.showSearch" [searchPlaceholder]="config.searchPlaceholder" [noDataMsg]="config.noDataMsg"></mc-list>
+  </div>
+</ion-content>

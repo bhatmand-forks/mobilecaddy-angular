@@ -84,6 +84,10 @@ export class McFormComponent implements OnInit, OnDestroy {
   @Input('dateMin') dateMin: string = "2000";
   // Is the form to be displayed as 'read only'?
   @Input('readOnly') readOnly: boolean = false;
+  // Is the placeholder shown?
+  @Input('noPlaceholder') noPlaceholder: boolean = true;
+  // Picklist options of AlertController
+  @Input('picklistOptions') picklistOptions: any = { enableBackdropDismiss: false };
   // Indicates whether any fields have been edited (so buttons on parent can be shown/hidden)
   @Output() editingBegan = new EventEmitter<boolean>();
   // The result of a 'save in progress'
@@ -197,6 +201,8 @@ export class McFormComponent implements OnInit, OnDestroy {
       this.tabs = extractResult.tabs;
       this.fieldsModel = extractResult.fieldsModel;
       this.picklistModel = extractResult.picklistModel;
+
+      this.mcFormProvider.checkAndUpdateChildQuestions(this.fields, this.fieldsModel, this.picklistModel);
     }
   }
 

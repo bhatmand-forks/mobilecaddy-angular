@@ -3,7 +3,7 @@ import { IonicPage, LoadingController } from 'ionic-angular';
 import { McDataProvider } from '../../../mobilecaddy-angular/src/providers/mc-data/mc-data';
 
 // Note. We populate two mc-list components in two different ways.
-// 1. Accounts mc-list is populated using the 'recs' parameter after reading the data 
+// 1. Accounts mc-list is populated using the 'recs' parameter after reading the data
 //    in the ngOnInit method below.
 // 2. Contacts mc-list is populated using the 'sqlParms' parameter
 //    (which forces the component to do the data read)
@@ -19,6 +19,8 @@ export class TestMcListPage implements OnInit {
   accounts: any = [];
   accountFields: any;
 
+  accountsLoaded: boolean = false;
+
   // mc-list parameters for contacts
   sqlParms: any;
   contactFields: any;
@@ -27,6 +29,9 @@ export class TestMcListPage implements OnInit {
   iconsEnd: any; /* optional parameter */
   buttonsEnd: any; /* optional parameter */
   itemClass: string; /* optional parameter */
+  contactListHeight: string; /* optional parameter */
+  addCardStart: any /* optional parameter */
+  addCardEnd: any /* optional parameter */
 
   constructor(
     private loadingCtrl: LoadingController,
@@ -45,21 +50,29 @@ export class TestMcListPage implements OnInit {
     });
     loader.present();
 
-    // Get accounts for the list
-    this.mcDataProvider.getByFilters('Account__ap').then(res => {
-      console.log('res', res);
-      // Accounts mc-list - sets the 'recs' component parameter which causes it to populate list
-      this.setUpAccountList(res);
-      // Dismiss loader message
-      loader.dismiss();
-    });
+    setTimeout(() => {
+      console.log('test dynamically changing contact list height');
+      this.contactListHeight = "200px";
+      // Test delay showing accounts
+      this.accountsLoaded = true;
+
+      console.log('delayed loading accounts list');
+      // Get accounts for the list
+      this.mcDataProvider.getByFilters('Account__ap').then(res => {
+        console.log('res', res);
+        // Accounts mc-list - sets the 'recs' component parameter which causes it to populate list
+        this.setUpAccountList(res);
+        // Dismiss loader message
+        loader.dismiss();
+      });
+    }, 3000);
   }
 
   setUpAccountList(res) {
     // As we're using the 'recs' parameter to mc-list, specify the actual field names
     this.accountFields = [
       {
-        fields: ['Name']
+        fields: ['Name', 'BillingLatitude']
       },
       {
         fields: ['BillingCity', 'BillingState'],
@@ -170,6 +183,16 @@ export class TestMcListPage implements OnInit {
       }
     ];
     this.itemClass = 'my-item-class';
+    this.contactListHeight = "250px";
+    this.addCardStart = {
+      text: 'Add Contact',
+      icon: 'add',
+      itemClass: 'add-card-item'
+    };
+    this.addCardEnd = {
+      text: 'Add Contact',
+      icon: 'person'
+    };
   }
 
   showDetail(rec): void {
@@ -186,6 +209,14 @@ export class TestMcListPage implements OnInit {
 
   iconEndClicked(rec) {
     console.log('iconEndClicked rec', rec);
+  }
+
+  addCardStartClicked() {
+    console.log('addCardStartClicked');
+  }
+
+  addCardEndClicked() {
+    console.log('addCardEndClicked');
   }
 
 }

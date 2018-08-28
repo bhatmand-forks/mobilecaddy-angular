@@ -353,7 +353,11 @@ export class McFormProvider {
         };
       }
     } else {
-      return responsesJson;
+      return {
+        formResponse: JSON.stringify([responsesJson]),
+        fieldsModel: fieldsModel,
+        picklistModel: picklistModel
+      }
     }
   }
 
@@ -484,7 +488,7 @@ export class McFormProvider {
     }
   }
 
-  populateForm(responses,fields,fieldsModel,picklistModel) {
+  populateForm(responses, fields, fieldsModel, picklistModel) {
     if (responses) {
       // Convert the string into an object
       let formResponses = null;
@@ -499,7 +503,7 @@ export class McFormProvider {
       if (formResponses && formResponses[0].fields) {
         // Generate an array of field responses by field Id
         let fieldResponses: Object = {};
-        _.each(formResponses[0].fields, function(field) {
+        _.each(formResponses[0].fields, function (field) {
           fieldResponses[field.id] = field;
         });
 
@@ -511,7 +515,7 @@ export class McFormProvider {
           if (value === 'null') {
             value = null;
           }
- 
+
           // For Picklists, the value is an object with label & score
           if (fieldResponses[fields[i].Id].type === 'Picklist') {
             // Iterate over all the possible picklist entries (for this field),

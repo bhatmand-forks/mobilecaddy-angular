@@ -16,6 +16,9 @@ export * from './pages/settings-mti-table-record/settings-mti-table-record';
 export * from './pages/settings-raw-view/settings-raw-view';
 export * from './pages/settings-raw-view-modal/settings-raw-view-modal';
 export * from './pages/outbox-page/outbox-page';
+export * from './pages/mc-menu-forms/mc-menu-forms';
+export * from './pages/mc-form-detail/mc-form-detail';
+export * from './pages/mc-completed-forms/mc-completed-forms'
 
 // Providers
 export * from './providers/mc-startup/mc-startup.service';

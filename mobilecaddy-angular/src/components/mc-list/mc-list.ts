@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { McDataProvider } from '../../providers/mc-data/mc-data';
 import { LoadingController, Loading } from 'ionic-angular';
@@ -17,10 +17,13 @@ import { Subscription } from 'rxjs/Subscription';
     `
   ]
 })
-export class McListComponent implements OnInit, OnDestroy {
+export class McListComponent implements OnInit, OnDestroy, OnChanges {
 
   logTag: string = 'mc-list.ts';
   @Input('headerTitle') headerTitle: string;
+  // Either 'recs' or 'sqlParms' must be specified for this component.
+  // 'recs' = data read by parent component and passed to this component.
+  // 'sqlParms' = the smart sql used by this component to read the data.
   @Input('recs') recs: any;
   @Input('sqlParms') sqlParms: any;
   @Input('displayFields') displayFields: any;
@@ -37,18 +40,17 @@ export class McListComponent implements OnInit, OnDestroy {
   @Input('searchPlaceholder') searchPlaceholder: string = 'Search';
   @Input('refreshList') refreshList: Subject<boolean>;
   @Input('filterList') filterList: Subject<boolean>;
+  @Input('height') height: string;
+  @Input('listScrollHeight') listScrollHeight: string;
+  @Input('addCardStart') addCardStart: any;
+  @Input('addCardEnd') addCardEnd: any;
   @Output() recordClicked: EventEmitter<any> = new EventEmitter();
   @Output() iconEndClicked: EventEmitter<any> = new EventEmitter();
   @Output() iconStartClicked: EventEmitter<any> = new EventEmitter();
   @Output() buttonEndClicked: EventEmitter<any> = new EventEmitter();
   @Output() addClicked: EventEmitter<any> = new EventEmitter();
-
-  // Elements used to fix search bar at top of content, stopping it scrolling with the list
-  @ViewChild('fixedSearchContainer') fixedSearchContainer: ElementRef;
-  @ViewChild('list') list: ElementRef;
-
-  // We only want to adjust list top margin when search bar container height changes
-  private prevSearchHeight: number = 0;
+  @Output() addCardStartClicked: EventEmitter<any> = new EventEmitter();
+  @Output() addCardEndClicked: EventEmitter<any> = new EventEmitter();
 
   // So we can unsubscribe subscriptions on destroy
   private refreshListSubscription: Subscription;
@@ -91,35 +93,12 @@ export class McListComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngAfterViewChecked() {
-    // The list is dynamically created when the form is populated.
-    // Change the list top margin after search bar html has been created
-    if (this.fixedSearchContainer) {
-      this.repositionList();
-    }
-  }
-
-  repositionList() {
-    // Set the top margin of the list, to take into account the search bar container.
-
-    // Get reference to search bar container
-    let fixedSearchContainerEl = this.fixedSearchContainer.nativeElement;
-
-    // Get the height of the search bar fixed container
-    let searchHeight = fixedSearchContainerEl.offsetHeight;
-
-    // Check for change of the search bar container height (it's dynamic html)
-    if (searchHeight != this.prevSearchHeight) {
-      // If we have a search bar then give list a little bit more top margin
-      if (this.showSearch) {
-        searchHeight += 5;
-      }
-      // Get reference to form list element
-      let listEl = this.list.nativeElement;
-      // Set the margin top to the height of the search bar fixed container
-      listEl.style.marginTop = searchHeight + 'px';
-      // Save height
-      this.prevSearchHeight = searchHeight;
+  ngOnChanges(changes: SimpleChanges) {
+    // Check if the 'recs' has been changed by the parent component (e.g. after reading data)
+    if (changes.recs) {
+      this.recs = changes.recs.currentValue;
+      // Update 'allRecs' to reflect the records - 'allRecs' is used in search functionality
+      this.allRecs = changes.recs.currentValue;
     }
   }
 
@@ -192,6 +171,18 @@ export class McListComponent implements OnInit, OnDestroy {
     }
   }
 
+  clickAddCardStart() {
+    if (this.addCardStartClicked) {
+      this.addCardStartClicked.emit();
+    }
+  }
+
+  clickAddCardEnd() {
+    if (this.addCardEndClicked) {
+      this.addCardEndClicked.emit();
+    }
+  }
+
   wrapField(i, j, field) {
     // i = index of displayFields (which represents a row of fields)
     // j = index of fields (which represents a field position within each row)
@@ -248,6 +239,9 @@ export class McListComponent implements OnInit, OnDestroy {
   }
 
   formatField(i, j, field) {
+    if (field == null || field == undefined || field === '') {
+      return '';
+    }
     let result = field;
     // Check to see if field needs to be formatted using a pipe.
     // N.B. we currently only cater for a DatePipe
