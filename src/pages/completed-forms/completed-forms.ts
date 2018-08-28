@@ -15,9 +15,11 @@ export class CompletedFormsPage implements OnInit {
   formResponse: any = {};
 
   // Enable child component mc-form to have it's form generated
-  generateForm: Subject<boolean> = new Subject();
+  generateForm: Subject<any> = new Subject();
   // Enable child component mc-form to have it's form populated
-  populateForm: Subject<boolean> = new Subject();
+  populateForm: Subject<any> = new Subject();
+  // Enable child component mc-form to have it's form fields populated
+  populateFields: Subject<any> = new Subject();
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -33,7 +35,6 @@ export class CompletedFormsPage implements OnInit {
       content: 'Loading...',
       duration: 10000
     });
-    loader.present();
 
     // Display message and get data
     loader.present().then(() => {
@@ -61,40 +62,37 @@ export class CompletedFormsPage implements OnInit {
 
   selectFormResponse(formResponse: any) {
     for (let i = 0; i < this.formResponses.length; i++) {
-      if (this.formResponses[i].Id == formResponse.Id || this.formResponses[i].mobilecaddy1__MC_Proxy_ID__c == formResponse.Id) {
+      if (this.formResponses[i].Id == formResponse.Id
+        || this.formResponses[i].mobilecaddy1__MC_Proxy_ID__c == formResponse.Id
+      ) {
         // Set form response
         this.formResponse = this.formResponses[i];
+        console.log('formResponse', this.formResponse);
         // Populate the mc-form component
         this.populateForm.next(this.formResponses[i].mobilecaddy1__Responses__c);
+        break;
       }
     }
-    // // Create/present a message to display
-    // let loader = this.loadingCtrl.create({
-    //   content: 'Loading form...' + formResponse.Name,
-    //   duration: 10000
-    // });
-    // loader.present();
 
-    // // Get the form response details
-    // this.mcDataProvider.getByFilters('Form_Response__ap', { Id: formResponse.Id }).then(res => {
-    //   // console.log('res', res);
-    //   if (res) {
-    //     this.formResponse = res[0];
-    //     // Populate the mc-form component
-    //     this.populateForm.next(res[0].mobilecaddy1__Responses__c);
-    //   } else {
-    //     // Try to get form response using proxy id (sync might have finished but we still have proxy id in the Id field)
-    //     this.mcDataProvider.getByFilters('Form_Response__ap', { mobilecaddy1__MC_Proxy_ID__c: formResponse.Id }).then(res => {
-    //       if (res) {
-    //         this.formResponse = res[0];
-    //         // Populate the mc-form component
-    //         this.populateForm.next(res[0].mobilecaddy1__Responses__c);
-    //       }
-    //     });
-    //   }
-    //   // Dismiss loader message
-    //   loader.dismiss();
-    // });
+    // Test populateFields subscribe - change some field values after a timeout
+    // Build fieldsModel from this.formResponse.mobilecaddy1__Responses__c
+    let responses = JSON.parse(this.formResponse.mobilecaddy1__Responses__c);
+    let fields: any = responses[0].fields;
+    let fieldsModel: any = {};
+    for (let i = 0; i < fields.length; i++) {
+      // console.log('fields[i]', fields[i]);
+      if (fields[i].type === 'Text' || fields[i].type === 'Textarea') {
+        fieldsModel[fields[i].id] = 'overriding value from code';
+      } else if (fields[i].type === 'Date') {
+        fieldsModel[fields[i].id] = '1972-01-01';
+      } else if (fields[i].type === 'Picklist') {
+        fieldsModel[fields[i].id] = { label: fields[i].value, score: fields[i].userScore };
+      } else {
+        fieldsModel[fields[i].id] = fields[i].value;
+      }
+    }
+    console.log('fieldsModel', fieldsModel);
+    this.populateFields.next(fieldsModel);
   }
 
 }

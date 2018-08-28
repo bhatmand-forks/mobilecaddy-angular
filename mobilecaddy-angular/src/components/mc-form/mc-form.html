@@ -103,7 +103,7 @@
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
             <ion-select [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
+              [compareWith]="compareFn" (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
               [selectOptions]="picklistOptions">
               <ion-option *ngFor="let opt of picklistModel[field.Id]" [value]="opt">{{opt.label}}</ion-option>
             </ion-select>

@@ -5,17 +5,17 @@
   </ion-navbar>
 
   <ion-toolbar color="primary">
-      <ion-item no-lines>
-        <ion-label>{{formVersion.mobilecaddy1__Label__c}} Responses</ion-label>
-        <ion-select [(ngModel)]="formVersion.Id" interface="popover">
-          <ion-option *ngFor="let formResponse of formResponses" (ionSelect)="selectFormResponse(formResponse)" value="{{formResponse.Id}}">{{formResponse.Name}}
-          </ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-toolbar>
-  
+    <ion-item no-lines>
+      <ion-label>{{formVersion.mobilecaddy1__Label__c}} Responses</ion-label>
+      <ion-select [(ngModel)]="formVersion.Id" interface="popover">
+        <ion-option *ngFor="let formResponse of formResponses" (ionSelect)="selectFormResponse(formResponse)" value="{{formResponse.Id}}">{{formResponse.Name}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
-    <mc-form [readOnly]="true" [generateForm]="generateForm" [populateForm]="populateForm"></mc-form>
+  <mc-form [readOnly]="false" [generateForm]="generateForm" [populateForm]="populateForm" [populateFields]="populateFields"></mc-form>
 </ion-content>

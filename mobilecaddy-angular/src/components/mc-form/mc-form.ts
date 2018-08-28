@@ -72,16 +72,17 @@ export class McFormComponent implements OnInit, OnDestroy {
   // private readonly logTag: string = 'mc-form.ts';
 
   @Input('formVersion') formVersion;
-  @Input('generateForm') generateForm: Subject<boolean>;
-  @Input('saveInProgress') saveInProgress: Subject<boolean>;
-  @Input('submit') submit: Subject<boolean>;
-  @Input('populateForm') populateForm: Subject<boolean>;
+  @Input('generateForm') generateForm: Subject<any>;
+  @Input('saveInProgress') saveInProgress: Subject<any>;
+  @Input('submit') submit: Subject<any>;
+  @Input('populateForm') populateForm: Subject<any>;
+  @Input('populateFields') populateFields: Subject<any>;
   @Input('tabContainerClass') tabContainerClass: string;
   @Input('listClass') listClass: string;
-  @Input('dateDisplayFormat') dateDisplayFormat: string = "DD/MM/YYYY";
-  @Input('datePickerFormat') datePickerFormat: string = "DD/MM/YYYY";
-  @Input('dateMax') dateMax: string = "2020";
-  @Input('dateMin') dateMin: string = "2000";
+  @Input('dateDisplayFormat') dateDisplayFormat: string = 'DD/MM/YYYY';
+  @Input('datePickerFormat') datePickerFormat: string = 'DD/MM/YYYY';
+  @Input('dateMax') dateMax: string = '2020';
+  @Input('dateMin') dateMin: string = '2000';
   // Is the form to be displayed as 'read only'?
   @Input('readOnly') readOnly: boolean = false;
   // Is the placeholder shown?
@@ -113,6 +114,7 @@ export class McFormComponent implements OnInit, OnDestroy {
   private saveInProgressSubscription: Subscription;
   private submitSubscription: Subscription;
   private populateFormSubscription: Subscription;
+  private populateFieldsSubscription: Subscription;
 
   // We only want to adjust form list top margin when tabs container height changes
   private prevTabsHeight: number = 0;
@@ -149,6 +151,12 @@ export class McFormComponent implements OnInit, OnDestroy {
         this.doPopulateForm(responses);
       });
     }
+    // Create subscription to allow 'populate fields' to be actioned from parent component
+    if (this.populateFields) {
+      this.populateFieldsSubscription = this.populateFields.subscribe(fieldsModel => {
+        this.doPopulateFields(fieldsModel);
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -163,6 +171,9 @@ export class McFormComponent implements OnInit, OnDestroy {
     }
     if (this.populateFormSubscription) {
       this.populateFormSubscription.unsubscribe();
+    }
+    if (this.populateFieldsSubscription) {
+      this.populateFieldsSubscription.unsubscribe();
     }
   }
 
@@ -270,6 +281,17 @@ export class McFormComponent implements OnInit, OnDestroy {
       this.picklistModel);
     if (result) {
       this.fieldsModel = result;
+      console.log('after doPopulateForm call, this.fieldsModel ', this.fieldsModel);
     }
   }
+
+  compareFn(e1: any, e2: any): boolean {
+    return e1 && e2 ? e1.label === e2.label : e1 === e2;
+  }
+
+  doPopulateFields(fieldsModel) {
+    this.fieldsModel = fieldsModel;
+    this.mcFormProvider.checkAndUpdateChildQuestions(this.fields, this.fieldsModel, this.picklistModel);
+  }
+
 }
