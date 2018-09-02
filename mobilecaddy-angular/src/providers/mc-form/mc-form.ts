@@ -354,10 +354,8 @@ export class McFormProvider {
       }
     } else {
       return {
-        formResponse: JSON.stringify([responsesJson]),
-        fieldsModel: fieldsModel,
-        picklistModel: picklistModel
-      }
+        formResponse: JSON.stringify([responsesJson])
+      };
     }
   }
 
