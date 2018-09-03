@@ -38,8 +38,8 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   @Input('showAddButton') showAddButton: boolean;
   @Input('showSearch') showSearch: boolean;
   @Input('searchPlaceholder') searchPlaceholder: string = 'Search';
-  @Input('refreshList') refreshList: Subject<boolean>;
-  @Input('filterList') filterList: Subject<boolean>;
+  @Input('refreshList') refreshList: Subject<any>;
+  @Input('filterList') filterList: Subject<any>;
   @Input('height') height: string;
   @Input('listScrollHeight') listScrollHeight: string;
   @Input('addCardStart') addCardStart: any;
@@ -171,13 +171,15 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  clickAddCardStart() {
+  clickAddCardStart(event) {
+    event.stopPropagation();
     if (this.addCardStartClicked) {
       this.addCardStartClicked.emit();
     }
   }
 
-  clickAddCardEnd() {
+  clickAddCardEnd(event) {
+    event.stopPropagation();
     if (this.addCardEndClicked) {
       this.addCardEndClicked.emit();
     }
@@ -319,7 +321,9 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
         let res: boolean = false;
         for (let i = 0; i < this.displayFields.length; i++) {
           for (let j = 0; j < this.displayFields[i].fields.length; j++) {
-            if (rec[this.displayFields[i].fields[j]].toString().toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
+            if (rec[this.displayFields[i].fields[j]]
+              && rec[this.displayFields[i].fields[j]].toString().toLowerCase().indexOf(searchString.toLowerCase()) > -1
+            ) {
               res = true;
               break;
             }
