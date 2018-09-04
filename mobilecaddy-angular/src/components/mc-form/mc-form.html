@@ -104,7 +104,7 @@
             </ion-label>
             <ion-select [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               [compareWith]="compareFn" (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
-              [selectOptions]="picklistOptions">
+              [interface]="picklistInterface" [selectOptions]="picklistOptions">
               <ion-option *ngFor="let opt of picklistModel[field.Id]" [value]="opt">{{opt.label}}</ion-option>
             </ion-select>
           </ion-item>

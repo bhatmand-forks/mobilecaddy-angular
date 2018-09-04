@@ -89,6 +89,8 @@ export class McFormComponent implements OnInit, OnDestroy {
   @Input('noPlaceholder') noPlaceholder: boolean = true;
   // Picklist options of AlertController
   @Input('picklistOptions') picklistOptions: any = { enableBackdropDismiss: false };
+  // Type of picklist interface
+  @Input('picklistInterface') picklistInterface: string = 'alert';
   // Indicates whether any fields have been edited (so buttons on parent can be shown/hidden)
   @Output() editingBegan = new EventEmitter<boolean>();
   // The result of a 'save in progress'
@@ -252,23 +254,31 @@ export class McFormComponent implements OnInit, OnDestroy {
   }
 
   doSaveInProgress() {
-    let result = this.mcFormProvider.validateForm(
+    let result:any = this.mcFormProvider.validateForm(
       this.formVersion,
       this.fields,
       this.fieldsModel,
       this.picklistModel,
       true);
+    // Add additinal info
+    result.fields = this.fields;
+    result.fieldsModel = this.fieldsModel;
+    result.picklistModel = this.picklistModel;
     // Return the result to the parent component
     this.saveInProgressResult.emit(result);
   }
 
   doSubmit() {
-    let result = this.mcFormProvider.validateForm(
+    let result: any = this.mcFormProvider.validateForm(
       this.formVersion,
       this.fields,
       this.fieldsModel,
       this.picklistModel,
       false);
+    // Add additinal info
+    result.fields = this.fields;
+    result.fieldsModel = this.fieldsModel;
+    result.picklistModel = this.picklistModel;
     // Return the result to the parent component
     this.submitResult.emit(result);
   }

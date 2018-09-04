@@ -354,10 +354,8 @@ export class McFormProvider {
       }
     } else {
       return {
-        formResponse: JSON.stringify([responsesJson]),
-        fieldsModel: fieldsModel,
-        picklistModel: picklistModel
-      }
+        formResponse: JSON.stringify([responsesJson])
+      };
     }
   }
 
@@ -383,11 +381,15 @@ export class McFormProvider {
         throw 'Form Error: No Tab Name or Tab Order for field ' + fields[i].Id;
       }
 
-      if (!fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Order__c) {
-        throw 'Form Error: No Tab Tab Order for field ' + fields[i].Id;
+      if (fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Order__c == null
+        || fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Order__c == undefined
+      ) {
+        throw 'Form Error: No Tab Order for field ' + fields[i].Id;
       }
 
-      if (!fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Name__c) {
+      if (fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Name__c == null
+        || fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Name__c == undefined
+      ) {
         throw 'Form Error: No Tab Name for field ' + fields[i].Id;
       }
 
@@ -396,17 +398,17 @@ export class McFormProvider {
       }
 
       // Process Tabs
-      let tab = fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Order__c;
+      let tabId = fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Order__c;
       let tabName = fields[i].mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Name__c;
-
-      if (!_.findWhere(tabs, {
-        'id': tab
-      })) {
-        tabs.push({
-          id: tab,
-          name: tabName,
-          active: ((i === 0 ? 'active' : 'inactive'))
-        });
+      if (tabName !== '') {
+        if (!_.findWhere(tabs, { 'id': tabId })) {
+          let isActive = tabs.length === 0 ? 'active' : 'inactive';
+          tabs.push({
+            id: tabId,
+            name: tabName,
+            active: isActive
+          });
+        }
       }
 
       // Process fields
