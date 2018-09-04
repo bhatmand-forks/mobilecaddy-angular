@@ -139,7 +139,7 @@ export class McSyncService {
       let tablesToSync2 = this.maybeReorderTables(tablesToSync, dirtyTables);
       this.doSyncTables(tablesToSync2).then(res => {
         this.setSyncState('complete');
-        if (
+        if (res && tablesToSync2 &&
           res.length == tablesToSync2.length &&
           (res[res.length - 1].status == devUtils.SYNC_OK ||
             res[res.length - 1].status == 100497)
