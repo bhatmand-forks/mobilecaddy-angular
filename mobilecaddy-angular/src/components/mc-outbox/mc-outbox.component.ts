@@ -23,37 +23,53 @@ export class OutboxComponent implements OnInit {
   private logTag: string = 'mc-outbox.component.ts';
   dirtyRecordsSummary: outboxSummary[];
   private config: any;
+  private syncSub;
+  private syncingFlag;
 
   constructor(
     public loadingCtrl: LoadingController,
-    private mobilecaddySyncService: McSyncService,
+    private mcSyncService: McSyncService,
     private McConfigService: McConfigService
   ) {}
 
   async ngOnInit() {
+    this.syncingFlag = false;
     this.config = this.McConfigService.getConfig();
     console.log(this.logTag, 'ngOnInit');
     this.dirtyRecordsSummary = await this.getDirtyRecords();
     console.log(this.logTag, this.dirtyRecordsSummary);
+
+    // Subscribe to updates from the SyncService
+    if (this.syncSub) this.syncSub.unsubscribe();
+    this.syncSub = this.mcSyncService.getSyncState().subscribe(async res => {
+      console.log(this.logTag, 'SyncState Update', res);
+      // Update dirty records summary if needed, and set synciingFlag
+      if (typeof res.status !== 'undefined') {
+        if (res.status == 100400) {
+          this.dirtyRecordsSummary = await this.getDirtyRecords();
+        } else if (res.status === 0) {
+          this.syncingFlag = true;
+        }
+      } else {
+        switch (res) {
+          case 'complete':
+            this.syncingFlag = false;
+            break;
+          case 'InitialSyncInProgress':
+          case 'syncing':
+            this.syncingFlag = true;
+            break;
+        }
+      }
+    });
   }
 
   doSync(event): void {
     console.log(this.logTag, 'doSync2');
-    let loader = this.loadingCtrl.create({
-      content: 'Running Sync...',
-      duration: 120000
-    });
-    loader.present();
 
-    this.mobilecaddySyncService
-      .syncTables('forceSync')
-      .then(r => {
-        loader.dismiss();
-      })
-      .catch(e => {
-        console.error(e);
-        loader.dismiss();
-      });
+    this.mcSyncService.syncTables('forceSync').catch(e => {
+      logger.error(e);
+    });
   }
 
   /**
@@ -66,8 +82,7 @@ export class OutboxComponent implements OnInit {
       devUtils
         .readRecords('recsToSync', [])
         .then(resObject => {
-          let tableCount = _
-            .chain(resObject.records)
+          let tableCount = _.chain(resObject.records)
             .filter(function(el) {
               return knownTables.includes(el.Mobile_Table_Name) ? true : false;
             })

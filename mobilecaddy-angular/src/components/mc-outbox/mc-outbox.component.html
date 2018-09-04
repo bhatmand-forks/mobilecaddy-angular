@@ -4,5 +4,5 @@
     <span class="tableName"> - {{ x.displayName}}</span>
   </ion-item>
 </ion-list>
-<button ion-button (click)="doSync($event)">Sync now
+<button ion-button [disabled]="syncingFlag" (click)="doSync($event)">Sync now
 </button>
