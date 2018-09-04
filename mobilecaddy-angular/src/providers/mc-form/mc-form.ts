@@ -447,9 +447,9 @@ export class McFormProvider {
           fields[i].rows = 3; // Default rows
 
           if (fields[i].mobilecaddy1__Length__c && fields[i].mobilecaddy1__Length__c <= 200) {
-            fields[i].rows = 1;
+            fields[i].rows = 3;
           } else if (fields[i].mobilecaddy1__Length__c && fields[i].mobilecaddy1__Length__c <= 400) {
-            fields[i].rows = 2;
+            fields[i].rows = 3;
           } else if (fields[i].mobilecaddy1__Length__c && fields[i].mobilecaddy1__Length__c <= 600) {
             fields[i].rows = 3;
           } else if (fields[i].mobilecaddy1__Length__c && fields[i].mobilecaddy1__Length__c >= 800) {

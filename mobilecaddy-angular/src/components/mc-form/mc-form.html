@@ -34,7 +34,7 @@
         </div>
 
         <div *ngIf="field.mobilecaddy1__Type__c=='Checkbox'">
-          <ion-item text-wrap no-lines class="checkbox-item">
+          <ion-item text-wrap no-lines tappable class="checkbox-item">
             <ion-label stacked>
               {{field.mobilecaddy1__Label__c}}
             </ion-label>
@@ -48,7 +48,7 @@
         </div>
 
         <div *ngIf="field.mobilecaddy1__Type__c=='Date'">
-          <ion-item text-wrap no-lines class="date-item">
+          <ion-item text-wrap no-lines tappable class="date-item">
             <ion-label stacked>
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
@@ -61,7 +61,7 @@
         </div>
 
         <div *ngIf="field.mobilecaddy1__Type__c=='Number'">
-          <ion-item text-wrap no-lines class="number-item">
+          <ion-item text-wrap no-lines tappable class="number-item">
             <ion-label stacked [class.disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly">
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
@@ -72,7 +72,7 @@
         </div>
 
         <div *ngIf="field.mobilecaddy1__Type__c=='Text'">
-          <ion-item text-wrap no-lines class="text-item">
+          <ion-item text-wrap no-lines tappable class="text-item">
             <ion-label stacked [class.disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly">
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
@@ -85,7 +85,7 @@
         </div>
 
         <div *ngIf="field.mobilecaddy1__Type__c=='Textarea'">
-          <ion-item text-wrap no-lines class="textarea-item">
+          <ion-item text-wrap no-lines tappable class="textarea-item">
             <ion-label stacked [class.disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly">
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
@@ -97,7 +97,7 @@
         </div>
 
         <div *ngIf="field.mobilecaddy1__Type__c=='Picklist'">
-          <ion-item text-wrap no-lines class="picklist-item">
+          <ion-item text-wrap no-lines tappable class="picklist-item">
             <ion-label stacked>
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
