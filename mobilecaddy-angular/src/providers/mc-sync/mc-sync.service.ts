@@ -145,8 +145,6 @@ export class McSyncService {
       this.doSyncTables(tablesToSync2).then(res => {
         this.setSyncState('complete');
         if (
-          // res &&
-          // tablesToSync2 &&
           res.length == tablesToSync2.length &&
           (res[res.length - 1].status == devUtils.SYNC_OK ||
             res[res.length - 1].status == 100497)
@@ -282,9 +280,9 @@ export class McSyncService {
     } else {
       if (syncState != 'syncing' && syncState != 'complete') {
         syncState = JSON.parse(syncState);
+        this.setSyncState(syncState);
       }
 
-      this.setSyncState(syncState);
       return this.syncState;
     }
   }
