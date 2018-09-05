@@ -181,7 +181,7 @@ export class McResumeProvider {
     if (!pauseTime) {
       pauseTime = 0;
     }
-    return parseInt(pauseTime) < (Date.now() - this.options.maxPausePeriod);;
+    return parseInt(pauseTime) < (Date.now() - this.options.maxPausePeriod);
   }
 
   setPauseTime(pauseTime: number) {
