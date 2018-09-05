@@ -235,7 +235,11 @@ Visualforce.remoting.Manager = {
       case 'p2mRefreshTable':
         console.log('mockVfRemote p2mRefreshTable -> ' + arguments[3]);
         queryMockJsonTableFile('p2mRefreshTable', arguments[3], function(data) {
-          success(data, eventObj);
+          // success(data, eventObj);
+          setTimeout(function() {
+            console.timeEnd('TODD');
+            success(data, eventObj);
+          }, 500);
         });
         break;
       case 'm2pUpdateTable':
