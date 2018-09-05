@@ -24,11 +24,13 @@ export class McConfigService {
   getConfig(key?: string): any {
     if (this.config) {
       console.log(this.logTag, 'getConfig from "this"');
-      return key ? this.config[key] : this.config;
+      const res = key ? this.config[key] : this.config;
+      return typeof res == 'object' ? JSON.parse(JSON.stringify(res)) : res;
     } else {
       console.log(this.logTag, 'getConfig from "localStorage"');
       this.config = JSON.parse(localStorage.getItem(this.configKey));
-      return key ? this.config[key] : this.config;
+      const res = key ? this.config[key] : this.config;
+      return typeof res == 'object' ? JSON.parse(JSON.stringify(res)) : res;
     }
   }
 }
