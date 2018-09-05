@@ -10,6 +10,11 @@ interface SyncPointConfig {
   tableConfig: SyncTableConfig[];
 }
 
+interface SyncState {
+  status: number;
+  table: string;
+}
+
 export interface SyncTableConfig {
   Name: string;
   syncWithoutLocalUpdates?: boolean;
@@ -26,7 +31,7 @@ export class McSyncService {
   _syncState: string = '';
   // This callback is fired when a table starts syncing, and when it completes
   private syncCallback: Function = state => {
-    this.syncState.next(state);
+    this.setSyncState(state);
   };
 
   constructor(private mobileCaddyConfigService: McConfigService) {
@@ -46,7 +51,7 @@ export class McSyncService {
         localStorage.setItem('initialSyncState', 'InitialLoadComplete');
         console.log(this.logTag, 'InitialLoadComplete');
         this.initialSyncState.next('InitialLoadComplete');
-        this.syncState.next('complete');
+        this.setSyncState('complete');
 
         let timeNow = new Date().valueOf().toString();
         localStorage.setItem('lastSyncSuccess', timeNow);
@@ -139,7 +144,9 @@ export class McSyncService {
       let tablesToSync2 = this.maybeReorderTables(tablesToSync, dirtyTables);
       this.doSyncTables(tablesToSync2).then(res => {
         this.setSyncState('complete');
-        if (res && tablesToSync2 &&
+        if (
+          res &&
+          tablesToSync2 &&
           res.length == tablesToSync2.length &&
           (res[res.length - 1].status == devUtils.SYNC_OK ||
             res[res.length - 1].status == 100497)
@@ -267,18 +274,28 @@ export class McSyncService {
   }
 
   getSyncState(): BehaviorSubject<String | any> {
-    var syncState = localStorage.getItem('syncState');
+    let syncState = localStorage.getItem('syncState');
     if (syncState === null) {
       syncState = 'complete';
       localStorage.setItem('syncState', syncState);
+      return this.syncState;
+    } else {
+      if (syncState != 'syncing' && syncState != 'complete') {
+        syncState = JSON.parse(syncState);
+      }
+
+      this.setSyncState(syncState);
+      return this.syncState;
     }
-    // return syncState;
-    return this.syncState;
   }
 
-  setSyncState(status: string): void {
-    localStorage.setItem('syncState', status);
-    this._syncState = status;
+  setSyncState(status: string | SyncState): void {
+    if (typeof status == 'object') {
+      localStorage.setItem('syncState', JSON.stringify(status));
+    } else {
+      localStorage.setItem('syncState', status);
+      this._syncState = status;
+    }
     this.syncState.next(status);
   }
 
@@ -307,8 +324,7 @@ export class McSyncService {
       devUtils
         .readRecords('recsToSync', [])
         .then(resObject => {
-          let tableCount = _
-            .chain(resObject.records)
+          let tableCount = _.chain(resObject.records)
             .countBy('Mobile_Table_Name')
             .value();
 
