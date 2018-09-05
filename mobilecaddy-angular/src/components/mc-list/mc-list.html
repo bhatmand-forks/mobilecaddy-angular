@@ -47,8 +47,8 @@
       </ng-container>
 
       <ng-container *ngIf="isCardList">
-        <ion-card tappable *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">
-          <ion-item text-wrap>
+        <ion-card tappable *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="cardClass ? cardClass : ''">
+          <ion-item text-wrap [ngClass]="itemClass ? itemClass : ''">
             <ion-icon tappable *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)" [color]="getIconStartColor(rec)"
               [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
             <div *ngFor="let item of displayFields; let i = index">

@@ -31,6 +31,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   @Input('iconsEnd') iconsEnd: any;
   @Input('buttonsEnd') buttonsEnd: any;
   @Input('itemClass') itemClass: string;
+  @Input('cardClass') cardClass: string;
   @Input('loaderMsg') loaderMsg: string;
   @Input('noDataMsg') noDataMsg: string;
   @Input('noDataMsgClass') noDataMsgClass: string;
