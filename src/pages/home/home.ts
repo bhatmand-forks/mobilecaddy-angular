@@ -97,7 +97,7 @@ export class HomePage implements OnInit {
       content: 'Syncing...',
       duration: 120000
     });
-    // this.loader.present();
+    this.loader.present();
 
     if (this.syncSub) this.syncSub.unsubscribe();
     this.syncSub = this.mcSyncService.getSyncState().subscribe(res => {
@@ -106,7 +106,7 @@ export class HomePage implements OnInit {
     });
 
     this.mcSyncService.syncTables('mySync').then(r => {
-      // this.loader.dismiss().catch(() => {});
+      this.loader.dismiss().catch(() => {});
     });
   }
 

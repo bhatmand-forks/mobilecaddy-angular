@@ -350,12 +350,14 @@ export class McSyncService {
     dirtyTables: String[]
   ) {
     let orderedTables = [];
+    let nonDirtyTables = [];
     tablesToSync.forEach((t, idx) => {
       if (dirtyTables.includes(t.Name)) {
         orderedTables.push(t);
-        tablesToSync.splice(idx, 1);
+      } else {
+        nonDirtyTables.push(t);
       }
     });
-    return orderedTables.concat(tablesToSync);
+    return orderedTables.concat(nonDirtyTables);
   }
 }
