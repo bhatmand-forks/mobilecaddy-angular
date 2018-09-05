@@ -291,7 +291,6 @@ export class McFormComponent implements OnInit, OnDestroy {
       this.picklistModel);
     if (result) {
       this.fieldsModel = result;
-      console.log('after doPopulateForm call, this.fieldsModel ', this.fieldsModel);
     }
   }
 
