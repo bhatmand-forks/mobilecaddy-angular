@@ -21,7 +21,6 @@ import {
 } from '@angular/core';
 import { McSyncService } from '../../providers/mc-sync/mc-sync.service';
 import { Network } from '@ionic-native/network';
-import { Observer } from 'rxjs/Observer';
 import { Subscription } from 'rxjs/Subscription';
 
 const logTag: string = 'mc-sync-icon.component.ts';
@@ -94,6 +93,9 @@ export class MobileCaddySyncIconComponent implements OnInit, OnDestroy {
       .getSyncState()
       .subscribe(res => {
         console.log(logTag, 'SyncState', res);
+        if (typeof res.status !== 'undefined') {
+          res = 'syncing';
+        }
         switch (res) {
           case 'complete':
             switch (this.network.type) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LoadingController } from 'ionic-angular';
 
 import { McSyncService } from '../../providers/mc-sync/mc-sync.service';
@@ -19,7 +19,7 @@ export interface outboxSummary {
   templateUrl: './mc-outbox.component.html'
   // styleUrls: ['./mc-outbox.component.css']
 })
-export class OutboxComponent implements OnInit {
+export class OutboxComponent implements OnInit, OnDestroy {
   private logTag: string = 'mc-outbox.component.ts';
   dirtyRecordsSummary: outboxSummary[];
   private config: any;
@@ -122,5 +122,10 @@ export class OutboxComponent implements OnInit {
       myMap[element.Name] = element.DisplayName;
     });
     return myMap;
+  }
+
+  ngOnDestroy() {
+    console.log('ngnOnDestroy');
+    this.syncSub.unsubscribe();
   }
 }
