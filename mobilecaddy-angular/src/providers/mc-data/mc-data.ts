@@ -13,13 +13,58 @@ export class McDataProvider {
     limit?: any,
     orderBy?: any,
     fields?: any,
-    pageSize?: number
+    pageSize?: number,
+    operator?: string
   ): any {
     return new Promise((resolve, reject) => {
       let whereClause;
+      let sqlOperator = 'AND';
 
-      if (filters) {
-        _.each(filters, (value, key) => {
+      // Check if we have an operator parameter (should be either AND or OR)
+      if (operator) {
+        sqlOperator = operator.toUpperCase().trim();
+        if (sqlOperator !== 'AND' && sqlOperator !== 'OR') {
+          sqlOperator = 'AND';
+        }
+      }
+
+      // If we have an OR operator, then change query to be 'fieldName = value1 OR fieldName = value2' 
+      if (filters && sqlOperator === 'OR') {
+        console.log('filters', filters);
+        let newFiltersArray = [];
+        // Rebuild the 'filters' to aid with the '=' and 'OR' query
+        _.each(filters, (value, fieldName) => {
+          if (!Array.isArray(value)) {
+            let filter = {};
+            filter[fieldName] = value;
+            newFiltersArray.push(filter);
+          } else {
+            _.each(value, (val) => {
+              let filter = {};
+              filter[fieldName] = val;
+              newFiltersArray.push(filter);
+            });
+          }
+        });
+        console.log('newFiltersArray', newFiltersArray);
+        if (newFiltersArray.length > 0) {
+          for (let i in newFiltersArray) {
+            let filter = newFiltersArray[i]
+            for (let fieldName in filter) {
+              let value = filter[fieldName];
+              if (whereClause) {
+                whereClause += 'OR {' + tableName + ':' + fieldName + '} = \'' + value + '\' ';
+              } else {
+                whereClause = '{' + tableName + ':' + fieldName + '} = \'' + value + '\' ';
+              }
+            }
+          }
+        }
+        console.log('whereClause', whereClause);
+      }
+
+      if (filters && sqlOperator === 'AND') {
+        _.each(filters, (value, fieldName) => {
           let values = [];
           if (!Array.isArray(value)) {
             values.push(value);
@@ -33,9 +78,9 @@ export class McDataProvider {
           });
 
           if (whereClause) {
-            whereClause += ' AND {' + tableName + ':' + key + '} IN ( ' + valStr + ' )';
+            whereClause += ' AND {' + tableName + ':' + fieldName + '} IN ( ' + valStr + ' )';
           } else {
-            whereClause = '{' + tableName + ':' + key + '} IN ( ' + valStr + ' )';
+            whereClause = '{' + tableName + ':' + fieldName + '} IN ( ' + valStr + ' )';
           }
         });
       }
@@ -58,10 +103,12 @@ export class McDataProvider {
       } else {
         smartSql = 'SELECT ' + columns + ' FROM {' + tableName + '} ';
       }
+
       // Run different logic to get records for actual device or browser
-      // smartSql queries don't work on browser but run on devices.
+      // smartSql queries don't work on browser but will run on devices.
       // To overcome this limitation, sort & limit records by custom logic for browser (codeflow)
       if (!window['LOCAL_DEV']) {
+        // On a device, we can add 'order by' and 'limit'
         if (orderBy) {
           let orderBys = [];
           _.each(orderBy, (value, key) => {
@@ -75,14 +122,15 @@ export class McDataProvider {
         }
       }
 
+      console.log('::smartSql::', smartSql);
+
       if (!pageSize) {
         pageSize = 100;
       }
 
-      // console.log('::smartSql::', smartSql);
-
       devUtils.smartSql(smartSql, pageSize).then(resObject => {
         if (window['LOCAL_DEV']) {
+          // If running locally in codeflow, order and limit using our own code
           resObject.records = this.arrangeRecords(resObject.records, orderBy, limit, fields);
         }
         resolve(resObject.records);
