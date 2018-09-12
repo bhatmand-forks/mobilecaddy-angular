@@ -92,15 +92,17 @@ export class McFormComponent implements OnInit, OnDestroy {
   // Type of picklist interface
   @Input('picklistInterface') picklistInterface: string = 'alert';
   // Input autocomplete property
-  @Input('autocomplete') autocomplete: string = 'off';
+  @Input('autocomplete') autocomplete: string = 'on';
   // Input autocorrect property
-  @Input('autocorrect') autocorrect: string = 'off';
+  @Input('autocorrect') autocorrect: string = 'on';
   // Indicates whether any fields have been edited (so buttons on parent can be shown/hidden)
   @Output() editingBegan = new EventEmitter<boolean>();
   // The result of a 'save in progress'
   @Output() saveInProgressResult = new EventEmitter<Object>();
   // The result of a 'submit'
   @Output() submitResult = new EventEmitter<Object>();
+  // When the tab is tapped
+  @Output() tabTapped = new EventEmitter<Object>();
 
   // Elements used to fix tab(s) at top of content, stopping them scrolling with the form list
   @ViewChild('fixedTabsContainer') fixedTabsContainer: ElementRef;
@@ -226,6 +228,7 @@ export class McFormComponent implements OnInit, OnDestroy {
   tabSelected(tabId) {
     this.activeTab = tabId;
     this.setTabBarSelectedTab(tabId);
+    this.tabTapped.emit(tabId);
   }
 
   setTabBarSelectedTab(tabId) {

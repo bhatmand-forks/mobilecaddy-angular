@@ -44,7 +44,7 @@ export class TestMcFormPage implements OnInit {
     private mcDataProvider: McDataProvider,
     private mcSyncService: McSyncService,
     private navCtrl: NavController
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Create/present a message to display
@@ -111,7 +111,7 @@ export class TestMcFormPage implements OnInit {
   }
 
   onSaveInProgress(result: any) {
-    console.log('onSaveInProgress result',result);
+    console.log('onSaveInProgress result', result);
   }
 
   doSubmit() {
@@ -119,9 +119,9 @@ export class TestMcFormPage implements OnInit {
   }
 
   onSubmit(result: any) {
-    console.log('onSubmit result',result);
+    console.log('onSubmit result', result);
     if (result.error) {
-      this.showAlert('Submit Error',result.error);
+      this.showAlert('Submit Error', result.error);
     } else {
       // Set fields returned from mc-form component
       this.formResponse = result.formResponse;
@@ -170,7 +170,7 @@ export class TestMcFormPage implements OnInit {
       record.mobilecaddy1__Form_Version__c = this.formVersion.Id;
       record.mobilecaddy1__Responses__c = this.formResponse;
       // Insert
-      this.mcDataProvider.insert('Form_Response__ap',record).then(res => {
+      this.mcDataProvider.insert('Form_Response__ap', record).then(res => {
         console.log('res', res);
         this.showForm();
         loader.dismiss();
@@ -198,7 +198,11 @@ export class TestMcFormPage implements OnInit {
   }
 
   showCompleted() {
-    this.navCtrl.push('CompletedFormsPage', {id: this.formVersion.Id});
+    this.navCtrl.push('CompletedFormsPage', { id: this.formVersion.Id });
   }
 
+  onTabTapped(event) {
+    console.log('onTabTapped event', event);
+  }
+  
 }
