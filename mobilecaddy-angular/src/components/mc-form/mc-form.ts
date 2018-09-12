@@ -91,6 +91,10 @@ export class McFormComponent implements OnInit, OnDestroy {
   @Input('picklistOptions') picklistOptions: any = { enableBackdropDismiss: false };
   // Type of picklist interface
   @Input('picklistInterface') picklistInterface: string = 'alert';
+  // Input autocomplete property
+  @Input('autocomplete') autocomplete: string = 'off';
+  // Input autocorrect property
+  @Input('autocorrect') autocorrect: string = 'off';
   // Indicates whether any fields have been edited (so buttons on parent can be shown/hidden)
   @Output() editingBegan = new EventEmitter<boolean>();
   // The result of a 'save in progress'

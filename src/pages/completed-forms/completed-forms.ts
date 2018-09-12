@@ -39,16 +39,26 @@ export class CompletedFormsPage implements OnInit {
     // Display message and get data
     loader.present().then(() => {
       // Get Form_Version__ap
-      this.mcDataProvider.getByFilters('Form_Version__ap', { Id: formVersionId }).then(res => {
-        // console.log('Form_Version__ap', res);
-        this.formVersion = res[0];
-        // Now get Form_Response__ap
-        return this.mcDataProvider.getByFilters('Form_Response__ap', { mobilecaddy1__Form_Version__c: formVersionId });
+      // let ids = [];
+      // ids.push(formVersionId);
+      // ids.push('MC_Proxy%123%123098098098098');
+      // this.mcDataProvider.getByFilters('Form_Version__ap', { Id: ids }, null, null, null, null, 'or').then(res => {
+        this.mcDataProvider.getByFilters('Form_Version__ap', { Id: formVersionId }).then(res => {
+        console.log('Form_Version__ap', res);
+        if (res && res.length > 0) {
+          this.formVersion = res[0];
+          // Now get Form_Response__ap
+          return this.mcDataProvider.getByFilters('Form_Response__ap', { mobilecaddy1__Form_Version__c: formVersionId });
+        } else {
+          return null;
+        }
       }).then(res => {
         // console.log('Form_Response__ap', res);
-        this.formResponses = res;
-        // Generate the mc-form component
-        this.generateForm.next(this.formVersion);
+        if (res) {
+          this.formResponses = res;
+          // Generate the mc-form component
+          this.generateForm.next(this.formVersion);
+        }
         loader.dismiss();
       }).catch(e => {
         console.error('---->error', e);

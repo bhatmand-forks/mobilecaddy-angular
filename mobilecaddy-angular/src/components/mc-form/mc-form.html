@@ -41,8 +41,8 @@
             <!-- Added div and item-content to get label stacked above checkbox -->
             <!-- See mc-form.scss file for left aligning of checkbox -->
             <div item-content>
-              <ion-checkbox [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()" type="checkbox"
-                [(ngModel)]="fieldsModel[field.Id]"></ion-checkbox>
+              <ion-checkbox [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
+                type="checkbox" [(ngModel)]="fieldsModel[field.Id]"></ion-checkbox>
             </div>
           </ion-item>
         </div>
@@ -53,9 +53,10 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-datetime [(ngModel)]="fieldsModel[field.Id]" [displayFormat]="dateDisplayFormat" [pickerFormat]="datePickerFormat" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
-              [pickerOptions]="addClearDateButton(field.Id)" [max]="dateMax" [min]="dateMin">
+            <ion-datetime [(ngModel)]="fieldsModel[field.Id]" [displayFormat]="dateDisplayFormat" [pickerFormat]="datePickerFormat"
+              [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
+              [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" [pickerOptions]="addClearDateButton(field.Id)"
+              [max]="dateMax" [min]="dateMin">
             </ion-datetime>
           </ion-item>
         </div>
@@ -79,7 +80,7 @@
             </ion-label>
             <ion-input type="text" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
-              maxlength="{{field.mobilecaddy1__Length__c}}">
+              maxlength="{{field.mobilecaddy1__Length__c}}" [autocomplete]="autocomplete" [autocorrect]="autocorrect">
             </ion-input>
           </ion-item>
         </div>
@@ -92,7 +93,8 @@
             </ion-label>
             <ion-textarea [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
-              maxlength="{{field.mobilecaddy1__Length__c}}" [attr.rows]="field.rows"></ion-textarea>
+              maxlength="{{field.mobilecaddy1__Length__c}}" [attr.rows]="field.rows" [autocomplete]="autocomplete"
+              [autocorrect]="autocorrect"></ion-textarea>
           </ion-item>
         </div>
 
