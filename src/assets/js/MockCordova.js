@@ -1795,19 +1795,43 @@ var MockSmartStore = (function(window) {
           //   console.debug('props', props);
           var matchedSoups2 = [];
           if (!likeQuery) {
-            var matchedSoups = _.where(soup, props);
-            matchedSoups2 = matchedSoups.map(function(el) {
-              var row = [];
-              if (selectFields == '*') {
-                row = [el._soupEntryId];
-                row.push(el);
-              } else {
-                // filteredEl = {};
-                selectFields.forEach(attr => row.push(el[attr]));
-                // row.push(filteredEl);
-              }
-              return row;
-            });
+            if (orQuery) {
+              var myMatchedSoups = [];
+              // Go through each prop and get records that match
+              Object.keys(props).forEach(function(k) {
+                var tmpProp = {};
+                tmpProp[k] = props[k];
+                var matchedSoups = _.where(soup, tmpProp);
+                var tmpMatchedSoups = matchedSoups.map(function(el) {
+                  var row = [];
+                  if (selectFields == '*') {
+                    row = [el._soupEntryId];
+                    row.push(el);
+                  } else {
+                    // filteredEl = {};
+                    selectFields.forEach(attr => row.push(el[attr]));
+                    // row.push(filteredEl);
+                  }
+                  return row;
+                });
+                myMatchedSoups = myMatchedSoups.concat(tmpMatchedSoups);
+              });
+              matchedSoups2 = myMatchedSoups;
+            } else {
+              var matchedSoups = _.where(soup, props);
+              matchedSoups2 = matchedSoups.map(function(el) {
+                var row = [];
+                if (selectFields == '*') {
+                  row = [el._soupEntryId];
+                  row.push(el);
+                } else {
+                  // filteredEl = {};
+                  selectFields.forEach(attr => row.push(el[attr]));
+                  // row.push(filteredEl);
+                }
+                return row;
+              });
+            }
           } else {
             // console.log('Running our like matches');
             soup.forEach(function(el) {
