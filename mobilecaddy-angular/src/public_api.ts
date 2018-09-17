@@ -4,6 +4,7 @@ export * from './components/mc-outbox/mc-outbox.component';
 export * from './components/mc-global-search/mc-global-search.component';
 export * from './components/mc-list/mc-list';
 export * from './components/mc-form/mc-form';
+export * from './components/mc-form2/mc-form2';
 export * from './components/mc-lock-screen/mc-lock-screen';
 
 // Pages

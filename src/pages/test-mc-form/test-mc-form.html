@@ -22,6 +22,20 @@
     </ion-item>
   </ion-toolbar>
 
+  <ion-toolbar color="primary" no-padding>
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let tab of tabs" tappable (click)="tabSelected(tab.id)">
+          <div class="tab {{tab.active}}">
+            {{tab.name}}
+          </div>
+          <div class="tab-border {{tab.active}}">
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
@@ -30,9 +44,10 @@
       causes mc-form component to re-initialise when 'showSummary' changes.
       *ngIf adds/removes elements to/from the DOM. -->
   <span [class.hide]="showSummary">
-    <mc-form [generateForm]="generateForm" (editingBegan)="onEditingBegan($event)" [saveInProgress]="saveInProgress" (saveInProgressResult)="onSaveInProgress($event)"
-      picklistInterface="popover" [submit]="submit" (submitResult)="onSubmit($event)" (tabTapped)="onTabTapped($event)">
-    </mc-form>
+    <mc-form2 [generateForm]="generateForm" (editingBegan)="onEditingBegan($event)" [saveInProgress]="saveInProgress" (saveInProgressResult)="onSaveInProgress($event)"
+      picklistInterface="popover" [submit]="submit" (submitResult)="onSubmit($event)" (tabTapped)="onTabTapped($event)" (tabsBuilt)="onTabsBuilt($event)"
+      [selectTab]="selectTab" tabContainerClass="hide">
+    </mc-form2>
   </span>
 
   <span [class.hide]="!showSummary">

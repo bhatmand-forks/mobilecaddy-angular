@@ -8,6 +8,7 @@ import { OutboxComponent } from './components/mc-outbox/mc-outbox.component';
 import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
 import { McListComponent } from './components/mc-list/mc-list';
 import { McFormComponent } from './components/mc-form/mc-form';
+import { McForm2Component } from './components/mc-form2/mc-form2';
 import { McLockScreenComponent } from './components/mc-lock-screen/mc-lock-screen';
 
 // Pages
@@ -51,6 +52,7 @@ import { Network } from '@ionic-native/network';
     GlobalSearch,
     McListComponent,
     McFormComponent,
+    McForm2Component,
     McLockScreenComponent,
     SettingsPage,
     SettingsDevToolsPage,
@@ -71,6 +73,7 @@ import { Network } from '@ionic-native/network';
     GlobalSearch,
     McListComponent,
     McFormComponent,
+    McForm2Component,
     McLockScreenComponent,
     SettingsPage,
     SettingsDevToolsPage,

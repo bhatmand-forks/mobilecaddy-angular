@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { IonicPage, LoadingController, AlertController, Loading, NavController } from 'ionic-angular';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { IonicPage, LoadingController, AlertController, Loading, NavController, Content } from 'ionic-angular';
 import { Subject } from 'rxjs/Subject';
 import { McDataProvider } from '../../../mobilecaddy-angular/src/providers/mc-data/mc-data';
 import { McSyncService } from '../../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
@@ -38,6 +38,16 @@ export class TestMcFormPage implements OnInit {
   // Score returned from mc-form and successful validation
   score: number = 0;
 
+  // So we can change height of lists to fit within it's container
+  @ViewChild(Content) content: Content;
+  @HostListener('window:resize') onResize() {
+  }
+
+  tabs: any = [];
+
+  // Enable child component mc-form to change tab
+  selectTab: Subject<any> = new Subject();
+
   constructor(
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
@@ -61,6 +71,9 @@ export class TestMcFormPage implements OnInit {
       // Dismiss loader message
       loader.dismiss();
     });
+  }
+
+  ionViewDidEnter() {
   }
 
   selectFormVersion(formVersion: any) {
@@ -204,5 +217,15 @@ export class TestMcFormPage implements OnInit {
   onTabTapped(event) {
     console.log('onTabTapped event', event);
   }
+
+  onTabsBuilt(event) {
+    console.log('onTabsBuilt event', event);
+    this.tabs = event;
+  }
   
+  tabSelected(tabId) {
+    console.log('tabSelected tabId', tabId);
+    this.selectTab.next(tabId);
+  }
+
 }

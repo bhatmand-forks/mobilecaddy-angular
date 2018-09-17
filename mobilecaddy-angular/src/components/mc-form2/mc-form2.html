@@ -1,0 +1,118 @@
+<div>
+  <!-- This tabs container is fixed at the top of the content (i.e. doesn't scroll with list) -->
+  <div class="mc-form2-tab-container" [ngClass]="tabContainerClass ? tabContainerClass : ''">
+    <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let tab of tabs" tappable (click)="tabSelected(tab.id)">
+          <div class="tab-wrapper {{tab.active}}">
+            <div class="tab {{tab.active}}">
+              {{tab.name}}
+            </div>
+            <div class="tab-border {{tab.active}}">
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <ion-list class="mc-form2-list" [ngClass]="listClass ? listClass : ''">
+    <ng-container *ngFor="let field of fields">
+
+      <div *ngIf="field.mobilecaddy1_TabName_Order__c.mobilecaddy1__Tab_Order__c === activeTab">
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Heading'">
+          <div class="field-heading">{{field.mobilecaddy1__Label__c}}</div>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Separator'">
+          <div class="field-separator-wrapper">
+            <div class="field-separator">
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Checkbox'">
+          <ion-item text-wrap no-lines tappable class="checkbox-item">
+            <ion-label stacked>
+              {{field.mobilecaddy1__Label__c}}
+            </ion-label>
+            <!-- Added div and item-content to get label stacked above checkbox -->
+            <!-- See mc-form.scss file for left aligning of checkbox -->
+            <div item-content>
+              <ion-checkbox [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
+                type="checkbox" [(ngModel)]="fieldsModel[field.Id]"></ion-checkbox>
+            </div>
+          </ion-item>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Date'">
+          <ion-item text-wrap no-lines tappable class="date-item">
+            <ion-label stacked>
+              {{field.mobilecaddy1__Label__c}}
+              <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
+            </ion-label>
+            <ion-datetime [(ngModel)]="fieldsModel[field.Id]" [displayFormat]="dateDisplayFormat" [pickerFormat]="datePickerFormat"
+              [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
+              [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" [pickerOptions]="addClearDateButton(field.Id)"
+              [max]="dateMax" [min]="dateMin">
+            </ion-datetime>
+          </ion-item>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Number'">
+          <ion-item text-wrap no-lines tappable class="number-item">
+            <ion-label stacked [class.disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly">
+              {{field.mobilecaddy1__Label__c}}
+              <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
+            </ion-label>
+            <ion-input type="number" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"></ion-input>
+          </ion-item>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Text'">
+          <ion-item text-wrap no-lines tappable class="text-item">
+            <ion-label stacked [class.disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly">
+              {{field.mobilecaddy1__Label__c}}
+              <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
+            </ion-label>
+            <ion-input type="text" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
+              maxlength="{{field.mobilecaddy1__Length__c}}" [autocomplete]="autocomplete" [autocorrect]="autocorrect">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Textarea'">
+          <ion-item text-wrap no-lines tappable class="textarea-item">
+            <ion-label stacked [class.disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly">
+              {{field.mobilecaddy1__Label__c}}
+              <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
+            </ion-label>
+            <ion-textarea [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
+              maxlength="{{field.mobilecaddy1__Length__c}}" [attr.rows]="field.rows" [autocomplete]="autocomplete"
+              [autocorrect]="autocorrect"></ion-textarea>
+          </ion-item>
+        </div>
+
+        <div *ngIf="field.mobilecaddy1__Type__c=='Picklist'">
+          <ion-item text-wrap no-lines tappable class="picklist-item">
+            <ion-label stacked>
+              {{field.mobilecaddy1__Label__c}}
+              <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
+            </ion-label>
+            <ion-select tappable [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              [compareWith]="compareFn" (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
+              [interface]="picklistInterface" [selectOptions]="picklistOptions">
+              <ion-option *ngFor="let opt of picklistModel[field.Id]" [value]="opt">{{opt.label}}</ion-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+      </div>
+    </ng-container>
+
+  </ion-list>
+</div>
