@@ -48,6 +48,7 @@ export class McGlobalSearchProvider {
    **/
   addRecentSearch(item: { icon: string }, result) {
     let maxRecentSearches;
+    if (!this.config) this.config = this.mcConfig.getConfig('globalSearch');
     if (this.config.maxItems === null) {
       maxRecentSearches = 10;
       this.config.maxItems = 10;
