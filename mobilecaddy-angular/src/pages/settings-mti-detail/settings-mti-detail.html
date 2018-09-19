@@ -18,34 +18,26 @@
     </ion-item>
   </ion-card>
 
-  <ion-card *ngFor="let rec of filteredRecords; let i = index">
-    <ion-card-header>
-      <b>Record {{i + 1}} of {{filteredRecords.length}}</b>
-      <span class="filtered-marker" *ngIf="filteredRecords.length!==allRecords.length"> *filtered</span>
-    </ion-card-header>
-    <ion-list>
-      <ion-item text-wrap *ngFor="let field of rec">
-        <div>
-          <strong>{{field.Name}}:</strong>
-        </div>
-        <ion-grid no-padding>
-          <ion-row>
-            <ion-col col-auto align-self-center>
-              <div class="field-value" (click)="showFieldValue(field.Value)">
-                {{field.Value}}
-              </div>
-            </ion-col>
-            <ion-col *ngIf="field.Name==='SOUP_Record_Id'" align-self-center>
-              <div padding-left>
-                <button ion-button small (click)="showRecord(rec, field.Value)" color="light">
-                  Show Record
-                </button>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
-    </ion-list>
-  </ion-card>
+  <ion-list [virtualScroll]="filteredRecords" [approxItemHeight]="'130px'">
+
+    <ion-card *virtualItem="let rec; let i = index" style="height:125px;">
+      <ion-grid style="height:45px;">
+        <ion-row>
+          <ion-col no-padding>
+            <b>Record {{i + 1}} of {{filteredRecords.length}}</b>
+          </ion-col>
+          <ion-col text-right no-padding>
+            <button ion-button small (click)="showRecord($event,i)">
+              <ion-icon name="ios-open-outline"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <div padding-left style="height:80px;">
+        <span [innerHtml]="rec.displayFields"></span>
+      </div>
+    </ion-card>
+
+  </ion-list>
 
 </ion-content>

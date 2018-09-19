@@ -1,7 +1,7 @@
 <ion-header no-shadow>
 
   <ion-navbar>
-    <ion-title>Soup Record {{data.soupRecordId}}</ion-title>
+    <ion-title>Record {{data.soupRecordId}}</ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismissShowTableRecord()">
         <span ion-text color="primary" showWhen="ios">Close</span>
@@ -30,9 +30,23 @@
           <div>
             <strong>{{field.name}}:</strong>
           </div>
-          <div class="field-value" (click)="showFieldValue(field.value)">
-            {{field.value}}
-          </div>
+
+          <ion-grid no-padding>
+            <ion-row>
+              <ion-col col-auto align-self-center>
+                <div class="field-value" (click)="showFieldValue(field.value)">
+                  {{field.value}}
+                </div>
+              </ion-col>
+              <ion-col *ngIf="field.name==='SOUP_Record_Id'" align-self-center>
+                <div padding-left>
+                  <button ion-button small (click)="showSoupRecord(rec, field.value)" color="light">
+                    Show Record
+                  </button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
         </ion-item>
       </span>
 

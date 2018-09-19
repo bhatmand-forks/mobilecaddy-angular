@@ -49,9 +49,33 @@ export class SettingsMtiDetailPage {
       devUtils
         .readRecords(this.tableName)
         .then(res => {
-          let remappedRecords = this.mcSettingsProvider.remapToNameValue(
-            res['records']
-          );
+          let remappedRecords = this.mcSettingsProvider.remapToNameValue(res['records']);
+          // We're trying to keep the html as clean and simple as possible.
+          // Build and add a 'displayFields' onto each record.
+          // This is so we have a small display field built in js rather than angular using ngFor in html.
+          // Also note how the ion-card (and elements within) are restricted on height (as per Ionic recommendations)
+          remappedRecords.map(rec => {
+            // console.log('rec',rec);
+            let displayFields = '';
+            let fieldCount = 0;
+            // Iterate over the fields on the record, selecting a choice few for our limited card
+            for (let i = 0; i < rec.length; i++) {
+              // console.log('rec',rec);
+              if (this.tableName.indexOf('__ap') > -1) {
+                if (rec[i].Name == 'Name' || rec[i].Name == 'Id' || rec[i].Name == 'CreatedDate' || rec[i].Name == 'CaseNumber') {
+                  displayFields += '<strong>' + rec[i].Name + '</strong>: ' + rec[i].Value + '<br/>';
+                }
+              } else {
+                // If not a user '...__ap' table then limit the number of fields displayed
+                if (fieldCount < 4) {
+                  displayFields += '<strong>' + rec[i].Name + '</strong>: ' + rec[i].Value + '<br/>';
+                  fieldCount += 1;
+                }
+              }
+            }
+            rec.displayFields = displayFields;
+          });
+
           this.allRecords = remappedRecords;
           this.filteredRecords = remappedRecords;
           loader.dismiss();
@@ -119,35 +143,8 @@ export class SettingsMtiDetailPage {
     alert.present();
   }
 
-  showRecord = function(rec, soupRecordId) {
-    // Create message to display during load
-    let loader: Loading = this.loadingProvider.createLoading('Loading...');
-
-    loader.present().then(() => {
-      var tableName;
-      for (let i = 0, len = rec.length; i < len; i++) {
-        if (rec[i].Name == 'Mobile_Table_Name') {
-          tableName = rec[i].Value;
-          break;
-        }
-      }
-      this.mcSettingsProvider
-        .getRecordForSoupEntryId(tableName, soupRecordId)
-        .then(
-          record => {
-            this.showTableRecord(tableName, record, soupRecordId);
-            loader.dismiss();
-          },
-          function(e) {
-            loader.dismiss();
-            console.error('getRecordForSoupEntryId', e);
-          }
-        );
-    });
-  };
-
   showTableRecord(tableName, record, soupRecordId) {
-    console.log(record);
+    // console.log(record);
     let data = {
       tableName: tableName,
       record: record,
@@ -164,4 +161,12 @@ export class SettingsMtiDetailPage {
     // Scrolls to the top of content
     this.content.scrollToTop();
   }
+
+  showRecord(event, i) {
+    event.preventDefault();
+    event.stopPropagation();
+    // console.log(this.filteredRecords[i]);
+    this.showTableRecord(this.tableName, this.filteredRecords[i], null);
+  }
+
 }
