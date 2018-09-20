@@ -56,6 +56,7 @@ export interface PageConfig {
   syncPoint?: string;
   showSyncLoader?: boolean; // default false
   skipSyncPeriod?: number; // Number of secs - If last successful sync was in this time then we don’t sync
+  allowUpgrade?: boolean;
 }
 
 export interface OnResumeConfig {
@@ -274,7 +275,8 @@ export const AppConfig: IAppConfig = {
       {
         id: 'test-mc-resume.ts',
         syncPoint: 'mySync',
-        showSyncLoader: true
+        showSyncLoader: true,
+        allowUpgrade: true
       }
     ]
   },
@@ -287,7 +289,8 @@ export const AppConfig: IAppConfig = {
       {
         id: 'test-mc-resume.ts',
         syncPoint: 'mySync',
-        showSyncLoader: true
+        showSyncLoader: true,
+        allowUpgrade: true
       }
     ]
   },
