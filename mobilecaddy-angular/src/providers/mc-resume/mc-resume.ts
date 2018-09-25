@@ -40,12 +40,16 @@ export class McResumeProvider {
     popupText: []
   }
 
-  // Options used by processOptions function - these will be either 'onResume', 'onNavigation' or 'onColdStart'
-  options: any;
+  // This provider can be called for various processing,
+  PROCESS_TYPES = {
+    ON_RESUME: 'onResume',
+    ON_NAVIGATION: 'onNavigation',
+    ON_COLD_START: 'onColdStart'
+  }
 
-  ON_RESUME = 'onResume';
-  ON_NAVIGATION = 'onNavigation';
-  ON_COLD_START = 'onColdStart';
+  // The current processing type
+  processType: string;
+
   private readonly PAUSE_TIME = 'pauseTime';
 
   constructor(
@@ -57,131 +61,115 @@ export class McResumeProvider {
   ) { }
 
   onResume(pageId?: string, lockScreenComponent?: any): Observable<any> {
-    // Override/merge config options with the class defaults
-    this.setOptions(this.ON_RESUME);
-    // Process the options
-    return this.processOptions(pageId, lockScreenComponent);
+    return this.processOptions(this.PROCESS_TYPES.ON_RESUME, pageId, lockScreenComponent);
   }
 
   onNavigation(pageId?: string, lockScreenComponent?: any): Observable<any> {
-    // Override/merge config options with the class defaults
-    this.setOptions(this.ON_NAVIGATION);
-    // Process the options
-    return this.processOptions(pageId, lockScreenComponent);
+    return this.processOptions(this.PROCESS_TYPES.ON_NAVIGATION, pageId, lockScreenComponent);
   }
 
   onColdStart(lockScreenComponent?: any): Observable<any> {
-    // Override/merge config options with the class defaults
-    this.setOptions(this.ON_COLD_START);
-    // Process the options
-    return this.processOptions(null, lockScreenComponent);
+    return this.processOptions(this.PROCESS_TYPES.ON_COLD_START, null, lockScreenComponent);
   }
 
-  processOptions(pageId?: string, lockScreenComponent?: any): Observable<any> {
+  processOptions(processType: string, pageId?: string, lockScreenComponent?: any): Observable<any> {
     return Observable.create(observer => {
+      // Override/merge config options with the class defaults
+      let options = this.getOptions(processType);
+
       // Flag indicating whether further checks (e.g. lock screen) should be carried out
       let carryOutChecks = true;
       // Do we need to check how long the app has been paused?
-      if (this.options.checkPausePeriod) {
+      if (options.checkPausePeriod) {
         // Check whether we've exceeded the period allowed for app to be in background
-        if (!this.isPausePeriodExceeded()) {
+        if (!this.isPausePeriodExceeded(options.maxPausePeriod)) {
           carryOutChecks = false;
         }
       }
 
       // Should we carry out any checks (lock screen, upgrade, sync)?
       if (carryOutChecks) {
-        // See if we have any upgrade or sync point info associated with the pageId passed in
-        let pageInfo = this.getPageInfo(pageId, this.options.pages);
+        // See if we have any configuration for the active page
+        let pageInfo = this.getPageInfo(pageId, options.pages);
 
         // Do we need to show the lock screen? (we must also have a component passed to us)
-        if (this.options.presentLockScreen && lockScreenComponent) {
+        if (options.presentLockScreen && lockScreenComponent) {
           // Present lock screen
           this.mcLockScreenProvider.presentLockScreen(lockScreenComponent).then(res => {
             // Check lock screen pin result
             if (res) {
-              // If pin is ok then see if we need to check for upgrade
-              if (this.upgradeOptions) {
-                let upgradeSubscription: Subscription = this.mcUpgradeProvider.upgrade(this.upgradeOptions).subscribe(res => {
-                  if (!res) {
-                    // User has postponed upgrade (or it failed).
-                    // Now check to see if a sync point was specified for the page
-                    if (pageInfo && pageInfo.syncPoint) {
-                      this.doSync(pageInfo);
-                      // console.log('lock screen; upgrade postponed; page sync point: ' + pageInfo.syncPoint);
-                      observer.next(12);
-                    } else {
-                      // console.log('lock screen; upgrade postponed; no page sync point');
-                      observer.next(11);
-                    }
-                  } else {
-                    // console.log('lock screen; upgrade options for page');
-                    observer.next(10);
-                  }
-                  upgradeSubscription.unsubscribe();
-                });
-              } else {
-                // No upgrade, now check if we have a sync point for the page
-                if (pageInfo && pageInfo.syncPoint) {
-                  this.doSync(pageInfo);
-                  // console.log('lock screen; no upgrade options for page; page sync point: ' + pageInfo.syncPoint);
-                  observer.next(9);
-                } else {
-                  // console.log('lock screen; no upgrade options for page; no page sync point');
-                  observer.next(8);
-                }
-              }
+              // Pin is ok.
+              this.syncOrUpgrade(observer, processType, pageInfo);
             } else {
               // console.log('pin wrong / no pin found / lock screen already presented');
-              observer.next(7);
+              observer.next(1);
             }
           });
         } else {
-          // No lock screen, check for upgrade
-          if (this.upgradeOptions) {
-            let upgradeSubscription: Subscription = this.mcUpgradeProvider.upgrade(this.upgradeOptions).subscribe(res => {
-              if (!res) {
-                // User has postponed upgrade (or it failed).
-                // Now check to see if a sync point was specified for the page
-                if (pageInfo && pageInfo.syncPoint) {
-                  this.doSync(pageInfo);
-                  // console.log('no lock screen; upgrade postponed; page sync point: ' + pageInfo.syncPoint);
-                  observer.next(6);
-                } else {
-                  // console.log('no lock screen; upgrade postponed; no page sync point');
-                  observer.next(5);
-                }
-              } else {
-                // console.log('no lock screen; upgrade options for page');
-                observer.next(4);
-              }
-              upgradeSubscription.unsubscribe();
-            });
-          } else {
-            // No upgrade, now check if we have a sync point for the page
-            if (pageInfo && pageInfo.syncPoint) {
-              this.doSync(pageInfo);
-              // console.log('no lock screen; no upgrade options for page; page sync point: ' + pageInfo.syncPoint);
-              observer.next(3);
-            } else {
-              // console.log('no lock screen; no upgrade options for page; no page sync point');
-              observer.next(2);
-            }
-          }
+          // No Pin lock screen.
+          this.syncOrUpgrade(observer, processType, pageInfo);
         }
       } else {
-        // console.log('no checks carried out');
-        observer.next(1);
+        // No checks to carry out
+        observer.next(2);
       }
     });
   }
 
-  isPausePeriodExceeded(): boolean {
+  private syncOrUpgrade(observer: any, processType: string, pageInfo: any) {
+    // If cold start then we don't have a pages in it's config so we can check for upgrade staight away
+    if (processType == this.PROCESS_TYPES.ON_COLD_START) {
+      if (this.upgradeOptions) {
+        let upgradeSubscription: Subscription = this.mcUpgradeProvider.upgrade(this.upgradeOptions).subscribe(res => {
+          // We don't have any more actions for cold start.
+          // User would have either said yes to upgrade, or postponed
+          upgradeSubscription.unsubscribe();
+          observer.next(3);
+        });
+      } else {
+        observer.next(4);
+      }
+    } else {
+      // resume or navigation - confirm that the active page has configuration
+      if (pageInfo) {
+        // Check to see if upgrade is allowed via the page config
+        if (pageInfo.allowUpgrade) {
+          let upgradeSubscription: Subscription = this.mcUpgradeProvider.upgrade(this.upgradeOptions).subscribe(res => {
+            upgradeSubscription.unsubscribe();
+            // Check result of upgrade
+            if (!res) {
+              // User has postponed upgrade (or it failed).
+              // Now run sync point from the page config
+              if (pageInfo.syncPoint) {
+                this.doSync(pageInfo);
+              }
+              // console.log('no lock screen; upgrade postponed; page sync point: ' + pageInfo.syncPoint);
+              observer.next(5);
+            } else {
+              // console.log('no lock screen; upgrade options for page');
+              observer.next(6);
+            }
+          });
+        } else {
+          // No upgrade options, now run sync point from the page config
+          if (pageInfo.syncPoint) {
+            this.doSync(pageInfo);
+          }
+          observer.next(7);
+        }
+      } else {
+        // No page config for active page
+        observer.next(8);
+      }
+    }
+  }
+
+  isPausePeriodExceeded(maxPausePeriod: number): boolean {
     let pauseTime = this.getPauseTime();
     if (!pauseTime) {
       pauseTime = 0;
     }
-    return parseInt(pauseTime) < (Date.now() - this.options.maxPausePeriod);
+    return parseInt(pauseTime) < (Date.now() - maxPausePeriod);
   }
 
   setPauseTime(pauseTime: number) {
@@ -192,30 +180,32 @@ export class McResumeProvider {
     return localStorage.getItem(this.PAUSE_TIME);
   }
 
-  setOptions(functionName: string) {
+  getOptions(processType: string): any {
+    let options: any;
     let config = this.mcConfig.getConfig();
     // Check for any config options and merge/override the class options
-    if (functionName === this.ON_RESUME) {
+    if (processType === this.PROCESS_TYPES.ON_RESUME) {
       if (config.onResume) {
         Object.assign(this.onResumeOptions, config.onResume);
       }
-      this.options = this.onResumeOptions;
-    } else if (functionName === this.ON_NAVIGATION) {
+      options = this.onResumeOptions;
+    } else if (processType === this.PROCESS_TYPES.ON_NAVIGATION) {
       if (config.onNavigation) {
         Object.assign(this.onNavigationOptions, config.onNavigation);
       }
       // console.log('onNavigationOptions',this.onNavigationOptions);
-      this.options = this.onNavigationOptions;
+      options = this.onNavigationOptions;
     } else {
       // On cold start
       if (config.onColdStart) {
         Object.assign(this.onColdStartOptions, config.onColdStart);
       }
       // console.log('onColdStartOptions',this.onColdStartOptions);
-      this.options = this.onColdStartOptions;
+      options = this.onColdStartOptions;
     }
     // Upgrade options
     this.setUpgradeOptions(config);
+    return options;
   }
 
   setUpgradeOptions(config: any) {

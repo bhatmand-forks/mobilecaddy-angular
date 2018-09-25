@@ -15,11 +15,11 @@
     <ion-list-header>
       Dev Tools
     </ion-list-header>
-    <ion-item (click)="openPageMTI()">
+    <ion-item tappable (click)="openPageMTI()">
       <ion-icon name="briefcase" item-start></ion-icon>
       Mobile Table Inspector
     </ion-item>
-    <ion-item (click)="resetApplication()">
+    <ion-item tappable (click)="resetApplication()">
       <ion-icon name="nuclear" item-start></ion-icon>
       Reset Application
     </ion-item>
@@ -29,19 +29,19 @@
     <ion-list-header>
       Recovery &amp; Backup
     </ion-list-header>
-    <ion-item (click)="openPageMTIForRecovery()">
+    <ion-item tappable (click)="openPageMTIForRecovery()">
       <ion-icon name="sync" item-start></ion-icon>
       Force Sync
     </ion-item>
-    <ion-item (click)="openPageRawView('tables')">
+    <ion-item tappable (click)="openPageRawView('tables')">
       <ion-icon name="list" item-start></ion-icon>
       View Tables
     </ion-item>
-    <ion-item (click)="openPageRawView('localStorage')">
+    <ion-item tappable (click)="openPageRawView('localStorage')">
       <ion-icon name="cube" item-start></ion-icon>
       View Local Storage
     </ion-item>
-    <ion-item (click)="recoverAllData()">
+    <ion-item tappable (click)="recoverAllData()">
       <ion-icon name="hammer" item-start></ion-icon>
       Recover All Data
     </ion-item>

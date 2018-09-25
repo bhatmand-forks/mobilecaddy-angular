@@ -62,7 +62,8 @@ export class TestMcResumePage implements OnDestroy {
         {
           id: 'test-mc-resume.ts',
           syncPoint: 'mySync',
-          showSyncLoader: true
+          showSyncLoader: true,
+          allowUpgrade: true
         }
       ]
     };
@@ -116,6 +117,7 @@ export class TestMcResumePage implements OnDestroy {
     // We will run a sync point ('mySync') - this is also configured in the app.config.ts
 
     let config = this.mcConfig.getConfig();
+    console.log('#################config',config);
     config.onNavigation = {
       checkPausePeriod: false,
       maxPausePeriod: 0,
@@ -124,7 +126,8 @@ export class TestMcResumePage implements OnDestroy {
         {
           id: 'test-mc-resume.ts',
           syncPoint: 'mySync',
-          showSyncLoader: true
+          showSyncLoader: true,
+          allowUpgrade: true
         }
       ]
     };

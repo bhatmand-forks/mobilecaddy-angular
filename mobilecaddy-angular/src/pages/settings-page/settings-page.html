@@ -12,26 +12,26 @@
 
 <ion-content>
   <ion-list>
-    <ion-item (click)="logout()">
+    <ion-item tappable (click)="logout()">
       <ion-icon name="log-out" item-start></ion-icon>
       Log Out
     </ion-item>
-    <ion-item (click)="openAdminFunctions()">
+    <ion-item tappable (click)="openAdminFunctions()">
       <ion-icon name="construct" item-start></ion-icon>
       Admin Functions
     </ion-item>
-    <ion-item (click)="openDiagnostics()">
+    <ion-item tappable (click)="openDiagnostics()">
       <ion-icon name="speedometer" item-start></ion-icon>
       Diagnostics
     </ion-item>
-    <ion-item [ngClass]="loggingLevelCssClass ? loggingLevelCssClass : ''">
+    <ion-item tappable [ngClass]="loggingLevelCssClass ? loggingLevelCssClass : ''">
       <ion-icon name="document" item-start></ion-icon>
       <ion-label>{{loggingLevelTitle}}</ion-label>
       <ion-select interface="popover" [(ngModel)]="loggingLevel" (ionChange)="setLoggingLevel($event)">
         <ion-option *ngFor="let option of loggingLevelOptions" value="{{option.value}}" selected="{{option.selected}}">{{option.text}}</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item *ngIf="isUpgradeAvailable" (click)="upgrade()">
+    <ion-item *ngIf="isUpgradeAvailable" tappable (click)="upgrade()">
       <ion-icon name="cloud-download" item-start></ion-icon>
       Upgrade
     </ion-item>
