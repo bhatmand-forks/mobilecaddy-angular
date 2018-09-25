@@ -21,6 +21,7 @@ import { Platform } from 'ionic-angular';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { McConfigService } from '../mc-config/mc-config.service';
 import { McSyncService } from '../mc-sync/mc-sync.service';
+import { McUpgradeProvider } from '../../providers/mc-upgrade/mc-upgrade';
 
 export enum runState {
   InitialSync = 0,
@@ -44,7 +45,8 @@ export class McStartupService {
   constructor(
     public platform: Platform,
     private MobileCaddyConfigService: McConfigService,
-    private mobilecaddySyncService: McSyncService
+    private mobilecaddySyncService: McSyncService,
+    public mcUpgradeProvider: McUpgradeProvider
   ) {
     this.initStatus.next(undefined);
   }
@@ -131,9 +133,22 @@ export class McStartupService {
   }
 
   private runSync() {
-    // TODO Check whether we should do upgrade check prior to sync
     if (this.currentRunState == runState.ColdStart) {
-      this.doColdStartSync();
+      // Check if we need to check for upgrade.
+      // If so then request one (note may not take place if we have dirty tables)
+      if (this.config.onColdStart.upgradeCheck) {
+        console.log(this.logTag, 'Requesting upgrade');
+        this.mcUpgradeProvider
+          .upgrade(this.config.upgradeOptions)
+          .subscribe(res => {
+            console.log(this.logTag, 'upgrade result', res);
+            if (!res) {
+              this.doColdStartSync();
+            }
+          });
+      } else {
+        this.doColdStartSync();
+      }
     } else {
       this.doInitialSync();
     }

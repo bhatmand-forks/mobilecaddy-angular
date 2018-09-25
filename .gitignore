@@ -32,3 +32,7 @@ www/*
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
+
+mc-tmp/
+mobilecaddy-angular_001.zip

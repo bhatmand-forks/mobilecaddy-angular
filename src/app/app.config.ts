@@ -79,6 +79,7 @@ export interface OnColdStartConfig {
   presentLockScreen?: boolean;
   showSyncLoader?: boolean;
   showBuildMsgs?: boolean;
+  upgradeCheck?: boolean;
 }
 
 export interface UpgradeOptionsConfig {
@@ -300,7 +301,8 @@ export const AppConfig: IAppConfig = {
     maxPausePeriod: 0,
     presentLockScreen: true,
     showSyncLoader: false,
-    showBuildMsgs: false
+    showBuildMsgs: false,
+    upgradeCheck: true
   },
 
   upgradeOptions: {
@@ -310,13 +312,9 @@ export const AppConfig: IAppConfig = {
     popupText: []
   },
 
-  settingsPage: {
-  },
+  settingsPage: {},
 
-  mcMenuFormsPage: {
-  },
+  mcMenuFormsPage: {},
 
-  mcCompletedFormsPage: {
-  }
-
+  mcCompletedFormsPage: {}
 };
