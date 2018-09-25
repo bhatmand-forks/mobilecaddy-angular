@@ -3,6 +3,7 @@ import * as devUtils from 'mobilecaddy-utils/devUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { McConfigService } from '../mc-config/mc-config.service';
 import * as _ from 'underscore';
+import { ngControlStatusHost } from '@angular/forms/src/directives/ng_control_status';
 
 interface SyncPointConfig {
   name: string;
@@ -60,7 +61,7 @@ export class McSyncService {
 
   doColdStartSync(): void {
     console.log(this.logTag, 'doColdStartSync');
-    let mobileLogConfig: SyncTableConfig = {
+    const mobileLogConfig: SyncTableConfig = {
       Name: 'Mobile_Log__mc',
       syncWithoutLocalUpdates: false
     };
@@ -87,6 +88,13 @@ export class McSyncService {
         );
         // Make sure sync point name is in config
         if (syncPointConfig.name !== '') {
+          const mobileLogConfig: SyncTableConfig = {
+            Name: 'Mobile_Log__mc',
+            syncWithoutLocalUpdates: false
+          };
+          let tablesToSyncConfig = syncPointConfig.tableConfig.concat([
+            mobileLogConfig
+          ]);
           this.getDirtyTables().then(dirtyTables => {
             if (
               syncPointConfig.skipSyncPeriod &&
@@ -99,14 +107,14 @@ export class McSyncService {
                 parseInt(localStorage.getItem('lastSyncSuccess')) +
                   syncPointConfig.skipSyncPeriod * 1000
               ) {
-                this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
+                this.doSyncTables1(tablesToSyncConfig, dirtyTables)
                   .then(r => resolve(r))
                   .catch(e => reject(e));
               } else {
                 resolve('not-syncing:too-soon');
               }
             } else {
-              this.doSyncTables1(syncPointConfig.tableConfig, dirtyTables)
+              this.doSyncTables1(tablesToSyncConfig, dirtyTables)
                 .then(r => resolve(r))
                 .catch(e => reject(e));
             }
