@@ -9,14 +9,13 @@ import { McConfigService } from '../../providers/mc-config/mc-config.service';
 
 @Injectable()
 export class McUpgradeProvider {
-  
+
   upgradeOptions = {
     ignoreRepromptPeriod: false,
     maxPostpones: 5,
     noRepromptPeriod: 1000 * 60 * 5,
     popupText: []
   };
-  private postponesCount: number = 0;
 
   constructor(
     private alertCtrl: AlertController,
@@ -50,10 +49,7 @@ export class McUpgradeProvider {
                 parseInt(prevUpgradeNotification) <
                 timeNow - this.upgradeOptions.noRepromptPeriod;
               console.log('repromptPeriodOver', repromptPeriodOver);
-              console.log(
-                'ignoreRepromptPeriod',
-                this.upgradeOptions.ignoreRepromptPeriod
-              );
+              console.log('ignoreRepromptPeriod', this.upgradeOptions.ignoreRepromptPeriod);
               if (repromptPeriodOver || this.upgradeOptions.ignoreRepromptPeriod) {
                 // If we don't have any popup text (or it doesn't have enough items in the array) then set defaults
                 // ('popupText' parameter primarily used for apps with translations)
@@ -140,8 +136,8 @@ export class McUpgradeProvider {
             loader.present().then(() => {
               // Clear out any previous upgrade notification time
               localStorage.removeItem('prevUpgradeNotification');
-              // Reset counter
-              this.postponesCount = 0;
+              // Clear postpones counter
+              localStorage.removeItem('upgradePostponesCount');
               // Perform upgrade (as long as it can still be done)
               console.log('calling upgradeIfAvailable');
               vsnUtils
@@ -174,14 +170,14 @@ export class McUpgradeProvider {
       ]
     };
     console.log('maxPostpones', maxPostpones);
-    console.log('this.postponesCount', this.postponesCount);
+    let postponesCount = this.getPostponesCount();
     // Only add the Cancel button to the alert if user hasn't exceeded the maximum allowed postponements
-    if (this.postponesCount < maxPostpones) {
+    if (postponesCount < maxPostpones) {
       promptOptions.buttons.unshift({
         /* Cancel button */
         text: popupText[2],
         handler: data => {
-          this.postponesCount++;
+          this.increasePostponesCount();
           localStorage.setItem('prevUpgradeNotification', timeNow);
           observer.next(false);
         }
@@ -217,4 +213,19 @@ export class McUpgradeProvider {
     }
     return prevUpgradeNotification;
   }
+
+  private increasePostponesCount() {
+    let upgradePostponesCount: number = this.getPostponesCount();
+    upgradePostponesCount++;
+    localStorage.setItem('upgradePostponesCount', upgradePostponesCount.toString());
+  }
+
+  private getPostponesCount(): number {
+    let upgradePostponesCount = localStorage.getItem('upgradePostponesCount');
+    if (upgradePostponesCount === null) {
+      upgradePostponesCount = '0';
+    }
+    return parseInt(upgradePostponesCount);
+  }
+
 }
