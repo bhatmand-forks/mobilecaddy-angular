@@ -204,7 +204,8 @@ export const AppConfig: IAppConfig = {
 
   outboxTables: [
     { Name: 'Account__ap', DisplayName: 'Accounts' },
-    { Name: 'Contact__ap', DisplayName: 'Contacts' }
+    { Name: 'Contact__ap', DisplayName: 'Contacts' },
+    { Name: 'Form_Response__ap', DisplayName: 'Form Response' }
   ],
 
   recentItems: {

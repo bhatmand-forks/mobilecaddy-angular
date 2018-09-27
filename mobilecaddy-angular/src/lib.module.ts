@@ -10,6 +10,7 @@ import { McListComponent } from './components/mc-list/mc-list';
 import { McFormComponent } from './components/mc-form/mc-form';
 import { McForm2Component } from './components/mc-form2/mc-form2';
 import { McLockScreenComponent } from './components/mc-lock-screen/mc-lock-screen';
+import { McOutboxIconComponent } from './components/mc-outbox-icon/mc-outbox-icon';
 
 // Pages
 import { SettingsPage } from './pages/settings-page/settings-page';
@@ -54,6 +55,7 @@ import { Network } from '@ionic-native/network';
     McFormComponent,
     McForm2Component,
     McLockScreenComponent,
+    McOutboxIconComponent,
     SettingsPage,
     SettingsDevToolsPage,
     McDiagnosticsPage,
@@ -75,6 +77,7 @@ import { Network } from '@ionic-native/network';
     McFormComponent,
     McForm2Component,
     McLockScreenComponent,
+    McOutboxIconComponent,
     SettingsPage,
     SettingsDevToolsPage,
     McDiagnosticsPage,

@@ -1,0 +1,5 @@
+<button *ngIf="dirtyRecordsCount!==0" [ngClass]="buttonClass" ion-button icon-only tappable (click)="gotoOutbox()">
+  <ion-icon name="{{iconName}}" [ngClass]="iconClass">
+    <ion-badge [ngClass]="badgeClass" [color]="badgeColor">{{displayText}}</ion-badge>
+  </ion-icon>
+</button>

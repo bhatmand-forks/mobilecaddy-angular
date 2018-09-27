@@ -6,6 +6,7 @@ export * from './components/mc-list/mc-list';
 export * from './components/mc-form/mc-form';
 export * from './components/mc-form2/mc-form2';
 export * from './components/mc-lock-screen/mc-lock-screen';
+export * from './components/mc-outbox-icon/mc-outbox-icon';
 
 // Pages
 export * from './pages/settings-page/settings-page';

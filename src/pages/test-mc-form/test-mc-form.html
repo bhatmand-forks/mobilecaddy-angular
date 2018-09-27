@@ -5,7 +5,9 @@
       <ion-icon name='menu'></ion-icon>
     </button>
     <ion-title>Forms</ion-title>
-    <ion-buttons right>
+    <ion-buttons end>
+      <mc-outbox-icon [tapAllowed]="false" [toastOptions]="{message: 'override message'}"></mc-outbox-icon>
+
       <button [class.hide]="!formVersionLoaded" ion-button outline color="dark" class="mc-button-round" (click)="showCompleted()">
         Completed
       </button>
@@ -44,9 +46,9 @@
       causes mc-form component to re-initialise when 'showSummary' changes.
       *ngIf adds/removes elements to/from the DOM. -->
   <span [class.hide]="showSummary">
-    <mc-form2 [generateForm]="generateForm" (editingBegan)="onEditingBegan($event)" [saveInProgress]="saveInProgress" (saveInProgressResult)="onSaveInProgress($event)"
-      picklistInterface="popover" [submit]="submit" (submitResult)="onSubmit($event)" (tabTapped)="onTabTapped($event)" (tabsBuilt)="onTabsBuilt($event)"
-      [selectTab]="selectTab" tabContainerClass="hide">
+    <mc-form2 [generateForm]="generateForm" (editingBegan)="onEditingBegan($event)" [saveInProgress]="saveInProgress"
+      (saveInProgressResult)="onSaveInProgress($event)" picklistInterface="popover" [submit]="submit" (submitResult)="onSubmit($event)"
+      (tabTapped)="onTabTapped($event)" (tabsBuilt)="onTabsBuilt($event)" [selectTab]="selectTab" tabContainerClass="hide">
     </mc-form2>
   </span>
 
@@ -87,7 +89,7 @@
           <ion-col>
             <div>Failed questions</div>
             <div *ngFor="let field of incorrectQuestions">
-              <br/>
+              <br />
               <div>{{field.question}}</div>
               <!-- Use ng if/then/else to display field value -->
               <div *ngIf="field.value=='undefined'||field.value==null||field.value=='null'||field.value==''||(field.value=='false'&&field.type=='Checkbox'); then thenTemplateName else elseTemplateName">
