@@ -155,7 +155,9 @@ export class McSyncService {
         if (
           res.length == tablesToSync2.length &&
           (res[res.length - 1].status == devUtils.SYNC_OK ||
-            res[res.length - 1].status == 100497)
+            res[res.length - 1].status == 100497 ||
+            (res[res.length - 1].status == 100402 &&
+              res[res.length - 1].mc_add_status == 'no-sync-no-updates'))
         ) {
           let timeNow = new Date().valueOf().toString();
           localStorage.setItem('lastSyncSuccess', timeNow);
