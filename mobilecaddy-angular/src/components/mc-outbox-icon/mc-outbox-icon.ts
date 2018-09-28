@@ -15,7 +15,7 @@ import { McConfigService } from '../../providers/mc-config/mc-config.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
 import { Subscription } from 'rxjs/Subscription';
-// import * as connSessUtils from 'mobilecaddy-utils/connSessUtils';
+import * as syncRefresh from 'mobilecaddy-utils/syncRefresh';
 
 @Component({
   selector: 'mc-outbox-icon',
@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs/Subscription';
   styles: [
     `
       .mc-outbox-icon-button {
-        height: 32px; 
+        height: 32px;
         position: relative;
         width: 48px;
         top: 1px;
@@ -32,7 +32,7 @@ import { Subscription } from 'rxjs/Subscription';
         margin-bottom: 0px;
         margin-top: 0px;
         box-shadow: none;
-        -webkit-box-shadow: none;      
+        -webkit-box-shadow: none;
       }
       .mc-outbox-icon-badge {
         font-size: 11px;
@@ -132,8 +132,10 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
           this.cd.detectChanges();
           // console.log(this.logTag, 'this.dirtyRecordsCount', this.dirtyRecordsCount);
         }
-        // testing
-        if (this.dirtyRecordsCount == 4) {
+        // Check for record failures
+        let failures: any = syncRefresh.getSyncRecFailures();
+        console.log(this.logTag, 'failures', failures);
+        if (failures && failures.length > 0) {
           this.badgeColor = this.failedColor;
           this.displayText = this.failedText;
           this.cd.detectChanges();

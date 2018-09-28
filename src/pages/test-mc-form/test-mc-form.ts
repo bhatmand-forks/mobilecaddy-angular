@@ -77,7 +77,7 @@ export class TestMcFormPage implements OnInit {
   }
 
   selectFormVersion(formVersion: any) {
-    // console.log('formVersion',formVersion);
+    console.log('formVersion',formVersion);
     // Create/present a message to display
     let loader = this.loadingCtrl.create({
       content: 'Loading form...' + formVersion.Name,
@@ -87,7 +87,7 @@ export class TestMcFormPage implements OnInit {
 
     // Get the form version details
     this.mcDataProvider.getByFilters(this.tableName, { Id: formVersion.Id }).then(res => {
-      // console.log('res', res);
+      console.log('form version details', res);
       if (res) {
         this.formVersion = res[0];
         // Refresh the mc-form component

@@ -185,6 +185,11 @@ export const AppConfig: IAppConfig = {
           Name: 'Contact__ap',
           syncWithoutLocalUpdates: true,
           maxTableAge: 0
+        },
+        {
+          Name: 'Form_Response__ap',
+          syncWithoutLocalUpdates: true,
+          maxTableAge: 0
         }
       ]
     },
