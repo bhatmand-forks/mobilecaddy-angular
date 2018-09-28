@@ -46,7 +46,10 @@ import * as syncRefresh from 'mobilecaddy-utils/syncRefresh';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class McOutboxIconComponent implements OnInit, OnDestroy {
+  // Does tapping the icon take the user to the OutboxPage? (true)
+  // ...or does it show a Toast? (false)
   @Input('tapAllowed') tapAllowed: boolean = true;
+
   @Input('iconName') iconName: string = 'ios-cloud-upload';
   @Input('buttonClass') buttonClass: string = 'mc-outbox-icon-button';
   @Input('iconClass') iconClass: string = 'mc-outbox-icon';
@@ -55,10 +58,12 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
   @Input('outboxPage') outboxPage: string = 'OutboxPage';
   @Input('toastOptions') toastOptions: ToastOptions;
   @Input('interval') interval: number = 1000;
+
   // N.B. 'yellow' needs to be added to $colors array in variables.scss,
   // or, pass in another colour that exists in the $colors array
   @Input('failedColor') failedColor: string = 'yellow';
   @Input('failedText') failedText: string = '!';
+
   // Developer might want us to emit an event rather than go directly to 'OutboxPage'
   // i.e. they control tap navigation in code
   @Input('useEvent') useEvent: boolean = false;
@@ -67,7 +72,7 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
   private logTag: string = 'mc-outbox-icon.ts';
 
   private defaultToastOptions = {
-    message: 'You cannot view the Outbox from here',
+    message: 'You cannot view the Outbox from this screen',
     duration: 3000,
     position: 'top'
   };
@@ -134,7 +139,7 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
         }
         // Check for record failures
         let failures: any = syncRefresh.getSyncRecFailures();
-        console.log(this.logTag, 'failures', failures);
+        // console.log(this.logTag, 'failures', failures);
         if (failures && failures.length > 0) {
           this.badgeColor = this.failedColor;
           this.displayText = this.failedText;
