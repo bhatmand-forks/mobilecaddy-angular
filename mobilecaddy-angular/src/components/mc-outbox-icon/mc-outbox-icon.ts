@@ -12,6 +12,7 @@ import {
 import { NavController, ToastController, ToastOptions } from 'ionic-angular';
 import { McDataProvider } from '../../providers/mc-data/mc-data';
 import { McConfigService } from '../../providers/mc-config/mc-config.service';
+import { McSyncService } from '../../providers/mc-sync/mc-sync.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
 import { Subscription } from 'rxjs/Subscription';
@@ -83,36 +84,54 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
   // The text displayed in the badge
   displayText: string;
 
+  // The outbox tables from the app.config.ts
+  private outboxTables: any;
+
   // Subscription for the interval reading the dirty records
-  pollingDirtyRecs: Subscription;
+  private pollingDirtyRecs: Subscription;
+
+  // Subscription for initial sync
+  private getInitStateSubscription: Subscription;
 
   constructor(
     private navCtrl: NavController,
     private mcDataProvider: McDataProvider,
     private mcConfig: McConfigService,
+    private mcSyncService: McSyncService,
     private toastCtrl: ToastController,
     private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.pollingDirtyRecs = Observable.interval(this.interval).subscribe(() => {
-      this.checkForUnsyncedRecords();
+    // Check to see if our initial sync has completed. If so, we can create interval
+    this.getInitStateSubscription = this.mcSyncService.getInitialSyncState().subscribe(initialSyncState => {
+      // console.log(this.logTag, 'getInitialSyncState subscribe', initialSyncState);
+      if (initialSyncState == 'InitialLoadComplete') {
+        // Get outbox tables from config
+        this.outboxTables = this.mcConfig.getConfig('outboxTables');
+        // console.log(this.logTag, 'outboxTables', outboxTables);
+
+        // Setup the interval subscription
+        this.pollingDirtyRecs = Observable.interval(this.interval).subscribe(() => {
+          this.checkForUnsyncedRecords();
+        });
+      }
     });
   }
 
   ngOnDestroy() {
-    this.pollingDirtyRecs.unsubscribe();
+    this.getInitStateSubscription.unsubscribe();
+    if (this.pollingDirtyRecs) {
+      this.pollingDirtyRecs.unsubscribe();
+    }
     this.cd.detach();
   }
 
   private checkForUnsyncedRecords() {
     // console.log(this.logTag, 'checkForUnsyncedRecords');
-    // Get outbox tables from config
-    let outboxTables = this.mcConfig.getConfig('outboxTables');
-    // console.log(this.logTag, 'outboxTables', outboxTables);
-    if (outboxTables && outboxTables.length > 0) {
+    if (this.outboxTables && this.outboxTables.length > 0) {
       // Extract tables name for ease of processing
-      let tableNames = outboxTables.map(el => {
+      let tableNames = this.outboxTables.map(el => {
         return el.Name;
       });
       // console.log(this.logTag, 'tableNames', tableNames);
@@ -134,7 +153,9 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
         if (dirtyRecordsCount != this.dirtyRecordsCount) {
           this.dirtyRecordsCount = dirtyRecordsCount;
           this.displayText = dirtyRecordsCount.toString();
-          this.cd.detectChanges();
+          if (!this.cd['destroyed']) {
+            this.cd.detectChanges();
+          }
           // console.log(this.logTag, 'this.dirtyRecordsCount', this.dirtyRecordsCount);
         }
         // Check for record failures
@@ -143,7 +164,9 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
         if (failures && failures.length > 0) {
           this.badgeColor = this.failedColor;
           this.displayText = this.failedText;
-          this.cd.detectChanges();
+          if (!this.cd['destroyed']) {
+            this.cd.detectChanges();
+          }
         }
       });
     }
