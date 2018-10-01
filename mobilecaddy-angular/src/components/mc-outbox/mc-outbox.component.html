@@ -1,8 +1,21 @@
+<div *ngIf="showSyncButtonTop" class="mc-outbox-top-sync-spacer" padding-bottom>
+  <button ion-button [disabled]="syncingFlag" *ngIf="showSyncButtonTop" (click)="doSync($event)">
+    Sync now
+  </button>
+</div>
+
 <ion-list>
-  <ion-item *ngFor="let x of dirtyRecordsSummary">
-    <span class="count">{{x.count}}</span>
-    <span class="tableName"> - {{ x.displayName}}</span>
+  <ion-item tappable *ngFor="let summary of dirtyRecordsSummary" (click)="showFailure(summary,$event)">
+    <ion-icon name="{{summary.startIcon}}" color="{{summary.startIconColor}}" item-start></ion-icon>
+    <span class="mc-outbox-count">{{summary.count}}</span>
+    <span class="mc-outbox-tablename"> - {{ summary.displayName}}</span>
+    <ion-note *ngIf="summary.errorCount>0" [color]="errorColor" item-end>
+      View {{summary.errorCount}} error(s)
+    </ion-note>
+    <ion-icon *ngIf="summary.errorCount>0" name="{{summary.endIcon}}" color="{{summary.endIconColor}}" item-end></ion-icon>
   </ion-item>
 </ion-list>
-<button ion-button [disabled]="syncingFlag" (click)="doSync($event)">Sync now
+
+<button ion-button [disabled]="syncingFlag" *ngIf="showSyncButtonBottom" (click)="doSync($event)" class="mc-outbox-bottom-sync-spacer">
+  Sync now
 </button>

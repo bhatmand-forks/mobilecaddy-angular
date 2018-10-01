@@ -84,6 +84,9 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
   // The text displayed in the badge
   displayText: string;
 
+  // The text badge color
+  textBadgeColor: string;
+
   // The outbox tables from the app.config.ts
   private outboxTables: any;
 
@@ -152,6 +155,7 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
         // Check for change of dirty records count
         if (dirtyRecordsCount != this.dirtyRecordsCount) {
           this.dirtyRecordsCount = dirtyRecordsCount;
+          this.textBadgeColor = this.badgeColor;
           this.displayText = dirtyRecordsCount.toString();
           if (!this.cd['destroyed']) {
             this.cd.detectChanges();
@@ -162,7 +166,7 @@ export class McOutboxIconComponent implements OnInit, OnDestroy {
         let failures: any = syncRefresh.getSyncRecFailures();
         // console.log(this.logTag, 'failures', failures);
         if (failures && failures.length > 0) {
-          this.badgeColor = this.failedColor;
+          this.textBadgeColor = this.failedColor;
           this.displayText = this.failedText;
           if (!this.cd['destroyed']) {
             this.cd.detectChanges();

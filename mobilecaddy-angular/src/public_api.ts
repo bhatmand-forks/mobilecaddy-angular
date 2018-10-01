@@ -20,7 +20,8 @@ export * from './pages/settings-raw-view-modal/settings-raw-view-modal';
 export * from './pages/outbox-page/outbox-page';
 export * from './pages/mc-menu-forms/mc-menu-forms';
 export * from './pages/mc-form-detail/mc-form-detail';
-export * from './pages/mc-completed-forms/mc-completed-forms'
+export * from './pages/mc-completed-forms/mc-completed-forms';
+export * from './pages/mc-failures/mc-failures';
 
 // Providers
 export * from './providers/mc-startup/mc-startup.service';

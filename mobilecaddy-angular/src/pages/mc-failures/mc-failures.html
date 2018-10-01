@@ -1,0 +1,39 @@
+<ion-header>
+
+  <ion-navbar class="mc-failures-navbar">
+    <ion-title>{{data.displayName}} Failures</ion-title>
+    <ion-buttons start>
+      <button ion-button icon-only (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-item tappable text-wrap *ngFor="let failure of data.failures">
+      <div>
+        <strong>Id:</strong> {{failure.Id}}
+      </div>
+      <div>
+        <strong>CRUD:</strong> {{failure.c}}
+      </div>
+      <div>
+        <strong>Reason:</strong> {{failure.r}}
+      </div>
+      <div>
+        <strong>Error Text:</strong> {{failure.t}}
+      </div>
+      <div>
+        <strong>Exception Type:</strong> {{failure.e}}
+      </div>
+      <div>
+        <strong>Exception Info:</strong> {{failure.e2}}
+      </div>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

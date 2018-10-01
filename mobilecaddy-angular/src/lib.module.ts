@@ -25,6 +25,7 @@ import { MCOutboxPage } from './pages/outbox-page/outbox-page';
 import { McMenuFormsPage } from './pages/mc-menu-forms/mc-menu-forms';
 import { McFormDetailPage } from './pages/mc-form-detail/mc-form-detail';
 import { McCompletedFormsPage } from './pages/mc-completed-forms/mc-completed-forms';
+import { McFailuresPage } from './pages/mc-failures/mc-failures';
 
 // Providers
 import { McSyncService } from './providers/mc-sync/mc-sync.service';
@@ -67,7 +68,8 @@ import { Network } from '@ionic-native/network';
     MCOutboxPage,
     McMenuFormsPage,
     McFormDetailPage,
-    McCompletedFormsPage
+    McCompletedFormsPage,
+    McFailuresPage
   ],
   exports: [
     MobileCaddySyncIconComponent,
@@ -89,7 +91,8 @@ import { Network } from '@ionic-native/network';
     MCOutboxPage,
     McMenuFormsPage,
     McFormDetailPage,
-    McCompletedFormsPage
+    McCompletedFormsPage,
+    McFailuresPage
   ],
   entryComponents: [
     MCOutboxPage,
@@ -104,7 +107,8 @@ import { Network } from '@ionic-native/network';
     McLockScreenComponent,
     McMenuFormsPage,
     McFormDetailPage,
-    McCompletedFormsPage
+    McCompletedFormsPage,
+    McFailuresPage
   ],
   providers: [Network]
 })
