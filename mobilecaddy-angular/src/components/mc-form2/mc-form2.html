@@ -103,10 +103,12 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-select tappable [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+            <ion-select id="{{field.Id}}" tappable [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               [compareWith]="compareFn" (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
               [interface]="picklistInterface" [selectOptions]="picklistOptions">
-              <ion-option *ngFor="let opt of picklistModel[field.Id]" [value]="opt">{{opt.label}}</ion-option>
+              <ion-option *ngFor="let opt of picklistModel[field.Id]" (ionSelect)="picklistSelect(field.Id,opt)" [value]="opt">
+                {{opt.label}}
+              </ion-option>
             </ion-select>
           </ion-item>
         </div>

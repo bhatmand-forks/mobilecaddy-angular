@@ -1,4 +1,5 @@
-import { Component, Input, Output, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, QueryList, ViewChildren } from '@angular/core';
+import { Select } from 'ionic-angular';
 import { McFormProvider } from '../../providers/mc-form/mc-form';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
@@ -93,6 +94,8 @@ export class McForm2Component implements OnInit, OnDestroy {
   @Input('picklistOptions') picklistOptions: any = { enableBackdropDismiss: false };
   // Type of picklist interface
   @Input('picklistInterface') picklistInterface: string = 'alert';
+  // When showing an alert style picklist, does tapping on option close the alert?
+  @Input('isAlertTapClose') isAlertTapClose: boolean = false;
   // Input autocomplete property
   @Input('autocomplete') autocomplete: string = 'on';
   // Input autocorrect property
@@ -107,6 +110,9 @@ export class McForm2Component implements OnInit, OnDestroy {
   @Output() tabTapped = new EventEmitter<Object>();
   // The tabs
   @Output() tabsBuilt = new EventEmitter<Object>();
+
+  // The ion-selects (so we can dismiss alert if appropriate input options are set)
+  @ViewChildren(Select) selectGroup: QueryList<Select>;
 
   activeTab: number = 1;
   fields: any = [];
@@ -290,6 +296,23 @@ export class McForm2Component implements OnInit, OnDestroy {
   doPopulateFields(fieldsModel) {
     this.fieldsModel = fieldsModel;
     this.mcFormProvider.checkAndUpdateChildQuestions(this.fields, this.fieldsModel, this.picklistModel);
+  }
+
+  picklistSelect(fieldId: string, opt: any) {
+    // console.log('picklistSelect', fieldId, opt);
+    if (this.picklistInterface == 'alert' && this.isAlertTapClose) {
+      // Update the fields model
+      this.fieldsModel[fieldId] = opt;
+      // Create array of Selects from the selectGroup (so we can close the alert)
+      let picklists = this.selectGroup.toArray();
+      // console.log('picklistSelect', picklists);
+      for (let i = 0; i < picklists.length; i++) {
+        if (picklists[i]._elementRef.nativeElement.id == fieldId) {
+          picklists[i].close();
+          break;
+        }
+      }
+    }
   }
 
 }

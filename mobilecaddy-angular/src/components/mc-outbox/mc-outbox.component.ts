@@ -126,7 +126,7 @@ export class OutboxComponent implements OnInit, OnDestroy {
 
       // Check for record failures
       this.failures = syncRefresh.getSyncRecFailures();
-      console.log(this.logTag, 'failures', this.failures);
+      // console.log(this.logTag, 'failures', this.failures);
 
       // Read dirty records
       devUtils
@@ -245,7 +245,7 @@ export class OutboxComponent implements OnInit, OnDestroy {
 
   showFailure(summary: outboxSummary, event: any) {
     event.stopPropagation();
-    console.log('summary', summary);
+    // console.log('summary', summary);
     if (summary.errorCount > 0) {
       let data = {
         failures: this.getTableFailures(summary.name),

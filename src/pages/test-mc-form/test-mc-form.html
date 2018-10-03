@@ -47,8 +47,9 @@
       *ngIf adds/removes elements to/from the DOM. -->
   <span [class.hide]="showSummary">
     <mc-form2 [generateForm]="generateForm" (editingBegan)="onEditingBegan($event)" [saveInProgress]="saveInProgress"
-      (saveInProgressResult)="onSaveInProgress($event)" picklistInterface="popover" [submit]="submit" (submitResult)="onSubmit($event)"
-      (tabTapped)="onTabTapped($event)" (tabsBuilt)="onTabsBuilt($event)" [selectTab]="selectTab" tabContainerClass="hide">
+      (saveInProgressResult)="onSaveInProgress($event)" picklistInterface="alert" [submit]="submit" (submitResult)="onSubmit($event)"
+      (tabTapped)="onTabTapped($event)" (tabsBuilt)="onTabsBuilt($event)" [selectTab]="selectTab" tabContainerClass="hide"
+      [isAlertTapClose]="true" [picklistOptions]="{enableBackdropDismiss: false, cssClass: 'remove-ok'}">
     </mc-form2>
   </span>
 
