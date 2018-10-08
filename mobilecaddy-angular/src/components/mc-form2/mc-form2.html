@@ -40,8 +40,8 @@
             <!-- Added div and item-content to get label stacked above checkbox -->
             <!-- See mc-form.scss file for left aligning of checkbox -->
             <div item-content>
-              <ion-checkbox [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
-                type="checkbox" [(ngModel)]="fieldsModel[field.Id]"></ion-checkbox>
+              <ion-checkbox id="{{field.Id}}" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
+                type="checkbox" [(ngModel)]="fieldsModel[field.Id]" (tap)="onTap(field.Id,field.mobilecaddy1__Type__c)"></ion-checkbox>
             </div>
           </ion-item>
         </div>
@@ -52,10 +52,10 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-datetime [(ngModel)]="fieldsModel[field.Id]" [displayFormat]="dateDisplayFormat" [pickerFormat]="datePickerFormat"
+            <ion-datetime id="{{field.Id}}" [(ngModel)]="fieldsModel[field.Id]" [displayFormat]="dateDisplayFormat" [pickerFormat]="datePickerFormat"
               [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly" (ionChange)="valueEdited()"
               [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" [pickerOptions]="addClearDateButton(field.Id)"
-              [max]="dateMax" [min]="dateMin">
+              [max]="dateMax" [min]="dateMin" (tap)="onTap(field.Id,field.mobilecaddy1__Type__c)">
             </ion-datetime>
           </ion-item>
         </div>
@@ -66,8 +66,8 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-input type="number" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
-              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"></ion-input>
+            <ion-input type="number" id="{{field.Id}}" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+              (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'" (ionFocus)="onTap(field.Id,field.mobilecaddy1__Type__c)"></ion-input>
           </ion-item>
         </div>
 
@@ -77,9 +77,9 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-input type="text" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+            <ion-input type="text" id="{{field.Id}}" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
-              maxlength="{{field.mobilecaddy1__Length__c}}" [autocomplete]="autocomplete" [autocorrect]="autocorrect">
+              maxlength="{{field.mobilecaddy1__Length__c}}" [autocomplete]="autocomplete" [autocorrect]="autocorrect" (ionFocus)="onTap(field.Id,field.mobilecaddy1__Type__c)">
             </ion-input>
           </ion-item>
         </div>
@@ -90,10 +90,10 @@
               {{field.mobilecaddy1__Label__c}}
               <abbr *ngIf="field.mobilecaddy1__Mandatory__c">*</abbr>
             </ion-label>
-            <ion-textarea [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
+            <ion-textarea id="{{field.Id}}" [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
               maxlength="{{field.mobilecaddy1__Length__c}}" [attr.rows]="field.rows" [autocomplete]="autocomplete"
-              [autocorrect]="autocorrect"></ion-textarea>
+              [autocorrect]="autocorrect" (ionFocus)="onTap(field.Id,field.mobilecaddy1__Type__c)"></ion-textarea>
           </ion-item>
         </div>
 
@@ -105,7 +105,7 @@
             </ion-label>
             <ion-select id="{{field.Id}}" tappable [(ngModel)]="fieldsModel[field.Id]" [disabled]="(!field.isActiveQuestion && field.isChildQuestion) || readOnly"
               [compareWith]="compareFn" (ionChange)="valueEdited()" [placeholder]="readOnly||noPlaceholder ? '' : field.mobilecaddy1__Label__c+'...'"
-              [interface]="picklistInterface" [selectOptions]="picklistOptions">
+              [interface]="picklistInterface" [selectOptions]="picklistOptions" (tap)="onTap(field.Id,field.mobilecaddy1__Type__c)">
               <ion-option *ngFor="let opt of picklistModel[field.Id]" (ionSelect)="picklistSelect(field.Id,opt)" [value]="opt">
                 {{opt.label}}
               </ion-option>

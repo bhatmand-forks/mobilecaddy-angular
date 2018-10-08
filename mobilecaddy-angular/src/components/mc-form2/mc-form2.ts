@@ -1,5 +1,5 @@
 import { Component, Input, Output, OnInit, OnDestroy, EventEmitter, QueryList, ViewChildren } from '@angular/core';
-import { Select } from 'ionic-angular';
+import { Select, Item, DomController } from 'ionic-angular';
 import { McFormProvider } from '../../providers/mc-form/mc-form';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
@@ -100,6 +100,13 @@ export class McForm2Component implements OnInit, OnDestroy {
   @Input('autocomplete') autocomplete: string = 'on';
   // Input autocorrect property
   @Input('autocorrect') autocorrect: string = 'on';
+  // When user taps on field, do we want to remove 'activated' class from all fields?
+  @Input('removedActivated') removedActivated: boolean = true;
+  // Do we want to acc 'activated' class to selected field? (when user taps on it)
+  @Input('showFieldActivated') showFieldActivated: boolean = true;
+  // How long to delay removing/adding the 'activated' class (milliseconds)
+  @Input('fieldActivatedDelay') fieldActivatedDelay: number = 300; // For ion-input and ion-textarea
+  @Input('fieldActivatedDelay2') fieldActivatedDelay2: number = 50; // For other field types
   // Indicates whether any fields have been edited (so buttons on parent can be shown/hidden)
   @Output() editingBegan = new EventEmitter<boolean>();
   // The result of a 'save in progress'
@@ -113,6 +120,9 @@ export class McForm2Component implements OnInit, OnDestroy {
 
   // The ion-selects (so we can dismiss alert if appropriate input options are set)
   @ViewChildren(Select) selectGroup: QueryList<Select>;
+
+  // The ion-items (so we can remove 'activated' class when field hasn't got carot)
+  @ViewChildren(Item) itemGroup: QueryList<Item>;
 
   activeTab: number = 1;
   fields: any = [];
@@ -131,7 +141,10 @@ export class McForm2Component implements OnInit, OnDestroy {
   private populateFieldsSubscription: Subscription;
   private selectTabSubscription: Subscription;
 
-  constructor(private mcFormProvider: McFormProvider) { }
+  constructor(
+    private mcFormProvider: McFormProvider,
+    private domCtrl: DomController
+  ) { }
 
   ngOnInit() {
     this.showForm();
@@ -313,6 +326,46 @@ export class McForm2Component implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  onTap(fieldId, fieldType: string) {
+    // console.log('onTap', fieldId, fieldType);
+    // We need to wait until ionic has finished adding 'activated' class to the tapped field.
+    // This is inconsistent, and doesn't always get added (when keyboard is involved)
+
+    let delay = this.fieldActivatedDelay;
+    if (fieldType === 'Checkbox' || fieldType === 'Date' || fieldType === 'Picklist') {
+      // For these types, we can use a reduced delay because Ionic only adds the highlight
+      // to ion-input and ion-textarea components.
+      // We're adding highlighting to all tappable fields
+      delay = this.fieldActivatedDelay2;
+    }
+
+    setTimeout(() => {
+      // Do we want to remove 'activated' class from all fields? (when user taps on one)
+      if (this.removedActivated) {
+        // Get all ion-items
+        let items = this.itemGroup.toArray();
+        // Remove any 'activated' class from the items (so we can add it back for just the focused item)
+        this.domCtrl.write(() => {
+          for (let i = 0; i < items.length; i++) {
+            // console.log('onTap items[i]', items[i]);
+            items[i]._elementRef.nativeElement.classList.remove('activated');
+          }
+        });
+      }
+
+      // Do we want to 'highlight' field by adding 'activated' class?
+      if (this.showFieldActivated) {
+        // Get the tapped on field and add 'activated' class to it's parent ion-item
+        let ele: HTMLElement = document.getElementById(fieldId);
+        ele = <HTMLElement>ele.closest('ion-item,[ion-item]') || ele;
+        // console.log('onTap ele', ele);
+        this.domCtrl.write(() => {
+          ele.classList.add("activated");
+        });
+      }
+    }, delay);
   }
 
 }
