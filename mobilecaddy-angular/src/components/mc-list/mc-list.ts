@@ -339,7 +339,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     let index: number = null;
     for (let i = 0; i < this.iconsStart.length; i++) {
       for (let j = 0; j < this.iconsStart[i].conditions.length; j++) {
-        if (this.iconsStart[i].conditions[j].value = '*all*'
+        if (this.iconsStart[i].conditions[j].showOnAll
           || rec[this.iconsStart[i].conditions[j].field] == this.iconsStart[i].conditions[j].value) {
           index = i;
           break;
@@ -353,7 +353,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     let index: number = null;
     for (let i = 0; i < this.iconsEnd.length; i++) {
       for (let j = 0; j < this.iconsEnd[i].conditions.length; j++) {
-        if (this.iconsEnd[i].conditions[j].value = '*all*'
+        if (this.iconsEnd[i].conditions[j].showOnAll
           || rec[this.iconsEnd[i].conditions[j].field] == this.iconsEnd[i].conditions[j].value) {
           index = i;
           break;
@@ -367,7 +367,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     let index: number = null;
     for (let i = 0; i < this.buttonsEnd.length; i++) {
       for (let j = 0; j < this.buttonsEnd[i].conditions.length; j++) {
-        if (this.buttonsEnd[i].conditions[j].value = '*all*'
+        if (this.buttonsEnd[i].conditions[j].showOnAll
           || rec[this.buttonsEnd[i].conditions[j].field] == this.buttonsEnd[i].conditions[j].value) {
           index = i;
           break;
