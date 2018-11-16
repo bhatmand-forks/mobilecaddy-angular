@@ -19,15 +19,15 @@
 
       <ng-container *ngIf="!isCardList">
         <button *ngFor="let rec of recs" ion-item detail-none text-wrap (click)="clickRecord($event,rec)" [ngClass]="itemClass ? itemClass : ''">
-          <ion-icon tappable *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)" [color]="getIconStartColor(rec)"
-            [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
+          <ion-icon tappable *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)"
+            [color]="getIconStartColor(rec)" [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
           <div *ngFor="let item of displayFields; let i = index">
             <span *ngFor="let field of item.fields; let j = index">
               <span [innerHtml]='wrapField(i,j,rec[field])'></span>
             </span>
           </div>
-          <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)" [ngClass]="getButtonEndClass(rec)"
-            item-end>
+          <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)"
+            [ngClass]="getButtonEndClass(rec)" item-end>
             <span [innerHtml]='getButtonEndName(rec)'></span>
           </button>
           <ion-icon tappable *ngIf="iconsEnd" (click)="clickIconEnd($event,rec)" [name]="getIconEndName(rec)" [color]="getIconEndColor(rec)"
@@ -46,18 +46,39 @@
         </ion-card>
       </ng-container>
 
-      <ng-container *ngIf="isCardList">
+      <ng-container *ngIf="isCardList&&!isImageCard">
         <ion-card tappable *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="cardClass ? cardClass : ''">
           <ion-item text-wrap [ngClass]="itemClass ? itemClass : ''">
-            <ion-icon tappable *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)" [color]="getIconStartColor(rec)"
-              [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
+            <ion-icon tappable *ngIf="iconsStart" (click)="clickIconStart($event,rec)" [name]="getIconStartName(rec)"
+              [color]="getIconStartColor(rec)" [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
             <div *ngFor="let item of displayFields; let i = index">
               <span *ngFor="let field of item.fields; let j = index">
                 <span [innerHtml]='wrapField(i,j,rec[field])'></span>
               </span>
             </div>
-            <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)" [ngClass]="getButtonEndClass(rec)"
-              item-end>
+            <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)"
+              [ngClass]="getButtonEndClass(rec)" item-end>
+              <span [innerHtml]='getButtonEndName(rec)'></span>
+            </button>
+            <ion-icon tappable *ngIf="iconsEnd" (click)="clickIconEnd($event,rec)" [name]="getIconEndName(rec)" [color]="getIconEndColor(rec)"
+              [ngClass]="getIconEndClass(rec)" item-end></ion-icon>
+          </ion-item>
+        </ion-card>
+      </ng-container>
+
+      <ng-container *ngIf="isCardList&&isImageCard">
+        <ion-card tappable *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="cardClass ? cardClass : ''">
+          <ion-item text-wrap [ngClass]="itemClass ? itemClass : ''">
+            <ion-thumbnail *ngIf="imagesStart" [ngClass]="getImageStartClass()" item-start>
+              <img [src]="getImageStartSource(rec)">
+            </ion-thumbnail>
+            <div *ngFor="let item of displayFields; let i = index">
+              <span *ngFor="let field of item.fields; let j = index">
+                <span [innerHtml]='wrapField(i,j,rec[field])'></span>
+              </span>
+            </div>
+            <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)"
+              [ngClass]="getButtonEndClass(rec)" item-end>
               <span [innerHtml]='getButtonEndName(rec)'></span>
             </button>
             <ion-icon tappable *ngIf="iconsEnd" (click)="clickIconEnd($event,rec)" [name]="getIconEndName(rec)" [color]="getIconEndColor(rec)"

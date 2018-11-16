@@ -16,6 +16,7 @@
   <script src="{!URLFOR($Resource[cordovaLocalResource])}" type="text/javascript"></script>
 
   <link href="{!URLFOR($Resource.<MY_APP_RESOURCE>, 'build/main.css')}" rel="stylesheet"/>
+  <script>window.RESOURCE_ROOT = "{!URLFOR($Resource.<MY_APP_RESOURCE>, '')}";</script>
 
 </head>
 <body>

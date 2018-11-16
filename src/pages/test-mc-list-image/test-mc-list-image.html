@@ -1,0 +1,27 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Test mc-list with images</ion-title>
+    <ion-buttons end>
+      <mc-sync-icon></mc-sync-icon>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+
+  <div padding-left>
+    <h4>Assets</h4>
+  </div>
+  <mc-list [listScrollHeight]="contactListHeight" [sqlParms]="sqlParms" [displayFields]="contactFields" [isImageCard]="isImageCard" [imagesStart]="imagesStart"
+    [iconsEnd]="iconsEnd" [buttonsEnd]="buttonsEnd" [itemClass]="itemClass" [loaderMsg]="loaderMsg" noDataMsg="No contacts"
+    noDataMsgClass="no-data" showSearch="true" isCardList="true" searchPlaceholder="Search contacts" (recordClicked)="showDetail($event)"
+    (buttonEndClicked)="buttonEndClicked($event)" (iconStartClicked)="iconStartClicked($event)" (iconEndClicked)="iconEndClicked($event)"
+    [addCardStart]="addCardStart" (addCardStartClicked)="addCardStartClicked()" [addCardEnd]="addCardEnd" (addCardEndClicked)="addCardEndClicked()">
+  </mc-list>
+
+</ion-content>

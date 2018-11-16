@@ -47,6 +47,7 @@ export class MyApp {
       { title: 'Outbox', component: 'OutboxPage' },
       { title: 'Search', component: 'SearchPage' },
       { title: 'Test mc-list', component: 'TestMcListPage' },
+      { title: 'Test mc-list images', component: 'TestMcListImagePage' },
       { title: 'Test mc-form', component: 'TestMcFormPage' },
       { title: 'Test Lock Screen', component: 'TestMcLockScreenPage' },
       { title: 'Test Resume/Nav/Cold', component: 'TestMcResumePage' },

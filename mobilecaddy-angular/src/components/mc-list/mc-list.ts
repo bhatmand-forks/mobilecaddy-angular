@@ -28,6 +28,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   @Input('sqlParms') sqlParms: any;
   @Input('displayFields') displayFields: any;
   @Input('iconsStart') iconsStart: any;
+  @Input('imagesStart') imagesStart: any;
   @Input('iconsEnd') iconsEnd: any;
   @Input('buttonsEnd') buttonsEnd: any;
   @Input('itemClass') itemClass: string;
@@ -36,6 +37,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   @Input('noDataMsg') noDataMsg: string;
   @Input('noDataMsgClass') noDataMsgClass: string;
   @Input('isCardList') isCardList: boolean;
+  @Input('isImageCard') isImageCard: boolean = false;
   @Input('showAddButton') showAddButton: boolean;
   @Input('showSearch') showSearch: boolean;
   @Input('searchPlaceholder') searchPlaceholder: string = 'Search';
@@ -282,6 +284,25 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
   getIconStartClass(rec: any): string {
     let i = this.getIconStartIndex(rec);
     return i !== null ? (this.iconsStart[i].class ? this.iconsStart[i].class : '') : '';
+  }
+
+  getImageStartClass(): string {
+    return this.imagesStart.class ? this.imagesStart.class : '';
+  }
+
+  getImageStartSource(rec: any): string {
+    // return window['RESOURCE_ROOT'] + '/assets/imgs/asset.png';
+    // Start building the image source
+    let src = this.imagesStart.path ? this.imagesStart.path : '';
+    // If testing, we can specify a 'value' in the object which is just a hard coded image name
+    if (this.imagesStart.value) {
+      src += this.imagesStart.value;
+    } else {
+      if (this.imagesStart.field) {
+        src += rec[this.imagesStart.field];
+      }
+    }
+    return src;
   }
 
   getIconEndName(rec: any): string {
