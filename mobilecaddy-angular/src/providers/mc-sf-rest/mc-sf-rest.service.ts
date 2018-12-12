@@ -7,6 +7,7 @@ import {
   HttpClient,
   HttpHeaders,
   HttpRequest,
+  HttpResponse,
   HttpParams
 } from '@angular/common/http';
 
@@ -136,17 +137,34 @@ export class McSfRestService {
 
       const params = new HttpParams(obj.params);
 
-      // dev friendly API: Add leading '/' if missing so url + path concat always works
-      if (obj.path.charAt(0) !== '/') {
-        obj.path = '/' + obj.path;
+      let url = obj.path;
+      if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        // dev friendly API: Add leading '/' if missing so url + path concat always works
+        if (obj.path.charAt(0) !== '/') {
+          obj.path = '/' + obj.path;
+        }
+        url = this.oauth.instanceUrl + obj.path;
       }
-      let url = this.oauth.instanceUrl + obj.path;
 
-      const req = new HttpRequest(method, url, obj.data, { headers, params });
+      let req;
+      switch (obj.contentType) {
+        case 'image/jpeg':
+          req = new HttpRequest(method, url, obj.data, {
+            headers,
+            params,
+            responseType: 'arraybuffer' as 'json'
+          });
+          break;
+        default:
+          req = new HttpRequest(method, url, obj.data, { headers, params });
+          break;
+      }
 
       this.http.request(req).subscribe(
         res => {
-          resolve(res);
+          if (res instanceof HttpResponse) {
+            resolve(res);
+          }
         },
         err => {
           // * Weird here as looks like SF does not return CORS headers for non  200
