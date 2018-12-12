@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
+import * as fileUtils from 'mobilecaddy-utils/fileUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { McConfigService } from '../mc-config/mc-config.service';
 import * as _ from 'underscore';
@@ -108,14 +109,20 @@ export class McSyncService {
                   syncPointConfig.skipSyncPeriod * 1000
               ) {
                 this.doSyncTables1(tablesToSyncConfig, dirtyTables)
-                  .then(r => resolve(r))
+                  .then(r => {
+                    fileUtils.downloadFiles();
+                    resolve(r);
+                  })
                   .catch(e => reject(e));
               } else {
                 resolve('not-syncing:too-soon');
               }
             } else {
               this.doSyncTables1(tablesToSyncConfig, dirtyTables)
-                .then(r => resolve(r))
+                .then(r => {
+                  fileUtils.downloadFiles();
+                  resolve(r);
+                })
                 .catch(e => reject(e));
             }
           });
@@ -132,6 +139,7 @@ export class McSyncService {
           } else {
             // LocalNotificationService.cancelNotification();
           }
+          fileUtils.downloadFiles();
           resolve(res);
         });
       }
