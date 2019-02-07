@@ -39,7 +39,8 @@ export class HomePage implements OnInit {
     this.loader.present();
 
     // Can use the result of mcStartupService.startup() to see if coming here on coldStart
-    let isAlreadyRun: number = this.mcStartupService.startup(this.appConfig);
+    // TODO Re-implement the way isAlreadyRun is obtained
+    // let isAlreadyRun: number = this.mcStartupService.startup(this.appConfig);
 
     this.mcInitStateSub = this.mcStartupService
       .getInitState()
