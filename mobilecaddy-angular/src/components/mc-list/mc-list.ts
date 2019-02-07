@@ -1,9 +1,20 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
 import { McDataProvider } from '../../providers/mc-data/mc-data';
 import { LoadingController, Loading } from 'ionic-angular';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
+import * as fileUtils from 'mobilecaddy-utils/fileUtils';
 
 @Component({
   selector: 'mc-list',
@@ -12,13 +23,12 @@ import { Subscription } from 'rxjs/Subscription';
     `
       .mc-list-search-container {
         width: 100%;
-        background-color: #FFFFFF;
+        background-color: #ffffff;
       }
     `
   ]
 })
 export class McListComponent implements OnInit, OnDestroy, OnChanges {
-
   logTag: string = 'mc-list.ts';
   @Input('headerTitle') headerTitle: string;
   // Either 'recs' or 'sqlParms' must be specified for this component.
@@ -64,8 +74,9 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private mcDataProvider: McDataProvider,
-    private loadingCtrl: LoadingController
-  ) { }
+    private loadingCtrl: LoadingController,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit() {
     this.getData();
@@ -116,25 +127,29 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
         });
         loader.present();
       }
-      this.mcDataProvider.getByFilters(
-        this.sqlParms.tableName,
-        this.sqlParms.filters,
-        this.sqlParms.limit,
-        this.sqlParms.orderBy,
-        this.sqlParms.fields,
-        this.sqlParms.pageSize
-      ).then(res => {
-        // console.log(this.logTag, 'res', res);
-        if (res.length > 0) {
-          this.recs = res;
-          this.allRecs = res;
-        }
-        if (loader) {
-          loader.dismiss();
-        }
-      }).catch(e => {
-        console.error(e);
-      });
+      this.mcDataProvider
+        .getByFilters(
+          this.sqlParms.tableName,
+          this.sqlParms.filters,
+          this.sqlParms.limit,
+          this.sqlParms.orderBy,
+          this.sqlParms.fields,
+          this.sqlParms.pageSize
+        )
+        .then(res => {
+          // console.log(this.logTag, 'res', res);
+          if (res.length > 0) {
+            this.recs = res;
+            this.maybeEnrichRecsWithImages();
+            this.allRecs = res;
+          }
+          if (loader) {
+            loader.dismiss();
+          }
+        })
+        .catch(e => {
+          console.error(e);
+        });
     } else {
       this.allRecs = this.recs;
     }
@@ -192,38 +207,90 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     // i = index of displayFields (which represents a row of fields)
     // j = index of fields (which represents a field position within each row)
     // First, check if the field should be wrapped in a tag
-    if (this.displayFields[i].tags && this.displayFields[i].tags[j] && this.displayFields[i].tags[j].trim() !== '') {
+    if (
+      this.displayFields[i].tags &&
+      this.displayFields[i].tags[j] &&
+      this.displayFields[i].tags[j].trim() !== ''
+    ) {
       // Now check if field should have a class applied to the tag
-      if (this.displayFields[i].classes && this.displayFields[i].classes[j] && this.displayFields[i].classes[j].trim() !== '') {
+      if (
+        this.displayFields[i].classes &&
+        this.displayFields[i].classes[j] &&
+        this.displayFields[i].classes[j].trim() !== ''
+      ) {
         // Tag and class
         let cssClass = this.displayFields[i].classes[j];
         // Check if field has a conditional class (based on value of field)
         cssClass = this.checkForConditionalClass(i, j, field, cssClass);
-        return '<' + this.displayFields[i].tags[j] + ' class="' + cssClass + '">' + this.formatField(i, j, field) + '<' + this.displayFields[i].tags[j] + '/>';
+        return (
+          '<' +
+          this.displayFields[i].tags[j] +
+          ' class="' +
+          cssClass +
+          '">' +
+          this.formatField(i, j, field) +
+          '<' +
+          this.displayFields[i].tags[j] +
+          '/>'
+        );
       } else {
         // Tag but no class.
         // Check if field has a conditional class (based on value of field)
         let cssClass = this.checkForConditionalClass(i, j, field, '');
         if (cssClass !== '') {
-          return '<' + this.displayFields[i].tags[j] + ' class="' + cssClass + '">' + this.formatField(i, j, field) + '<' + this.displayFields[i].tags[j] + '/>';
+          return (
+            '<' +
+            this.displayFields[i].tags[j] +
+            ' class="' +
+            cssClass +
+            '">' +
+            this.formatField(i, j, field) +
+            '<' +
+            this.displayFields[i].tags[j] +
+            '/>'
+          );
         } else {
-          return '<' + this.displayFields[i].tags[j] + '>' + this.formatField(i, j, field) + '<' + this.displayFields[i].tags[j] + '/>';
+          return (
+            '<' +
+            this.displayFields[i].tags[j] +
+            '>' +
+            this.formatField(i, j, field) +
+            '<' +
+            this.displayFields[i].tags[j] +
+            '/>'
+          );
         }
       }
     } else {
       // No tag wrapping field...
       // Now check if field should have a class applied to the field
-      if (this.displayFields[i].classes && this.displayFields[i].classes[j] && this.displayFields[i].classes[j].trim() !== '') {
+      if (
+        this.displayFields[i].classes &&
+        this.displayFields[i].classes[j] &&
+        this.displayFields[i].classes[j].trim() !== ''
+      ) {
         // No tag but we have a class - add a 'span' tag so we can add the class to it
         let cssClass = this.displayFields[i].classes[j];
         // Check if field has a conditional class (based on value of field)
         cssClass = this.checkForConditionalClass(i, j, field, cssClass);
-        return '<span class="' + cssClass + '">' + this.formatField(i, j, field) + '<span/>';
+        return (
+          '<span class="' +
+          cssClass +
+          '">' +
+          this.formatField(i, j, field) +
+          '<span/>'
+        );
       } else {
         // No tag and no class.
         // Check if field has a conditional class (based on value of field)
         let cssClass = this.checkForConditionalClass(i, j, field, '');
-        return cssClass !== '' ? '<span class="' + cssClass + '">' + this.formatField(i, j, field) + '<span/>' : this.formatField(i, j, field);
+        return cssClass !== ''
+          ? '<span class="' +
+              cssClass +
+              '">' +
+              this.formatField(i, j, field) +
+              '<span/>'
+          : this.formatField(i, j, field);
       }
     }
   }
@@ -232,7 +299,10 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     // Default result to class already determined from 'classes' node (in case we don't find a conditional one)
     let result = cssClass;
     // Look for a conditional class for this field value
-    if (this.displayFields[i].conditions && this.displayFields[i].conditions[j]) {
+    if (
+      this.displayFields[i].conditions &&
+      this.displayFields[i].conditions[j]
+    ) {
       for (let c = 0; c < this.displayFields[i].conditions[j].length; c++) {
         if (this.displayFields[i].conditions[j][c].value == field) {
           result = this.displayFields[i].conditions[j][c].class;
@@ -252,19 +322,35 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     // N.B. we currently only cater for a DatePipe
     if (this.displayFields[i].pipes && this.displayFields[i].pipes[j]) {
       // Check if we need to format field as date
-      if (this.displayFields[i].pipes[j].name && this.displayFields[i].pipes[j].name == 'date') {
-        if (this.displayFields[i].pipes[j].format && this.displayFields[i].pipes[j].format.trim() !== '') {
-          let pipe = new DatePipe(this.displayFields[i].pipes[j].locale ? this.displayFields[i].pipes[j].locale : 'en-US');
+      if (
+        this.displayFields[i].pipes[j].name &&
+        this.displayFields[i].pipes[j].name == 'date'
+      ) {
+        if (
+          this.displayFields[i].pipes[j].format &&
+          this.displayFields[i].pipes[j].format.trim() !== ''
+        ) {
+          let pipe = new DatePipe(
+            this.displayFields[i].pipes[j].locale
+              ? this.displayFields[i].pipes[j].locale
+              : 'en-US'
+          );
           result = pipe.transform(field, this.displayFields[i].pipes[j].format);
         }
       }
       // Note. 'suffix' and 'prefix' aren't really angular pipes, they're used for formatting the field value.
       // Check to see if there's a suffix to add to the field
-      if (this.displayFields[i].pipes[j].suffix && this.displayFields[i].pipes[j].suffix.trim() !== '') {
+      if (
+        this.displayFields[i].pipes[j].suffix &&
+        this.displayFields[i].pipes[j].suffix.trim() !== ''
+      ) {
         result = result + this.displayFields[i].pipes[j].suffix;
       }
       // Check to see if there's a prefix to add to the field
-      if (this.displayFields[i].pipes[j].prefix && this.displayFields[i].pipes[j].prefix.trim() !== '') {
+      if (
+        this.displayFields[i].pipes[j].prefix &&
+        this.displayFields[i].pipes[j].prefix.trim() !== ''
+      ) {
         result = this.displayFields[i].pipes[j].prefix + result;
       }
     }
@@ -273,61 +359,78 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
 
   getIconStartName(rec: any): string {
     let i = this.getIconStartIndex(rec);
-    return i !== null ? (this.iconsStart[i].name ? this.iconsStart[i].name : '') : '';
+    return i !== null
+      ? this.iconsStart[i].name
+        ? this.iconsStart[i].name
+        : ''
+      : '';
   }
 
   getIconStartColor(rec: any): string {
     let i = this.getIconStartIndex(rec);
-    return i !== null ? (this.iconsStart[i].color ? this.iconsStart[i].color : '') : '';
+    return i !== null
+      ? this.iconsStart[i].color
+        ? this.iconsStart[i].color
+        : ''
+      : '';
   }
 
   getIconStartClass(rec: any): string {
     let i = this.getIconStartIndex(rec);
-    return i !== null ? (this.iconsStart[i].class ? this.iconsStart[i].class : '') : '';
+    return i !== null
+      ? this.iconsStart[i].class
+        ? this.iconsStart[i].class
+        : ''
+      : '';
   }
 
   getImageStartClass(): string {
     return this.imagesStart.class ? this.imagesStart.class : '';
   }
 
-  getImageStartSource(rec: any): string {
-    // return window['RESOURCE_ROOT'] + '/assets/imgs/asset.png';
-    // Start building the image source
-    let src = this.imagesStart.path ? this.imagesStart.path : '';
-    // If testing, we can specify a 'value' in the object which is just a hard coded image name
-    if (this.imagesStart.value) {
-      src += this.imagesStart.value;
-    } else {
-      if (this.imagesStart.field) {
-        src += rec[this.imagesStart.field];
-      }
-    }
-    return src;
-  }
-
   getIconEndName(rec: any): string {
     let i = this.getIconEndIndex(rec);
-    return i !== null ? (this.iconsEnd[i].name ? this.iconsEnd[i].name : '') : '';
+    return i !== null
+      ? this.iconsEnd[i].name
+        ? this.iconsEnd[i].name
+        : ''
+      : '';
   }
 
   getIconEndColor(rec: any): string {
     let i = this.getIconEndIndex(rec);
-    return i !== null ? (this.iconsEnd[i].color ? this.iconsEnd[i].color : '') : '';
+    return i !== null
+      ? this.iconsEnd[i].color
+        ? this.iconsEnd[i].color
+        : ''
+      : '';
   }
 
   getIconEndClass(rec: any): string {
     let i = this.getIconEndIndex(rec);
-    return i !== null ? (this.iconsEnd[i].class ? this.iconsEnd[i].class : '') : '';
+    return i !== null
+      ? this.iconsEnd[i].class
+        ? this.iconsEnd[i].class
+        : ''
+      : '';
   }
 
   getButtonEndName(rec: any): string {
     let i = this.getButtonEndIndex(rec);
-    return i !== null ? (this.buttonsEnd[i].name ? this.buttonsEnd[i].name : '') : '';
+    return i !== null
+      ? this.buttonsEnd[i].name
+        ? this.buttonsEnd[i].name
+        : ''
+      : '';
   }
 
   getButtonEndClass(rec: any): string {
     let i = this.getButtonEndIndex(rec);
-    return i !== null ? (this.buttonsEnd[i].class ? this.buttonsEnd[i].class : '') : '';
+    return i !== null
+      ? this.buttonsEnd[i].class
+        ? this.buttonsEnd[i].class
+        : ''
+      : '';
   }
 
   filterRecs(ev: any) {
@@ -343,8 +446,12 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
         let res: boolean = false;
         for (let i = 0; i < this.displayFields.length; i++) {
           for (let j = 0; j < this.displayFields[i].fields.length; j++) {
-            if (rec[this.displayFields[i].fields[j]]
-              && rec[this.displayFields[i].fields[j]].toString().toLowerCase().indexOf(searchString.toLowerCase()) > -1
+            if (
+              rec[this.displayFields[i].fields[j]] &&
+              rec[this.displayFields[i].fields[j]]
+                .toString()
+                .toLowerCase()
+                .indexOf(searchString.toLowerCase()) > -1
             ) {
               res = true;
               break;
@@ -360,8 +467,11 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     let index: number = null;
     for (let i = 0; i < this.iconsStart.length; i++) {
       for (let j = 0; j < this.iconsStart[i].conditions.length; j++) {
-        if (this.iconsStart[i].conditions[j].showOnAll
-          || rec[this.iconsStart[i].conditions[j].field] == this.iconsStart[i].conditions[j].value) {
+        if (
+          this.iconsStart[i].conditions[j].showOnAll ||
+          rec[this.iconsStart[i].conditions[j].field] ==
+            this.iconsStart[i].conditions[j].value
+        ) {
           index = i;
           break;
         }
@@ -374,8 +484,11 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     let index: number = null;
     for (let i = 0; i < this.iconsEnd.length; i++) {
       for (let j = 0; j < this.iconsEnd[i].conditions.length; j++) {
-        if (this.iconsEnd[i].conditions[j].showOnAll
-          || rec[this.iconsEnd[i].conditions[j].field] == this.iconsEnd[i].conditions[j].value) {
+        if (
+          this.iconsEnd[i].conditions[j].showOnAll ||
+          rec[this.iconsEnd[i].conditions[j].field] ==
+            this.iconsEnd[i].conditions[j].value
+        ) {
           index = i;
           break;
         }
@@ -388,8 +501,11 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     let index: number = null;
     for (let i = 0; i < this.buttonsEnd.length; i++) {
       for (let j = 0; j < this.buttonsEnd[i].conditions.length; j++) {
-        if (this.buttonsEnd[i].conditions[j].showOnAll
-          || rec[this.buttonsEnd[i].conditions[j].field] == this.buttonsEnd[i].conditions[j].value) {
+        if (
+          this.buttonsEnd[i].conditions[j].showOnAll ||
+          rec[this.buttonsEnd[i].conditions[j].field] ==
+            this.buttonsEnd[i].conditions[j].value
+        ) {
           index = i;
           break;
         }
@@ -398,4 +514,28 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     return index;
   }
 
+  private maybeEnrichRecsWithImages(): void {
+    console.log(this.logTag, 'maybeEnrichRecsWithImages');
+    if (this.imagesStart) {
+      console.log(this.logTag, 'We have imagesStart');
+      // Go through recs and add the image attribute
+      this.recs.forEach(rec => {
+        try {
+          fileUtils
+            .readAsDataURL(rec[this.imagesStart.field])
+            .then(res => {
+              console.log('readAsDataURL res: ' + res);
+              rec.image = this.sanitizer.bypassSecurityTrustUrl(res);
+            })
+            .catch(err => {
+              console.error('readAsDataURL err', err);
+              // logger.error('Error', err);
+            });
+        } catch (e) {
+          console.error('Error - try catch: ', e);
+          // logger.error('Error - try catch', e);
+        }
+      });
+    }
+  }
 }

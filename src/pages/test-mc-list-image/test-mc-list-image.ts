@@ -4,7 +4,7 @@ import { IonicPage } from 'ionic-angular';
 @IonicPage()
 @Component({
   selector: 'page-test-mc-list-image',
-  templateUrl: 'test-mc-list-image.html',
+  templateUrl: 'test-mc-list-image.html'
 })
 export class TestMcListImagePage implements OnInit {
   // private logTag: string = 'test-mc-list-image.ts';
@@ -19,8 +19,8 @@ export class TestMcListImagePage implements OnInit {
   buttonsEnd: any; /* optional parameter */
   itemClass: string; /* optional parameter */
   contactListHeight: string = '500px'; /* optional parameter */
-  addCardStart: any /* optional parameter */
-  addCardEnd: any /* optional parameter */
+  addCardStart: any; /* optional parameter */
+  addCardEnd: any; /* optional parameter */
 
   imagePath: string = window['RESOURCE_ROOT'] + '/assets/imgs/';
 
@@ -29,20 +29,23 @@ export class TestMcListImagePage implements OnInit {
     this.setUpContactList();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   setUpContactList() {
     // As we're using the 'sqlParms' parameter to mc-list, specify the field index e.g. [1] is equivalent to 'Name'
-    this.sqlParms = { tableName: 'Contact__ap', fields: ['Id', 'Name', 'LeadSource', 'CreatedDate'], orderBy: { 'Name': 'ASC' } };
+    this.sqlParms = {
+      tableName: 'Contact__ap',
+      fields: ['Id', 'Name', 'LeadSource', 'CreatedDate'],
+      orderBy: { Name: 'ASC' }
+    };
     this.contactFields = [
       {
-        fields: [1], /* represents: 'Name' */
+        fields: [1] /* represents: 'Name' */,
         tags: ['h2'],
         classes: []
       },
       {
-        fields: [2, 3], /* represents: 'LeadSource' and 'CreatedDate' */
+        fields: [2, 3] /* represents: 'LeadSource' and 'CreatedDate' */,
         tags: [],
         classes: [],
         // the second field for this row ('CreatedDate') is to be formated using DatePipe
@@ -67,7 +70,7 @@ export class TestMcListImagePage implements OnInit {
       class: 'web-image-start', // optional - apply class 'web-image-start' to images
       field: 4, // mandatory for live scenario, optional if testing using 'value' below
       // (we've not specified field 4 in the above sqlParms, but this would be something like field name 'Display_Image__c')
-      value: 'asset.png', // optional, for testing, so we can pass in hard coded image name
+      // value: 'asset.png', // optional, for testing, so we can pass in hard coded image name
       path: this.imagePath // mandatory
     };
     this.iconsEnd = [
@@ -151,5 +154,4 @@ export class TestMcListImagePage implements OnInit {
   addCardEndClicked() {
     console.log('addCardEndClicked');
   }
-
 }
