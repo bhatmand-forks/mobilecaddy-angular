@@ -23,6 +23,8 @@ export interface IAppConfig {
   settingsPage?: settingsPageConfig;
   mcMenuFormsPage?: McMenuFormsPageConfig;
   mcCompletedFormsPage?: McCompletedFormsPageConfig;
+  // tmp line for calling the platform for config
+  usePlatformConfig?: boolean;
 }
 
 export interface menuItemsConfig {
@@ -346,5 +348,8 @@ export const AppConfig: IAppConfig = {
 
   mcMenuFormsPage: {},
 
-  mcCompletedFormsPage: {}
+  mcCompletedFormsPage: {},
+
+  // tmp line for calling the platform for config
+  usePlatformConfig: true
 };
