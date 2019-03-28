@@ -24,7 +24,7 @@ export class McSfRestService {
   private logTag: string = 'salesforce-rest-service.ts';
   private oauth;
   private failCount: number = 0;
-  private apiVersin: string = 'v40.0';
+  private apiVersion: string = 'v40.0';
 
   constructor(private http: HttpClient) {
     // TODO Take in oprional API version from Config service
@@ -33,7 +33,7 @@ export class McSfRestService {
   // * P U B L I C    M E T H O D S
 
   query(soql: string): Promise<any> {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       this.request({
         path: '/services/data/' + this.apiVersion + '/query',
         params: { q: soql }
@@ -200,7 +200,7 @@ export class McSfRestService {
       var uploadUrl =
         this.oauth.instanceUrl +
         '/services/data/' +
-        this.apiVersin +
+        this.apiVersion +
         '/connect/files/users/me';
 
       var headers = new HttpHeaders();
@@ -234,7 +234,7 @@ export class McSfRestService {
       var uploadUrl =
         'http://localhost:3000' +
         '/services/data/' +
-        this.apiVersin +
+        this.apiVersion +
         '/connect/files/users/me';
       let forceOauth = JSON.parse(localStorage.getItem('forceOAuth'));
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 import * as fileUtils from 'mobilecaddy-utils/fileUtils';
+import * as appDataUtils from 'mobilecaddy-utils/appDataUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { McConfigService } from '../mc-config/mc-config.service';
 import * as _ from 'underscore';
@@ -96,6 +97,7 @@ export class McSyncService {
           let tablesToSyncConfig = syncPointConfig.tableConfig.concat([
             mobileLogConfig
           ]);
+          tablesToSyncConfig = this.maybeAddSystemTables(tablesToSyncConfig);
           this.getDirtyTables().then(dirtyTables => {
             if (
               syncPointConfig.skipSyncPeriod &&
@@ -111,6 +113,7 @@ export class McSyncService {
                 this.doSyncTables1(tablesToSyncConfig, dirtyTables)
                   .then(r => {
                     fileUtils.downloadFiles();
+                    appDataUtils.getPlatformAppConfig();
                     resolve(r);
                   })
                   .catch(e => reject(e));
@@ -121,6 +124,7 @@ export class McSyncService {
               this.doSyncTables1(tablesToSyncConfig, dirtyTables)
                 .then(r => {
                   fileUtils.downloadFiles();
+                  appDataUtils.getPlatformAppConfig();
                   resolve(r);
                 })
                 .catch(e => reject(e));
@@ -132,7 +136,8 @@ export class McSyncService {
         }
       } else {
         // We have an array of tables... so let's just sync
-        this.doSyncTables(tablesToSync).then(res => {
+        let tablesToSyncConfig = this.maybeAddSystemTables(tablesToSync);
+        this.doSyncTables(tablesToSyncConfig).then(res => {
           this.setSyncState('complete');
           if (!res || res.status == 100999) {
             // LocalNotificationService.setLocalNotification();
@@ -140,6 +145,7 @@ export class McSyncService {
             // LocalNotificationService.cancelNotification();
           }
           fileUtils.downloadFiles();
+          appDataUtils.getPlatformAppConfig();
           resolve(res);
         });
       }
@@ -377,5 +383,23 @@ export class McSyncService {
       }
     });
     return orderedTables.concat(nonDirtyTables);
+  }
+
+  private maybeAddSystemTables(
+    tablesToSyncConfig: SyncTableConfig[]
+  ): SyncTableConfig[] {
+    const initialSyncTables = this.mobileCaddyConfigService.getConfig(
+      'initialSyncTables'
+    );
+    if (initialSyncTables && initialSyncTables.includes('File_Library__ap')) {
+      const fileLibrarySyncConfig = {
+        Name: 'File_Library__ap',
+        syncWithoutLocalUpdates: true,
+        maxTableAge: 0
+      };
+      return tablesToSyncConfig.concat([fileLibrarySyncConfig]);
+    } else {
+      return tablesToSyncConfig;
+    }
   }
 }

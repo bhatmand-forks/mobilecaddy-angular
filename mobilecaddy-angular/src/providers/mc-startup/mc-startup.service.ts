@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 import { startup, getStatus } from 'mobilecaddy-utils/startup';
 import { Platform } from 'ionic-angular';
-// import * as devUtils from 'mobilecaddy-utils/devUtils';
+import { getCurrentValueFromAppSoup } from 'mobilecaddy-utils/appDataUtils';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { McConfigService } from '../mc-config/mc-config.service';
 import { McSyncService } from '../mc-sync/mc-sync.service';
@@ -60,7 +60,7 @@ export class McStartupService {
     if (this.currentRunState !== runState.Running) {
       this.runAlready = true;
       // Set our config in config.service, so that it is available to all
-      this.MobileCaddyConfigService.setConfig(config);
+      // this.MobileCaddyConfigService.setConfig(config);
       this.config = config;
 
       if (
@@ -86,6 +86,9 @@ export class McStartupService {
         startup()
           .then(res => {
             console.log(this.logTag, 'res', res);
+            return this.setConfig();
+          })
+          .then(res => {
             this.runSync();
             window.clearTimeout(this.pollId);
           })
@@ -115,6 +118,9 @@ export class McStartupService {
             return startup();
           })
           .then(res => {
+            return this.setConfig();
+          })
+          .then(res => {
             this.runSync();
             window.clearTimeout(this.pollId);
             console.log(this.logTag, 'res', res);
@@ -130,6 +136,70 @@ export class McStartupService {
 
   getInitState(): BehaviorSubject<String | any> {
     return this.initStatus;
+  }
+
+  /**
+   * @description Pulls config entries from appSoup that have come from the platform.
+   *              Then merges with the config from app.config and stores in the config service.
+   *              Also sets cssVariables from appSoup 'cssVars' that have come from the platform.
+   */
+  private setConfig(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log(
+        this.logTag,
+        'setConfig entered',
+        this.config.usePlatformConfig,
+        window
+      );
+
+      // TODO - Move pulling config to a function.
+      // in here try reading from network (and store in DB), if fail then read from DB
+
+      if (
+        (location.hostname == 'localhost' ||
+          !navigator.appVersion.includes('obile')) &&
+        !window['USE_FORCETK']
+      ) {
+        this.MobileCaddyConfigService.setConfig(this.config);
+        resolve();
+      } else {
+        // tmp stuff for calling the platform for config
+        if (this.config.usePlatformConfig) {
+          getCurrentValueFromAppSoup('cssVars')
+            .then(cssVarsStr => {
+              console.log('cssVarsStr', cssVarsStr);
+              if (cssVarsStr) {
+                // SET CSS VARS
+                let cssVars = JSON.parse(cssVarsStr);
+                for (var cssVar in cssVars) {
+                  document.body.style.setProperty(cssVar, cssVars[cssVar]);
+                }
+              }
+              return getCurrentValueFromAppSoup('config');
+            })
+            .then(platConfigStr => {
+              console.log('platConfigStr', platConfigStr);
+              console.log('platConfigStr', platConfigStr);
+              if (platConfigStr) {
+                let platConfig = JSON.parse(platConfigStr);
+                // merge config
+                for (var confKey in platConfig) {
+                  this.config[confKey] = platConfig[confKey];
+                }
+              }
+              this.MobileCaddyConfigService.setConfig(this.config);
+              resolve();
+            })
+            .catch(e => {
+              console.error('Error getting platConfig from appSoup', e);
+              resolve();
+            });
+        } else {
+          this.MobileCaddyConfigService.setConfig(this.config);
+          resolve();
+        }
+      }
+    });
   }
 
   private runSync() {

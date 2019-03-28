@@ -69,8 +69,8 @@
       <ng-container *ngIf="isCardList&&isImageCard">
         <ion-card tappable *ngFor="let rec of recs" (click)="clickRecord($event,rec)" [ngClass]="cardClass ? cardClass : ''">
           <ion-item text-wrap [ngClass]="itemClass ? itemClass : ''">
-            <ion-thumbnail *ngIf="imagesStart" [ngClass]="getImageStartClass()" item-start>
-              <img [src]="getImageStartSource(rec)">
+            <ion-thumbnail *ngIf="rec.image" [ngClass]="getImageStartClass()" item-start>
+              <img [src]="rec.image">
             </ion-thumbnail>
             <div *ngFor="let item of displayFields; let i = index">
               <span *ngFor="let field of item.fields; let j = index">

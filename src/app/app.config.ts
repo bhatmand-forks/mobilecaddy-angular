@@ -1,9 +1,13 @@
 import { InjectionToken } from '@angular/core';
 
+import { SettingsPage } from '../../mobilecaddy-angular/src/pages/settings-page/settings-page';
+import { McMenuFormsPage } from '../../mobilecaddy-angular/src/pages/mc-menu-forms/mc-menu-forms';
+
 export let APP_CONFIG = new InjectionToken('app.config');
 
 export interface IAppConfig {
   version: string;
+  menuItems: menuItemsConfig[];
   indexSpecs?: indexSpecConfig[];
   initialSyncTables: string[];
   syncPoints: SyncPointConfig[];
@@ -19,6 +23,15 @@ export interface IAppConfig {
   settingsPage?: settingsPageConfig;
   mcMenuFormsPage?: McMenuFormsPageConfig;
   mcCompletedFormsPage?: McCompletedFormsPageConfig;
+  // tmp line for calling the platform for config
+  usePlatformConfig?: boolean;
+}
+
+export interface menuItemsConfig {
+  name?: string;
+  title: string;
+  component: any;
+  icon?: any;
 }
 
 export interface indexSpecConfig {
@@ -135,6 +148,19 @@ const oneMinute: number = 1000 * 60;
 export const AppConfig: IAppConfig = {
   // Our app's version
   version: '1.0.0',
+
+  menuItems: [
+    { title: 'Home', component: '' },
+    { title: 'Outbox', component: 'OutboxPage' },
+    { title: 'Search', component: 'SearchPage' },
+    { title: 'Test mc-list', component: 'TestMcListPage' },
+    { title: 'Test mc-list images', component: 'TestMcListImagePage' },
+    { title: 'Test mc-form', component: 'TestMcFormPage' },
+    { title: 'Test Lock Screen', component: 'TestMcLockScreenPage' },
+    { title: 'Test Resume/Nav/Cold', component: 'TestMcResumePage' },
+    { title: 'Menu Forms', component: McMenuFormsPage },
+    { title: 'Settings', component: SettingsPage }
+  ],
 
   // Set our own indexSpecs
   indexSpecs: [
@@ -322,5 +348,8 @@ export const AppConfig: IAppConfig = {
 
   mcMenuFormsPage: {},
 
-  mcCompletedFormsPage: {}
+  mcCompletedFormsPage: {},
+
+  // tmp line for calling the platform for config
+  usePlatformConfig: true
 };

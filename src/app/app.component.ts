@@ -1,13 +1,14 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 // import { InitPage } from '../pages/init/init';
 
+import { APP_CONFIG, IAppConfig } from './app.config';
+import { McStartupService } from '../../mobilecaddy-angular/src/providers/mc-startup/mc-startup.service';
+
 import { HomePage } from '../pages/home/home';
-import { SettingsPage } from '../../mobilecaddy-angular/src/pages/settings-page/settings-page';
-import { McMenuFormsPage } from '../../mobilecaddy-angular/src/pages/mc-menu-forms/mc-menu-forms';
 
 // DEV STUFF
 import { isDevMode } from '@angular/core';
@@ -31,43 +32,55 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = HomePage;
-
   pages: Array<{ title: string; component: any }>;
+  config: IAppConfig;
 
   constructor(
     public platform: Platform,
     public statusBar: StatusBar,
-    public splashScreen: SplashScreen
+    public splashScreen: SplashScreen,
+    private mcStartupService: McStartupService,
+    @Inject(APP_CONFIG) private appConfig: IAppConfig
   ) {
     this.initializeApp();
-
-    // used for an example of ngFor and navigation
-    this.pages = [
-      { title: 'Accounts', component: HomePage },
-      { title: 'Outbox', component: 'OutboxPage' },
-      { title: 'Search', component: 'SearchPage' },
-      { title: 'Test mc-list', component: 'TestMcListPage' },
-      { title: 'Test mc-list images', component: 'TestMcListImagePage' },
-      { title: 'Test mc-form', component: 'TestMcFormPage' },
-      { title: 'Test Lock Screen', component: 'TestMcLockScreenPage' },
-      { title: 'Test Resume/Nav/Cold', component: 'TestMcResumePage' },
-      { title: 'Menu Forms', component: McMenuFormsPage },
-      { title: 'Settings', component: SettingsPage }
-    ];
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    });
+    if (
+      location.hostname == 'localhost' ||
+      !navigator.appVersion.includes('obile')
+    ) {
+      // Running in CodeFlow - so no platform.ready()
+      this.doInitApp();
+    } else {
+      this.platform.ready().then(() => {
+        this.doInitApp();
+      });
+    }
   }
 
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
+  }
+
+  private doInitApp() {
+    let mergedConfig: any;
+
+    // TODO - get config from file and merge with local config
+    mergedConfig = this.mergeConfig();
+
+    this.pages = mergedConfig.menuItems;
+
+    this.mcStartupService.startup(mergedConfig);
+
+    this.statusBar.styleDefault();
+    // this.splashScreen.hide();
+  }
+
+  private mergeConfig(): any {
+    this.appConfig.menuItems[0].component = HomePage;
+    return this.appConfig;
   }
 }
