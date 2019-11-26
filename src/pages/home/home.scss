@@ -1,2 +1,26 @@
 page-home {
-}
+
+    .home-button {
+      height: 125px;
+      width: 125px;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 8px;
+      border-color: #51C8E4;
+      margin: auto;
+      padding: 10px;
+    }
+
+    .home-button-icon {
+      font-size: 70px;
+      color:var(--primary-color);
+      height: 80px;
+    }
+
+    .home-button-text {
+      color: #51C8E4;
+      font-weight: bold;
+      font-size: 11px;
+    }
+
+  }

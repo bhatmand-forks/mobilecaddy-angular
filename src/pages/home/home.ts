@@ -1,9 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { NavController, Loading, LoadingController } from 'ionic-angular';
 import * as devUtils from 'mobilecaddy-utils/devUtils';
 // import { mcSyncService } from '../../providers/mobilecaddy-sync.service';
+import { McLockScreenProvider } from '../../../mobilecaddy-angular/src/providers/mc-lock-screen/mc-lock-screen';
+import { McLockScreenComponent } from '../../../mobilecaddy-angular/src/components/mc-lock-screen/mc-lock-screen';
+import { McResumeProvider } from '../../../mobilecaddy-angular/src/providers/mc-resume/mc-resume';
 import { McSyncService } from '../../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
 import { McStartupService } from '../../../mobilecaddy-angular/src/providers/mc-startup/mc-startup.service';
+import { Subscription } from 'rxjs/Subscription';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import * as _ from 'underscore';
 
@@ -13,115 +17,136 @@ const logTag: string = 'home.ts';
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage implements OnInit {
-  accounts;
-  accountTable: string = 'Account__ap';
-  config: IAppConfig;
-  private loader: any;
-  private mcInitStateSub;
-  private mcInitSyncSub;
-  private syncSub;
+export class HomePage implements OnInit, OnDestroy {
+  readonly logTag: string = 'home.ts';
+  private loader: Loading;
+  // So we can unsubscribe subscriptions on destroy
+  private getInitialSyncStateSubscription: Subscription;
+  private getInitStateSubscription: Subscription;
+  private onNavigationSubscription: Subscription;
+  private onColdStartSubscription: Subscription;
+  // mcStartupService.startup status
+  private runState = {
+    InitialSync: 0,
+    ColdStart: 1,
+    Running: 2
+  };
+  private startupStatus;
+
+  homeImage: string = window['RESOURCE_ROOT'] + '/assets/imgs/home.png';
+  titleImage: string = window['RESOURCE_ROOT'] + '/assets/imgs/brent_logo.png';
+  btnTranslationKey: string = 'a0n0X00000VIm37QAD.OK_BTN';
 
   constructor(
-    public navCtrl: NavController,
-    public loadingCtrl: LoadingController,
-    private mcSyncService: McSyncService,
     private mcStartupService: McStartupService,
-    @Inject(APP_CONFIG) private appConfig: IAppConfig
+    private mcSyncService: McSyncService,
+    private loadingCtrl: LoadingController,
+    @Inject(APP_CONFIG) private appConfig: IAppConfig,
+    private navCtrl: NavController,
+    private mcResumeProvider: McResumeProvider,
+    private mcLockScreenProvider: McLockScreenProvider
   ) {}
 
   ngOnInit() {
-    // As we are the first page, we check to see when the initialSync is completed.
-    this.loader = this.loadingCtrl.create({
-      content: 'Preparing data...',
-      duration: 120000
-    });
-    this.loader.present();
-
-    // Can use the result of mcStartupService.startup() to see if coming here on coldStart
-    // TODO Re-implement the way isAlreadyRun is obtained
-    // let isAlreadyRun: number = this.mcStartupService.startup(this.appConfig);
-
-    this.mcInitStateSub = this.mcStartupService
-      .getInitState()
-      .subscribe(res => {
-        console.log(logTag, 'Init Update', res);
-        if (res) {
-          if (res.status === -1) this.loader.setContent(res.info);
-          if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
-        }
-      });
-
-    this.mcInitSyncSub = this.mcSyncService
+    // Subscribe to initial sync state
+    this.getInitialSyncStateSubscription = this.mcSyncService
       .getInitialSyncState()
       .subscribe(initialSyncState => {
-        console.log(logTag, 'initialSyncState Update', initialSyncState);
-        if (initialSyncState == 'InitialLoadComplete') {
-          this.showAccounts();
+        // console.log(this.logTag, 'initialSyncState', initialSyncState);
+        // If the initialSync is NOT completed then display message
+        if (initialSyncState !== 'InitialLoadComplete') {
+          this.setLoadingMsg('Preparing data...');
         }
       });
-  }
 
-  ionViewDidEnter() {
-    // As we are the root our URL may not be updated if coming here via the 'back' button.
-    // Maybe we can get rid of this is we Lazy load the home page?
-    history.pushState({}, 'Home', '/');
-  }
-
-  showAccounts(): void {
-    this.loader.setContent('Fetching records');
-    let soql =
-      'SELECT {' +
-      this.accountTable +
-      ':Id}, {' +
-      this.accountTable +
-      ':Name} FROM {' +
-      this.accountTable +
-      '}';
-    devUtils.smartSql(soql).then(res => {
-      console.log('res', res);
-      // Sort by Name
-      this.accounts = _.sortBy(res.records, el => {
-        return el[1];
+    // Subscribe to the observable so we can update our loader
+    this.getInitStateSubscription = this.mcStartupService
+      .getInitState()
+      .subscribe(res => {
+        // console.log(this.logTag, 'getInitState', res);
+        if (res) {
+          // Build messages check
+          if (res.status === -1) {
+            if (this.startupStatus === this.runState.ColdStart) {
+              if (this.appConfig.onColdStart.showBuildMsgs) {
+                this.setLoadingMsg(res.info);
+              }
+            } else {
+              this.setLoadingMsg(res.info);
+            }
+          }
+          // Syncing messages check
+          if (res.status === 0) {
+            if (this.startupStatus === this.runState.ColdStart) {
+              if (this.appConfig.onColdStart.showSyncLoader) {
+                this.setLoadingMsg('Syncing ' + res.table);
+              }
+            } else if (this.startupStatus === this.runState.Running) {
+              // this.setLoadingMsg('Syncing ' + res.table);
+            } else {
+              this.setLoadingMsg('Syncing ' + res.table);
+            }
+          }
+          // Sync complete check
+          if (res === 'complete') {
+            if (this.loader) {
+              this.loader.dismiss();
+              this.loader = null;
+            }
+          }
+        }
       });
-      this.accounts = res.records;
-      this.loader.dismiss();
-    });
+
+    // REMOVED THIS AS IT GETS IN THE WAY OF LOCAL TESTING
+    // Do we need to capture the screen lock pin?
+    // this.mcLockScreenProvider.getCode().then(code => {
+    //   if (!code) {
+    //     // No => implies first time into page on initial install
+    //     this.mcLockScreenProvider.setupLockScreenCode().then(res => {
+    //       // console.log(this.logTag, 'setupLockScreenCode res',res);
+    //     });
+    //   }
+    // });
+
+    // On navigation / on cold start
+    if (this.startupStatus === this.runState.Running) {
+      // What do we want to do on navigation to this page?
+      this.onNavigationSubscription = this.mcResumeProvider
+        .onNavigation(this.logTag)
+        .subscribe(res => {
+          // console.log(this.logTag, 'mcResumeProvider.onNavigation res', res);
+        });
+    } else if (this.startupStatus === this.runState.ColdStart) {
+      // What do we want to do on cold start?
+      this.onColdStartSubscription = this.mcResumeProvider
+        .onColdStart(McLockScreenComponent)
+        .subscribe(res => {
+          // console.log(this.logTag, 'mcResumeProvider.onColdStart res', res);
+        });
+    }
   }
 
-  doSync(event): void {
-    console.log(logTag, 'doSync');
-
-    // You're unlikely to really want to show a loader whilst a background sync takes place,
-    // but this is an example of using the mcSyncService.getSyncState() observable.
-    this.loader = this.loadingCtrl.create({
-      content: 'Syncing...',
-      duration: 120000
-    });
-    this.loader.present();
-
-    if (this.syncSub) this.syncSub.unsubscribe();
-    this.syncSub = this.mcSyncService.getSyncState().subscribe(res => {
-      console.log(logTag, 'SyncState Update', res);
-      if (res.status === 0) this.loader.setContent('Syncing ' + res.table);
-    });
-
-    this.mcSyncService.syncTables('mySync').then(r => {
-      this.loader.dismiss().catch(() => {});
-    });
+  ngOnDestroy() {
+    this.getInitialSyncStateSubscription.unsubscribe();
+    this.getInitStateSubscription.unsubscribe();
+    if (this.onNavigationSubscription) {
+      this.onNavigationSubscription.unsubscribe();
+    }
+    if (this.onColdStartSubscription) {
+      this.onColdStartSubscription.unsubscribe();
+    }
   }
 
-  goToAccount(a): void {
-    console.log(logTag, 'goToAccount', a);
-    this.navCtrl.push('AccountDetailPage', {
-      id: a[0], // We set this as well, for our IonicPage segment
-      account: { Id: a[0], Name: a[1] }
-    });
+  setLoadingMsg(msg: string) {
+    if (!this.loader) {
+      this.loader = this.loadingCtrl.create({
+        content: msg,
+        duration: 120000
+      });
+      this.loader.present();
+    } else {
+      this.loader.setContent(msg);
+    }
   }
 
-  ionViewDidLeave() {
-    console.log(logTag, 'ionViewDidLeave');
-    this.mcInitStateSub.unsubscribe();
-    this.mcInitSyncSub.unsubscribe();
-  }
 }

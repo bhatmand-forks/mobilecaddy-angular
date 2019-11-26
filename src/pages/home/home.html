@@ -1,23 +1,58 @@
-<ion-header>
-  <ion-navbar>
+<ion-header no-border>
+  <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title>
+      <img [src]="titleImage" style="width: 80px;" />
+    </ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="doSync($event)">
-        <ion-icon name="refresh-circle"></ion-icon>
-      </button>
       <mc-sync-icon></mc-sync-icon>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <!-- <mobilecaddy-sync [config]="config" [showLoader]="false"></mobilecaddy-sync> -->
-  <ion-list>
-    <ion-item class="account " *ngFor="let r of accounts" (click)="goToAccount(r)">
-      {{r[1]}}
-    </ion-item>
-  </ion-list>
+<ion-content>
+
+  <img [src]="homeImage" style="width:100%;" />
+
+  <ion-grid>
+    <ion-row style="padding-bottom:20px;padding-top:20px;">
+      <ion-col text-center tappable>
+        <div class="home-button">
+          <ion-icon name="ios-qr-scanner-outline" class="home-button-icon"></ion-icon>
+          <div class="home-button-text">
+            SCANNER
+          </div>
+        </div>
+      </ion-col>
+      <ion-col text-center tappable>
+        <div class="home-button">
+          <ion-icon name="ios-search-outline" class="home-button-icon"></ion-icon>
+          <div class="home-button-text">
+            ERROR CODES
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col text-center tappable>
+        <div class="home-button">
+          <ion-icon name="ios-list-box-outline" class="home-button-icon"></ion-icon>
+          <div class="home-button-text">
+            ASSETS
+          </div>
+        </div>
+      </ion-col>
+      <ion-col text-center tappable>
+        <div class="home-button">
+          <ion-icon name="ios-cloud-upload-outline" class="home-button-icon"></ion-icon>
+          <div class="home-button-text">
+            OUTBOX
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
