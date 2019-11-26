@@ -13,11 +13,401 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
-.remove-ok {
-  .alert-button:nth-child(2) {
-    display: none;
+
+// MobileCaddy CSS Variables
+// -------------------------
+// This app makes use of CSS variables for some components,
+// allowing styling to ne updated on-the-fly
+
+// Variables and Defaults
+// -----------------------------
+body {
+  --main-bg-color: #f9f9f9;
+
+  --primary-color: #003953;
+  --primary-color-lightened: #0d4660; // 5% lighter than #003953 - can we do lightening in JS once we have the primary files down.
+  --secondary-color: #fc8c2c;
+  --danger-color: #f53d3d;
+  --light-color: #f4f4f4;
+  --dark-color: #222;
+
+  --primary-text-color: var(--light-color);
+  --secondary-text-color: var(--light-color);
+  --danger-text-color: var(--light-color);
+
+  --primary-font-family: 'roboto';
+  --button-border-radius: 64px;
+
+  // nav header
+  --nav-header-background: var(--primary-color);
+  --nav-header-color: var(--light-color);
+
+  // menu
+  --menu-header-background: var(--primary-color);
+  --menu-header-color: var(--light-color);
+  --menu-header-font-weight: 'normal';
+  --menu-content-background: var(--primary-color);
+  --menu-content-background-active: var(--primary-color-lightened);
+  --menu-content-color: var(--light-color);
+
+  // cards
+}
+
+// Setting Variables to things
+// ----------------------------
+
+ion-app.md,
+ion-app.ios {
+  font-family: var(--primary-font-family);
+}
+
+.content {
+  background-color: var(--main-bg-color);
+}
+
+[class$='md-primary'],
+[class$='ios-primary'],
+[class$='-primary']:hover:not(.disable-hover) {
+  background-color: var(--primary-color);
+  color: var(--primary-text-color);
+}
+
+[class$='md-secondary'],
+[class$='ios-secondary'],
+[class$='-secondary']:hover:not(.disable-hover) {
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
+}
+
+[class$='md-danger'],
+[class$='-danger']:hover:not(.disable-hover),
+[class$='ios-danger'] {
+  background-color: var(--danger-color);
+  color: var(--danger-text-color);
+}
+
+[class$='md-light'],
+[class$='ios-light'] {
+  background-color: var(--light-color);
+}
+
+[class$='md-dark'],
+[class$='ios-dark'] {
+  background-color: var(--dark-color);
+}
+
+.fab {
+  color: var(--light-color);
+  background-color: var(--primary-color);
+}
+
+.tabs a.tab-button[aria-selected='true'],
+.tabs a.tab-button[aria-selected='true'] ion-icon.tab-button-icon {
+  color: var(--primary-color);
+}
+
+button.alert-button.alert-button-default {
+  color: var(--primary-color);
+}
+
+ion-icon[class*='-primary'] {
+  color: var(--primary-color);
+}
+
+ion-item.item.item-input.input-has-focus div.item-inner {
+  border-bottom-color: var(--primary-color);
+  box-shadow: var(--primary-color);
+}
+
+.loading-spinner ion-spinner.spinner-crescent circle {
+  stroke:  var(--primary-color);
+}
+
+// Form Items
+.item-radio-checked ion-label.label {
+  color: var(--primary-color);
+}
+
+.radio-icon.radio-checked {
+  border-color: var(--primary-color);
+}
+.radio-checked .radio-inner {
+  background-color: var(--primary-color);
+}
+
+// Navbar
+.toolbar .toolbar-background,
+.toolbar button.bar-button,
+.toolbar .toolbar-title {
+  background-color: var(--nav-header-background);
+  color: var(--nav-header-color);
+}
+
+// Menu
+ion-app ion-menu ion-header ion-toolbar.toolbar .toolbar-background {
+  background-color: var(--menu-header-background);
+  color: var(--menu-header-color);
+}
+ion-menu .toolbar-title {
+  font-weight: var(--menu-header-font-weight) !important;
+}
+ion-app ion-menu ion-content.content,
+ion-app ion-menu ion-content.content button {
+  background-color: var(--menu-content-background);
+  color: var(--menu-content-color);
+}
+ion-menu .item.activated {
+  background-color: var(--menu-content-background-active);
+}
+
+// List items
+ion-toolbar .item,
+ion-list .item {
+  background-color: var(--main-bg-color);
+}
+
+// Other specifics
+// ----------------------------
+// not yet brought into the CSS variables fold, or not configurable
+
+// Make the screen lock modal full screen
+.md,
+.ios,
+.wp {
+  .mc-screen-lock-modal {
+    .modal-wrapper {
+      position: absolute;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
   }
-  .alert-head {
-    text-align: left !important;
+}
+.ios .mc-screen-lock-modal {
+  .modal-wrapper {
+    top: 26px;
   }
+}
+.md .mc-screen-lock-modal,
+.wp .mc-screen-lock-modal {
+  .modal-wrapper {
+    top: 0;
+  }
+}
+
+.md,
+.ios,
+.wp {
+  // Change side menu color
+  ion-menu {
+    // Move menu item text to the right of right
+    ion-icon {
+      width: 23px;
+    }
+  }
+}
+
+// For mc-list component.
+// Set bottom margin for the list content within the component.
+// We need to do this as the tabs always add 'margin-bottom' style to the ion-content element,
+// regardless of whether it's in our component
+.md,
+.ios,
+.wp {
+  ion-tab {
+    mc-list {
+      ion-content {
+        .scroll-content {
+          margin-bottom: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+// For mc-form components
+.md,
+.ios,
+.wp {
+  mc-form {
+    .mc-form-tab-container {
+      ion-grid {
+        background-color: map-get($colors, primary) !important;
+      }
+
+      // Bottom borders for tabs
+      .tab.active {
+        color: map-get($colors, secondary) !important;
+        border-bottom-style: solid;
+        border-bottom-width: 3px;
+        border-bottom-color: map-get($colors, secondary);
+      }
+
+      .tab.inactive {
+        color: #ffffff !important;
+        border-bottom-style: solid;
+        border-bottom-width: 3px;
+        border-bottom-color: map-get($colors, primary);
+      }
+    }
+
+    .mc-form-list {
+      .picklist-item {
+        ion-label[stacked] {
+          padding-bottom: 5px !important;
+        }
+      }
+
+      ion-item {
+        // Field labels
+        ion-label[stacked] {
+          font-size: $font-size-base;
+          color: map-get($colors, primary);
+          font-weight: 700;
+        }
+
+        // Input fields
+        input,
+        .datetime-text,
+        textarea,
+        ion-select {
+          background-color: #ffffff;
+          border-style: solid;
+          border-width: 1px;
+          border-color: #ececee;
+        }
+
+        input[type='text'],
+        input[type='number'],
+        .datetime-text,
+        textarea {
+          border-radius: 3px;
+          padding: 8px 8px 8px 5px;
+        }
+
+        ion-select {
+          border-radius: 3px;
+          padding: 8px 12px 8px 5px;
+        }
+
+        .checkbox-icon {
+          border-width: 1px;
+          border-color: #ececee;
+        }
+
+        // Only make checkbox background white when it's NOT checked
+        .checkbox-icon:not(.checkbox-checked) {
+          background-color: #ffffff;
+        }
+      }
+    }
+  }
+}
+
+// Couldn't get ionic's button 'round' directive to work in footer/buttons,
+// so use our own class
+.md,
+.ios,
+.wp {
+  .mc-button-round {
+    border-radius: $button-round-border-radius;
+    padding: 0 1.5rem;
+  }
+}
+
+.installed {
+  background-color: green;
+  border-radius: $button-round-border-radius;
+  padding: 0 1.3rem;
+  color: #ffffff;
+}
+.shipped {
+  background-color: orange;
+  border-radius: $button-round-border-radius;
+  padding: 0 1.3rem;
+  color: #ffffff;
+}
+
+// ion-searchbar {
+//   .searchbar-input-container {
+//     .searchbar-input {
+//       border-radius: 20px;
+//       border-style: solid;
+//       border-width: 1px;
+//       border-color: #ECECEE;
+//     }
+//   }
+// }
+
+.asset-details-fieldset {
+  // margin: 0 10px 10px 10px !important;
+  margin: 0 0 8px 0 !important;
+  padding: 0 !important;
+  border-color: #d9d9d9 !important;
+  border-radius: 5px !important;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.asset-details-legend {
+  width: auto !important;
+  // font-size: 15px !important;
+  line-height: normal !important;
+  color: gray !important;
+  text-align: center !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+
+.asset-details-list-icon {
+  color: #0ab8dd;
+  padding-right: 5px;
+  font-weight: bold;
+}
+
+.asset-details-list-header {
+  background-color: #dedede;
+}
+
+.warning-text-fieldset {
+  margin: 0 0 8px 0 !important;
+  padding: 0 !important;
+  border-color: orange !important;
+  border-radius: 5px !important;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.warning-text {
+  color: orange;
+  font-weight: bold;
+}
+
+.process-button {
+  width: 140px;
+}
+
+.process-button-next {
+  background-color: #51c8e4;
+}
+
+.process-button-prev {
+  background-color: gray;
+}
+
+.process-heading-text {
+  color: #214f5e;
+}
+
+.process-sub-heading-text {
+  color: #285f71;
+}
+
+.process-text {
+  color: gray;
+}
+
+.process-option-text {
+  color: #3c8eaa;
 }

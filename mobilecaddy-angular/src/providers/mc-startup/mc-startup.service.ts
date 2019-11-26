@@ -155,28 +155,8 @@ export class McStartupService {
       // TODO - Move pulling config to a function.
       // in here try reading from network (and store in DB), if fail then read from DB
 
-      // if (
-      //   (location.hostname == 'localhost' ||
-      //     !navigator.appVersion.includes('obile')) &&
-      //   !window['USE_FORCETK']
-      // ) {
-      //   this.MobileCaddyConfigService.setConfig(this.config);
-      //   resolve();
-      // } else {
-        // tmp stuff for calling the platform for config
         if (this.config.usePlatformConfig) {
-          getCurrentValueFromAppSoup('cssVars')
-            .then(cssVarsStr => {
-              console.log('cssVarsStr', cssVarsStr);
-              if (cssVarsStr) {
-                // SET CSS VARS
-                let cssVars = JSON.parse(cssVarsStr);
-                for (var cssVar in cssVars) {
-                  document.body.style.setProperty(cssVar, cssVars[cssVar]);
-                }
-              }
-              return getCurrentValueFromAppSoup('config');
-            })
+          getCurrentValueFromAppSoup('config')
             .then(platConfigStr => {
               console.log('platConfigStr', platConfigStr);
               if (platConfigStr) {
@@ -187,6 +167,17 @@ export class McStartupService {
                 }
               }
               this.MobileCaddyConfigService.setConfig(this.config);
+
+              // Pull base CSS Vars from the platform config.
+              // NOTE there are child stylings that we need to think about too.
+              const cssVars = this.config.General1[0].config.General1[0].config.cssVars;
+              console.log('cssVars', cssVars);
+              if (cssVars) {
+                for (var cssVar in cssVars) {
+                  document.body.style.setProperty(cssVar, cssVars[cssVar]);
+                }
+              }
+
               resolve();
             })
             .catch(e => {
