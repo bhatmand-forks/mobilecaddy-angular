@@ -155,14 +155,14 @@ export class McStartupService {
       // TODO - Move pulling config to a function.
       // in here try reading from network (and store in DB), if fail then read from DB
 
-      if (
-        (location.hostname == 'localhost' ||
-          !navigator.appVersion.includes('obile')) &&
-        !window['USE_FORCETK']
-      ) {
-        this.MobileCaddyConfigService.setConfig(this.config);
-        resolve();
-      } else {
+      // if (
+      //   (location.hostname == 'localhost' ||
+      //     !navigator.appVersion.includes('obile')) &&
+      //   !window['USE_FORCETK']
+      // ) {
+      //   this.MobileCaddyConfigService.setConfig(this.config);
+      //   resolve();
+      // } else {
         // tmp stuff for calling the platform for config
         if (this.config.usePlatformConfig) {
           getCurrentValueFromAppSoup('cssVars')
@@ -178,7 +178,6 @@ export class McStartupService {
               return getCurrentValueFromAppSoup('config');
             })
             .then(platConfigStr => {
-              console.log('platConfigStr', platConfigStr);
               console.log('platConfigStr', platConfigStr);
               if (platConfigStr) {
                 let platConfig = JSON.parse(platConfigStr);
@@ -198,7 +197,7 @@ export class McStartupService {
           this.MobileCaddyConfigService.setConfig(this.config);
           resolve();
         }
-      }
+      // }
     });
   }
 

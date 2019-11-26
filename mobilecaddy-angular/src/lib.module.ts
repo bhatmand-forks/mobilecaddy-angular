@@ -1,6 +1,7 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from 'ionic-angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 // Components
 import { MobileCaddySyncIconComponent } from './components/mc-sync-icon/mc-sync-icon.component';
@@ -45,9 +46,14 @@ import { McFormProvider } from './providers/mc-form/mc-form';
 import { McLockScreenProvider } from './providers/mc-lock-screen/mc-lock-screen';
 import { McResumeProvider } from './providers/mc-resume/mc-resume';
 import { Network } from '@ionic-native/network';
+import { TranslateAppSoupLoader } from './providers/translate-appsoup-loader/translate-appsoup-loader';
 
 @NgModule({
-  imports: [CommonModule, IonicModule],
+  imports: [
+    CommonModule,
+    IonicModule,
+    TranslateModule.forChild()
+  ],
   declarations: [
     MobileCaddySyncIconComponent,
     OutboxComponent,
@@ -132,7 +138,8 @@ export class MobileCaddyModule {
         McDataProvider,
         McFormProvider,
         McLockScreenProvider,
-        McResumeProvider
+        McResumeProvider,
+        TranslateAppSoupLoader
       ]
     };
   }

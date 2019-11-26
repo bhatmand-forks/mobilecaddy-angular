@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { MobileCaddyModule } from '../../mobilecaddy-angular/src/lib.module';
@@ -27,6 +28,15 @@ import { McSyncService } from '../../mobilecaddy-angular/src/providers/mc-sync/m
 import { McRecentItemsService } from '../../mobilecaddy-angular/src/providers/mc-recent-items/mc-recent-items.service';
 import { McSfRestService } from '../../mobilecaddy-angular/src/providers/mc-sf-rest/mc-sf-rest.service';
 import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/mc-global-search/mc-global-search.service';
+import { TranslateAppSoupLoader } from '../../mobilecaddy-angular/src/providers/translate-appsoup-loader/translate-appsoup-loader';
+
+// AoT requires an exported function for factories
+// export function HttpLoaderFactory(http: HttpClient) {
+//   return new TranslateHttpLoader(http);
+// }
+export function AppSoupLoaderFactory(http: HttpClient, file: File) {
+  return new TranslateAppSoupLoader(http, file);
+}
 
 @NgModule({
   declarations: [
@@ -36,6 +46,13 @@ import { McGlobalSearchProvider } from '../../mobilecaddy-angular/src/providers/
   imports: [
     BrowserModule,
     HttpClientModule,
+    TranslateModule.forRoot({
+        loader: {
+            provide: TranslateLoader,
+            useFactory: AppSoupLoaderFactory,
+            deps: [HttpClient]
+        }
+    }),
     IonicModule.forRoot(MyApp),
     MobileCaddyModule.forRoot()
   ],

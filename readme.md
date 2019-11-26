@@ -8,7 +8,7 @@ Packaging is done (presently) wih [ng-packagr](https://github.com/dherges/ng-pac
 
 ## Prerequisites
 
-- Node v8.5.0+
+- Node v10.15.3+
 - MobileCaddy CLI 2.2+
 
 ## Getting Started

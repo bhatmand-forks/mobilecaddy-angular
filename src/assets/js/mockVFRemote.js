@@ -202,6 +202,11 @@ Visualforce.remoting.Manager = {
           success(data, eventObj);
         });
         break;
+      case 'getAppConfig':
+          queryMockJsonFile('getAppConfig', function(data) {
+            success(data, eventObj);
+          });
+          break;
       case 'getSystemDataSoupDefinition':
         queryMockJsonFile('getSystemDataSoupDefinition', function(data) {
           success(data, eventObj);
@@ -235,11 +240,7 @@ Visualforce.remoting.Manager = {
       case 'p2mRefreshTable':
         console.log('mockVfRemote p2mRefreshTable -> ' + arguments[3]);
         queryMockJsonTableFile('p2mRefreshTable', arguments[3], function(data) {
-          // success(data, eventObj);
-          setTimeout(function() {
-            console.timeEnd('TODD');
-            success(data, eventObj);
-          }, 500);
+          success(data, eventObj);
         });
         break;
       case 'm2pUpdateTable':
@@ -254,13 +255,14 @@ Visualforce.remoting.Manager = {
           }, 500);
         } else {
           // queryMockJsonTableFile('m2pUpdateTable', arguments[3], function(data) {
-          // success(data, eventObj);
+          // 	success(data, eventObj);
+          // });
           var result = buildM2PResp(arguments[4]);
           console.time('TODD');
           setTimeout(function() {
             console.timeEnd('TODD');
             success(result, eventObj);
-          }, 1000);
+          }, 500);
         }
         break;
       default:

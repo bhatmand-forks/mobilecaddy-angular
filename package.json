@@ -47,5 +47,6 @@
     "zone.js": "0.8.20"
   },
   "dependencies": {
+    "@ngx-translate/core": "^9.1.1"
   }
 }

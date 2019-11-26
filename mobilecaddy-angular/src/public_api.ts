@@ -40,5 +40,6 @@ export * from './providers/mc-data/mc-data';
 export * from './providers/mc-form/mc-form';
 export * from './providers/mc-lock-screen/mc-lock-screen';
 export * from './providers/mc-resume/mc-resume';
+export * from './providers/translate-appsoup-loader/translate-appsoup-loader';
 
 export * from './lib.module';

@@ -17,6 +17,7 @@
     "sw-toolbox",
     "mobilecaddy-utils",
     "mobilecaddy",
-    "underscore"
+    "underscore",
+    "@ngx-translate/core"
   ]
 }
