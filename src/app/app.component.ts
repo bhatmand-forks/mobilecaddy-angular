@@ -99,14 +99,12 @@ export class MyApp {
     this.statusBar.styleDefault();
     // this.splashScreen.hide();
 
+    let pagesSet: Boolean = false;
 
     // Subscribe to the initState observable so we can define our menu items once we have the config
     this.getInitStateSubscription = this.mcStartupService
       .getInitState()
       .subscribe(res => {
-        let pagesSet: Boolean = false!
-
-;
         if (res) {
           // Syncing messages check
           if (res.status === 0 && !pagesSet) {
@@ -142,22 +140,33 @@ export class MyApp {
   private buildMenuConf(): Array<menuConfItem> {
     let allConf = this.configService.getConfig();
     console.log("allConf", allConf);
-    let menuConf = allConf.Side_Menu1[0].config.Detail1[1].modules.map(el => {
+    let menuConf = allConf.Side_Menu1[0].config.Detail1[1].blocks.map(el => {
       let itemConf:menuConfItem = {
         id: el.id,
-        instanceId: el.config.instanceId,
+        // instanceId: el.config.instanceId,
+        translationKey: el.id  + ".Name",
         order: el.order,
         //  page: el.page,
       }
-      let obj = this.getObjectById(allConf, this.getObjectById(allConf, el.id).config.instanceId);
-      itemConf.name = obj.name;
-      itemConf.translationKey = obj.config.General1[0].id  + ".Name";
-      if (obj.config.General1[0].config) {
-        itemConf.icon = obj.config.General1[0].config.icon;
+      if (el.iconConnectors) {
+        itemConf.icon = this.configService.getConfigById(allConf,el.iconConnectors[0].config.blockId).config.icon;
       }
+      const moduleInstanceId = (el.modules)
+        ? el.modules[0].config.instanceId
+        : el.dataConnectors[0].config.instanceId;
+      let obj = this.configService.getConfigById(allConf, moduleInstanceId);
+      itemConf.name = obj.name;
       if (obj.parentType) {
-        // TODO This component will come an ID (at SideMenu level) that will point to a "Datablock" that will define the type of page to get to. TEMP using this parentType.
-        itemConf.component = obj.parentType;
+        if ( el.dataConnectors ) {
+          const dataBlock = this.configService.getConfigById(obj,  el.dataConnectors[0].config.dataBlockId);
+          if ( dataBlock.groups ) {
+            itemConf.component = dataBlock.groups[0].config.page;
+          } else {
+            itemConf.component = obj.parentType;
+          }
+        } else {
+          itemConf.component = obj.parentType;
+        }
       }
       console.log("itemConf", itemConf);
       return itemConf;
@@ -165,35 +174,4 @@ export class MyApp {
     return menuConf;
   }
 
-  // Utility function to get an object from an Array/Object via an Id.
-  // Also passes the parent prop back - we use this to route to the type of page
-  private getObjectById(theObjects, id:string, parentType?: string) {
-    var result = null;
-    if(theObjects instanceof Array) {
-        for(var i = 0; i < theObjects.length; i++) {
-            result = this.getObjectById(theObjects[i], id, parentType);
-            if (result) {
-                break;
-            }
-        }
-    }
-    else
-    {
-        for(var prop in theObjects) {
-            if(prop == 'id') {
-                if(theObjects[prop] == id) {
-                    theObjects.parentType = parentType;
-                    return theObjects;
-                }
-            }
-            if(theObjects[prop] instanceof Object || theObjects[prop] instanceof Array) {
-                result = this.getObjectById(theObjects[prop], id, prop);
-                if (result) {
-                    break;
-                }
-            }
-        }
-    }
-    return result;
-  }
 }

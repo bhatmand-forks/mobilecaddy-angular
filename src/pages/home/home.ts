@@ -7,11 +7,27 @@ import { McLockScreenComponent } from '../../../mobilecaddy-angular/src/componen
 import { McResumeProvider } from '../../../mobilecaddy-angular/src/providers/mc-resume/mc-resume';
 import { McSyncService } from '../../../mobilecaddy-angular/src/providers/mc-sync/mc-sync.service';
 import { McStartupService } from '../../../mobilecaddy-angular/src/providers/mc-startup/mc-startup.service';
+import { McConfigService } from '../../../mobilecaddy-angular/src/providers/mc-config/mc-config.service';
 import { Subscription } from 'rxjs/Subscription';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import * as _ from 'underscore';
+import * as fileUtils from 'mobilecaddy-utils/fileUtils';
+import { DomSanitizer } from '@angular/platform-browser';
+import {TranslateService} from '@ngx-translate/core';
 
 const logTag: string = 'home.ts';
+
+interface buttonGridItem {
+  component? : any,
+  icon?: string,
+  id?: string,
+  instanceId?: string,
+  name?: string,
+  order?: number,
+  page?: string,
+  translationKey?: string,
+  label?: string
+}
 
 @Component({
   selector: 'page-home',
@@ -20,6 +36,7 @@ const logTag: string = 'home.ts';
 export class HomePage implements OnInit, OnDestroy {
   readonly logTag: string = 'home.ts';
   private loader: Loading;
+  private activated: boolean  = false
   // So we can unsubscribe subscriptions on destroy
   private getInitialSyncStateSubscription: Subscription;
   private getInitStateSubscription: Subscription;
@@ -33,9 +50,10 @@ export class HomePage implements OnInit, OnDestroy {
   };
   private startupStatus;
 
-  homeImage: string = window['RESOURCE_ROOT'] + '/assets/imgs/home.png';
-  titleImage: string = window['RESOURCE_ROOT'] + '/assets/imgs/brent_logo.png';
+  homeImage: any;
+  titleImage: any;
   btnTranslationKey: string = 'a0n0X00000VIm37QAD.OK_BTN';
+  buttonGridItems:Array<Array<buttonGridItem>>;
 
   constructor(
     private mcStartupService: McStartupService,
@@ -44,7 +62,10 @@ export class HomePage implements OnInit, OnDestroy {
     @Inject(APP_CONFIG) private appConfig: IAppConfig,
     private navCtrl: NavController,
     private mcResumeProvider: McResumeProvider,
-    private mcLockScreenProvider: McLockScreenProvider
+    private mcLockScreenProvider: McLockScreenProvider,
+    private configService: McConfigService,
+    private sanitizer: DomSanitizer,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -74,9 +95,12 @@ export class HomePage implements OnInit, OnDestroy {
             } else {
               this.setLoadingMsg(res.info);
             }
+          } else {
+
           }
           // Syncing messages check
           if (res.status === 0) {
+            this.activate();
             if (this.startupStatus === this.runState.ColdStart) {
               if (this.appConfig.onColdStart.showSyncLoader) {
                 this.setLoadingMsg('Syncing ' + res.table);
@@ -124,6 +148,37 @@ export class HomePage implements OnInit, OnDestroy {
           // console.log(this.logTag, 'mcResumeProvider.onColdStart res', res);
         });
     }
+
+
+  }
+
+  activate(){
+    if (!this.activated) {
+      // Set header image
+      const homeModuleConf = this.configService.getConfig('App_Page1')[0];
+      const headerImageConf = homeModuleConf.config.Detail1[0].media[0].config;
+      fileUtils
+      .readAsDataURL(headerImageConf.cv + '.png')
+      .then(res => {
+        console.log('readAsDataURL res: ' + res);
+        this.titleImage = this.sanitizer.bypassSecurityTrustUrl(res);
+      })
+      .catch(err => {
+        console.error('readAsDataURL err', err);
+        // logger.error('Error', err);
+      });
+
+      this.buttonGridItems = this.getButtonGridItems(homeModuleConf.config.Detail1[1].blocks);
+      console.log("this.buttonGridItems", this.buttonGridItems);
+
+      // TEMP - Create custom styles and add to doc.
+      var style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = '.home-button-custom { background-color: red; }';
+      document.getElementsByTagName('head')[0].appendChild(style);
+
+      this.activated = true;
+    }
   }
 
   ngOnDestroy() {
@@ -148,5 +203,52 @@ export class HomePage implements OnInit, OnDestroy {
       this.loader.setContent(msg);
     }
   }
+
+  getButtonGridItems(config){
+    const allConf = this.configService.getConfig();
+
+    const buttonGridItemsPerRow:number = 2;
+    let buttonGridItems = [];
+    let buttonGridRow = [];
+    config.forEach(el => {
+      let itemConf:buttonGridItem = {
+        id: el.id,
+        // instanceId: el.config.instanceId,
+        translationKey: el.id  + ".Name",
+        order: el.order,
+        label: null
+        //  page: el.page,
+      }
+      if (el.iconConnectors) {
+        itemConf.icon = this.configService.getConfigById(allConf,el.iconConnectors[0].config.blockId).config.icon;
+      }
+      const moduleInstanceId = (el.modules)
+        ? el.modules[0].config.instanceId
+        : el.dataConnectors[0].config.instanceId;
+      let obj = this.configService.getConfigById(allConf, moduleInstanceId);
+      itemConf.name = obj.name;
+      if (obj.parentType) {
+        if ( el.dataConnectors ) {
+          const dataBlock = this.configService.getConfigById(obj,  el.dataConnectors[0].config.dataBlockId);
+          if ( dataBlock.groups ) {
+            itemConf.component = dataBlock.groups[0].config.page;
+          } else {
+            itemConf.component = obj.parentType;
+          }
+        } else {
+          itemConf.component = obj.parentType;
+        }
+      }
+      console.log("itemConf", itemConf);
+      buttonGridRow.push(itemConf);
+      if (buttonGridRow.length == buttonGridItemsPerRow) {
+        buttonGridItems.push(buttonGridRow);
+        buttonGridRow = [];
+      }
+    });
+    console.log("buttonGridItems", buttonGridItems);
+    return buttonGridItems;
+  }
+
 
 }

@@ -25,6 +25,7 @@ export interface IAppConfig {
   mcCompletedFormsPage?: McCompletedFormsPageConfig;
   // tmp line for calling the platform for config
   usePlatformConfig?: boolean;
+  App_Page1?: any;
 }
 
 export interface menuItemsConfig {
@@ -146,7 +147,7 @@ export interface McCompletedFormsPageConfig {
 const oneMinute: number = 1000 * 60;
 
 export const AppConfig: IAppConfig = {
-  // Our app's version
+  // OurWe will be operating a 'first in' policy app's version
   version: '1.0.0',
 
   menuItems: [
@@ -177,10 +178,10 @@ export const AppConfig: IAppConfig = {
 
   // Tables to sync on initialSync
   initialSyncTables: [
-    'Account__ap',
-    'Contact__ap',
-    'Form_Version__ap',
-    'Form_Response__ap'
+    'File_Library__ap',
+    'Self_Serve_Manual__ap',
+    'Self_Serve_Product__ap',
+    'Self_Serve_Group__ap'
   ],
 
   syncPoints: [

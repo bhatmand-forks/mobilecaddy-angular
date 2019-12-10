@@ -170,7 +170,15 @@ export class McStartupService {
 
               // Pull base CSS Vars from the platform config.
               // NOTE there are child stylings that we need to think about too.
-              const cssVars = this.config.General1[0].config.General1[0].config.cssVars;
+              // TODO - PUll from fonts/borders and props in the JSON too
+              let cssVars = this.config.Theme1[0].config.Colours1[0].config.cssVars;
+              console.log('cssVars', cssVars);
+              if (cssVars) {
+                for (var cssVar in cssVars) {
+                  document.body.style.setProperty(cssVar, cssVars[cssVar]);
+                }
+              }
+              cssVars = this.config.Theme1[0].config.Fonts1[0].config.cssVars;
               console.log('cssVars', cssVars);
               if (cssVars) {
                 for (var cssVar in cssVars) {

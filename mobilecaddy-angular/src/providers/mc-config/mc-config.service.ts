@@ -33,4 +33,34 @@ export class McConfigService {
       return typeof res == 'object' ? JSON.parse(JSON.stringify(res)) : res;
     }
   }
+
+  getConfigById(theObjects, id:string, parentType?: string) {
+    var result = null;
+    if(theObjects instanceof Array) {
+        for(var i = 0; i < theObjects.length; i++) {
+            result = this.getConfigById(theObjects[i], id, parentType);
+            if (result) {
+                break;
+            }
+        }
+    }
+    else
+    {
+        for(var prop in theObjects) {
+            if(prop == 'id') {
+                if(theObjects[prop] == id) {
+                    theObjects.parentType = parentType;
+                    return theObjects;
+                }
+            }
+            if(theObjects[prop] instanceof Object || theObjects[prop] instanceof Array) {
+                result = this.getConfigById(theObjects[prop], id, prop);
+                if (result) {
+                    break;
+                }
+            }
+        }
+    }
+    return result;
+  }
 }
