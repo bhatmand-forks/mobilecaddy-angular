@@ -4,7 +4,7 @@
         <ion-icon name="menu"></ion-icon>
       </button>
       <ion-title>
-        {{ headerStr | translate }}
+        {{ title | translate }}
       </ion-title>
       <ion-buttons end>
         <mc-sync-icon></mc-sync-icon>
@@ -13,5 +13,18 @@
 </ion-header>
 
 <ion-content  padding>
-    <mc-list [listScrollHeight]="listScrollHeight" [showSearch]="showSearch" [recs]="recs"  [headerTitle]="listHeaderTitle" (recordClicked)="showDetail($event)" [displayFields]="displayFields"></mc-list>
+    <mc-list
+      [listScrollHeight]="listScrollHeight"
+      [showSearch]="showSearch"
+      [recs]="recs"
+      [headerTitle]="listHeaderTitle | translate"
+      (recordClicked)="itemClicked($event)"
+      [displayFields]="displayFields"
+      [searchPlaceholder]="searchPlaceholder| translate"
+      [isCardList]="isCardList"
+      [isImageCard]="isImageCard"
+      [itemClass]="itemClass"
+      [cardClass]="cardClass"
+      [noDataMsg]="noDataMsg | translate"
+      [noDataMsgClass]="noDataMsgClass" ></mc-list>
 </ion-content>

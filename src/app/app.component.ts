@@ -154,6 +154,7 @@ export class MyApp {
       const moduleInstanceId = (el.modules)
         ? el.modules[0].config.instanceId
         : el.dataConnectors[0].config.instanceId;
+      itemConf.instanceId = moduleInstanceId;
       let obj = this.configService.getConfigById(allConf, moduleInstanceId);
       itemConf.name = obj.name;
       if (obj.parentType) {
