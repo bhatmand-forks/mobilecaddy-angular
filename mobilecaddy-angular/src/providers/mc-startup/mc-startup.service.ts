@@ -169,21 +169,31 @@ export class McStartupService {
               this.MobileCaddyConfigService.setConfig(this.config);
 
               // Pull base CSS Vars from the platform config.
-              // NOTE there are child stylings that we need to think about too.
-              // TODO - PUll from fonts/borders and props in the JSON too
-              let cssVars = this.config.Theme1[0].config.Colours1[0].config.cssVars;
-              console.log('cssVars', cssVars);
-              if (cssVars) {
-                for (var cssVar in cssVars) {
-                  document.body.style.setProperty(cssVar, cssVars[cssVar]);
-                }
-              }
-              cssVars = this.config.Theme1[0].config.Fonts1[0].config.cssVars;
-              console.log('cssVars', cssVars);
-              if (cssVars) {
-                for (var cssVar in cssVars) {
-                  document.body.style.setProperty(cssVar, cssVars[cssVar]);
-                }
+              this.config.Theme1[0].config.Defaults1.forEach(el => {
+                el.blocks.forEach(block => {
+                    const cssVarName = Object.keys(block.config.cssVars)[0];
+                    document.body.style.setProperty(cssVarName, block.config.cssVars[cssVarName]);
+                });
+              });
+
+              // Create new CSS based upon stuff in the config (note this is different from updating the CSS vars).
+              if ( this.config.Theme1[0].config.processed ) {
+                let style = document.createElement('style');
+                style.type = 'text/css';
+                let newCssStr = '';
+                this.config.Theme1[0].config.processed[0].classes.forEach(cssClass => {
+                  var className = Object.keys(cssClass)[0];
+                  console.log('className', className);
+                  let cssStyles = '';
+                  for (let [key, value] of Object.entries(cssClass[className])) {
+                    console.log(`${key}: ${value}`);
+                    cssStyles += key + ':' + value + '!important;';
+                  }
+                  console.log('cssStyles', cssStyles);
+                  newCssStr += ' .' + className + ' {' + cssStyles + '}';
+                });
+                style.innerHTML = newCssStr;
+                document.getElementsByTagName('head')[0].appendChild(style);
               }
 
               resolve();

@@ -111,8 +111,10 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     // Check if the 'recs' has been changed by the parent component (e.g. after reading data)
     if (changes.recs) {
       this.recs = changes.recs.currentValue;
-      // Update 'allRecs' to reflect the records - 'allRecs' is used in search functionality
-      this.allRecs = changes.recs.currentValue;
+      this.maybeEnrichRecsWithImages().then(r => {
+        // Update 'allRecs' to reflect the records - 'allRecs' is used in search functionality
+        this.allRecs = this.recs;
+      });
     }
   }
 
@@ -151,6 +153,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
           console.error(e);
         });
     } else {
+      this.maybeEnrichRecsWithImages();
       this.allRecs = this.recs;
     }
   }
@@ -514,28 +517,42 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
     return index;
   }
 
-  private maybeEnrichRecsWithImages(): void {
-    console.log(this.logTag, 'maybeEnrichRecsWithImages');
-    if (this.imagesStart) {
-      console.log(this.logTag, 'We have imagesStart');
-      // Go through recs and add the image attribute
-      this.recs.forEach(rec => {
-        try {
-          fileUtils
-            .readAsDataURL(rec[this.imagesStart.field])
-            .then(res => {
-              console.log('readAsDataURL res: ' + res);
-              rec.image = this.sanitizer.bypassSecurityTrustUrl(res);
-            })
-            .catch(err => {
-              console.error('readAsDataURL err', err);
-              // logger.error('Error', err);
-            });
-        } catch (e) {
-          console.error('Error - try catch: ', e);
-          // logger.error('Error - try catch', e);
-        }
-      });
-    }
+  private maybeEnrichRecsWithImages() {
+    return new Promise((resolve, reject) => {
+      console.log(this.logTag, 'maybeEnrichRecsWithImages');
+      if (this.imagesStart) {
+        console.log(this.logTag, 'We have imagesStart');
+
+        var promises = [];
+
+        // Go through recs and add the image attribute
+        this.recs.forEach(rec => {
+          try {
+            promises.push(
+              fileUtils
+                .readAsDataURL(rec[this.imagesStart.field])
+                .then(res => {
+                  console.log('readAsDataURL res: ' + res);
+                  rec.image = this.sanitizer.bypassSecurityTrustUrl(res);
+                })
+                .catch(err => {
+                  console.error('readAsDataURL err', err);
+                  // logger.error('Error', err);
+                })
+            );
+          } catch (e) {
+            console.error('Error - try catch: ', e);
+            // logger.error('Error - try catch', e);
+            reject();
+          }
+        });
+
+        Promise.all(promises).then(() => {
+          resolve();
+        }).catch(e => {
+          console.error("promise.all catch", e);
+        });
+      }
+    });
   }
 }

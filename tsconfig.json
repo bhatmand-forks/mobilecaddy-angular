@@ -4,7 +4,7 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": ["dom", "es7"],
+    "lib": ["dom", "es7", "es2017.object"],
     "module": "es2015",
     "moduleResolution": "node",
     "sourceMap": true,
