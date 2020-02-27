@@ -8,6 +8,7 @@ import { MobileCaddySyncIconComponent } from './components/mc-sync-icon/mc-sync-
 import { OutboxComponent } from './components/mc-outbox/mc-outbox.component';
 import { GlobalSearch } from './components/mc-global-search/mc-global-search.component';
 import { McListComponent } from './components/mc-list/mc-list';
+import { McTreeComponent } from './components/mc-tree/mc-tree';
 import { McFormComponent } from './components/mc-form/mc-form';
 import { McForm2Component } from './components/mc-form2/mc-form2';
 import { McLockScreenComponent } from './components/mc-lock-screen/mc-lock-screen';
@@ -59,6 +60,7 @@ import { TranslateAppSoupLoader } from './providers/translate-appsoup-loader/tra
     OutboxComponent,
     GlobalSearch,
     McListComponent,
+    McTreeComponent,
     McFormComponent,
     McForm2Component,
     McLockScreenComponent,
@@ -82,6 +84,7 @@ import { TranslateAppSoupLoader } from './providers/translate-appsoup-loader/tra
     OutboxComponent,
     GlobalSearch,
     McListComponent,
+    McTreeComponent,
     McFormComponent,
     McForm2Component,
     McLockScreenComponent,

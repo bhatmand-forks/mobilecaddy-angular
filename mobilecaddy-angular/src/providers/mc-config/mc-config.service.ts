@@ -21,6 +21,14 @@ export interface List1Resp {
   noDataMsg: string,
   noDataMsgClass: string
 }
+interface Tree1Resp {
+  items: Array<any>,
+  paddingLeft: string,
+  searchSelectedItem: any,
+  searchPlaceholder: string,
+  showSearch: boolean,
+  tree: Array<any>
+}
 
 @Injectable()
 export class McConfigService {
@@ -80,13 +88,17 @@ export class McConfigService {
     return result;
   }
 
-  inflateComponent(name :string, conf: any, recs: Array<any> = undefined) :any {
+  inflateComponent(name :string, conf: any, recs: Array<any> = undefined) :   Header1Resp |
+      List1Resp |
+      {} {
     switch (name) {
       case "Header1" : {
         return this.inflateHeader1(conf, recs);
       }
       case "Item_List1" :
         return this.inflateList1(conf);
+        case "Tree1" :
+          return this.inflateTree1(conf, recs);
       case "dataServiceInterface" :
         // TODO
         return {};
@@ -96,6 +108,8 @@ export class McConfigService {
     }
   }
 
+
+  // H E A D E R 1
   private inflateHeader1(conf:any, recs: Array<any>): Header1Resp {
     let resp: Header1Resp = {
       title: ""
@@ -113,6 +127,8 @@ export class McConfigService {
     return resp;
   }
 
+
+  // L I S T 1
   private inflateList1(conf: any): List1Resp {
     let resp: List1Resp = {
       isCardList: "",
@@ -173,5 +189,46 @@ export class McConfigService {
     });
 
     return resp;
+  }
+
+
+  // T R E E 1
+
+  private inflateTree1(conf: any, recs : Array<any>) {
+    let resp =  {
+      items: [],
+      paddingLeft: "",
+      searchSelectedItem: null,
+      searchPlaceholder: "",
+      showSearch: false,
+      tree : [],
+    }
+    // TODO Update to use componentInterface, when it's available
+    resp.tree = JSON.parse(recs[0][conf.config.componentFields[0]]);
+    // TODO - Should this call into component? I think so
+    this.collapseTree(resp.tree);
+    resp.items = resp.tree[0].items;
+
+
+    // Go through componentInterface children.
+    conf.componentInterface.children.forEach(child => {
+      switch (child.name) {
+        case "search":
+          resp.showSearch = true;
+          resp.searchPlaceholder = child.transParams.searchPlaceholder;
+          break;
+      }
+    });
+    return resp;
+  }
+
+
+  private collapseTree(items: any) {
+    for (let i = 0; i < items.length; i++) {
+      items[i].expanded = false;
+      if (items[i].items.length > 0) {
+        this.collapseTree(items[i].items);
+      }
+    }
   }
 }
