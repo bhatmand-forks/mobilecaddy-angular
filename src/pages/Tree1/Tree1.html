@@ -1,0 +1,20 @@
+<ion-header no-border>
+    <ion-navbar color="primary">
+      <button ion-button menuToggle>
+        <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>
+        {{ title | translate }}
+      </ion-title>
+      <ion-buttons end>
+        <mc-sync-icon></mc-sync-icon>
+      </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content  no-padding>
+  <ng-container *ngIf="searchTerm==''">
+    <!-- Tree view (recursive) -->
+    <mc-tree [items]="items" [searchSelectedItem]="searchSelectedItem" [showSearch]="showSearch"></mc-tree>
+  </ng-container>
+</ion-content>

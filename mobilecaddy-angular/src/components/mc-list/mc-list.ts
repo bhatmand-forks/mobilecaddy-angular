@@ -114,6 +114,9 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
       this.maybeEnrichRecsWithImages().then(r => {
         // Update 'allRecs' to reflect the records - 'allRecs' is used in search functionality
         this.allRecs = this.recs;
+      }).catch(e => {
+        console.error(e);
+        this.allRecs = this.recs;
       });
     }
   }
@@ -552,6 +555,8 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
         }).catch(e => {
           console.error("promise.all catch", e);
         });
+      } else {
+        resolve();
       }
     });
   }

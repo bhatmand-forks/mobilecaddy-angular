@@ -2,35 +2,28 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Content, IonicPage, NavController, NavParams } from 'ionic-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { McConfigService } from '../../../mobilecaddy-angular/src/providers/mc-config/mc-config.service';
-import { Subject } from 'rxjs/Subject';
 
 
 @IonicPage()
 @Component({
-  selector: 'page-List1',
-  templateUrl: 'List1.html',
+  selector: 'page-Tree1',
+  templateUrl: 'Tree1.html',
 })
-export class List1 implements OnInit {
-  private logTag: string = 'List1.ts';
+export class Tree1 implements OnInit {
+  private logTag: string = 'Tree1.ts';
   pageInfo:any;
 
-  emConfig: any;
   config: any;
-  listScrollHeight: string;
-  title: string;
-  listHeaderTitle: string;
-  searchPlaceholder: string;
-  displayFields: Array<any>;
-  recs: Array<any> = [];
-  filterList: Subject<boolean> = new Subject();
-  showSearch: Boolean = false;
-  isCardList = false;
-  isImageCard = false;
-  cardClass: String;
-  itemClass: String;
-  noDataMsg;
-  noDataMsgClass;
-  imagesStart;
+  tree: any;
+  recs: Array<any>;
+  rec: any;
+
+  // TODO move search into mc-tree?
+  searchTerm: string = '';
+  items: Array<any>;
+  paddingLeft: string;
+  searchSelectedItem: any;
+
 
   @ViewChild(Content) content: Content;
 
@@ -45,10 +38,15 @@ export class List1 implements OnInit {
         this.pageInfo = navParams.get('target');
         // Set dummy conf for development - useful if we load straight into this page
         if (! this.pageInfo) {
-          this.pageInfo = {"id":"a0n0X00000VJk0QQAT","order":1,"icon":"cog","name":"Products","component":"List1", "instanceId": "a0n0X00000VK9vdQAD"};
+          this.pageInfo = {"id":"a0n0X00000VJk0QQAT","order":1,"icon":"cog","name":"Products","component":"Tree1", "instanceId": "a0n0X00000W24leQAB", recInfo :{
+            "Id": "a0k0X00000dvGWVQA2",
+            "Manual_Name__c": "JM new book",
+            "image": {
+              "changingThisBreaksApplicationSecurity": "/mock/files/undefined"
+            }
+          }};
         }
         console.log("pageInfo", this.pageInfo);
-
   }
 
   ngOnInit() {
@@ -58,19 +56,6 @@ export class List1 implements OnInit {
     console.log(this.logTag, 'ionViewDidEnter');
     this.applyConfig();
     this.ref.detectChanges();
-    this.setListScrollHeight();
-  }
-
-  setListScrollHeight() {
-    // Guard against resize before view is rendered
-    if (this.content) {
-      this.listScrollHeight = (this.content.getContentDimensions().contentHeight - 10) + "px";
-    }
-  }
-
-
-  filterRecs(ev: any) {
-    this.filterList.next(ev);
   }
 
 
@@ -97,13 +82,11 @@ export class List1 implements OnInit {
 
     this.recs = (recs) ? JSON.parse(recs) : [];
 
-    // TODO temp
-    this.imagesStart = {field: "MC_File_Image_Path__c"};
-
     // Loop through stuff in the current "screen" conf for our module instance.
     this.config[this.pageInfo.component].forEach(comp => {
       try {
-        let inflateResp = this.configService.inflateComponent(comp.name, comp);
+        let rec = (comp.name === "Tree1") ? this.getRecord() :{};
+        let inflateResp = this.configService.inflateComponent(comp.name, comp, [rec]);
         console.log("inflateResp", inflateResp);
         for ( let p in inflateResp ) {
           this[p] = inflateResp[p];
@@ -114,10 +97,13 @@ export class List1 implements OnInit {
     });
   }
 
+  getRecord() {
+    return this.recs.find( ({ Id }) => Id === this.pageInfo.recInfo.Id );
+  }
 
   itemClicked(event) {
     console.log(this.logTag, "itemClicked", event);
-    const targetPageType = this.config.List1[1].componentInterface.params.recordClicked;
+    const targetPageType = this.config[this.pageInfo.component][1].componentInterface.params.recordClicked;
     console.log(this.logTag, "targetPageType", targetPageType);
     this.navCtrl.push(
       targetPageType,
@@ -125,7 +111,6 @@ export class List1 implements OnInit {
         target: {
           component: targetPageType,
           instanceId : this.pageInfo.instanceId,
-          parentType : this.pageInfo.parentType,
           recInfo : event
         }
       }
