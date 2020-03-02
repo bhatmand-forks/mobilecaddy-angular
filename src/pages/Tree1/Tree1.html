@@ -15,6 +15,11 @@
 <ion-content  no-padding>
   <ng-container *ngIf="searchTerm==''">
     <!-- Tree view (recursive) -->
-    <mc-tree [items]="items" [searchSelectedItem]="searchSelectedItem" [showSearch]="showSearch"></mc-tree>
+    <mc-tree
+      [items]="items"
+      [searchPlaceholder]="searchPlaceholder| translate"
+      [searchSelectedItem]="searchSelectedItem"
+      [showSearch]="showSearch">
+    </mc-tree>
   </ng-container>
 </ion-content>

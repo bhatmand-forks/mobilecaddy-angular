@@ -161,8 +161,9 @@ export class McConfigService {
 
       switch (child.name) {
         case "search":
-          resp.showSearch = true;
-          resp.searchPlaceholder = child.transParams.searchPlaceholder;
+          const searchResp = this.inflateSearch(child);
+          resp.showSearch = searchResp.showSearch;
+          resp.searchPlaceholder = searchResp.searchPlaceholder;
           break;
         case "row":
           let row = {
@@ -214,11 +215,23 @@ export class McConfigService {
     conf.componentInterface.children.forEach(child => {
       switch (child.name) {
         case "search":
-          resp.showSearch = true;
-          resp.searchPlaceholder = child.transParams.searchPlaceholder;
+          const searchResp = this.inflateSearch(child);
+          resp.showSearch = searchResp.showSearch;
+          resp.searchPlaceholder = searchResp.searchPlaceholder;
           break;
       }
     });
+    return resp;
+  }
+
+  private inflateSearch(conf){
+    let resp = {
+      showSearch: true,
+      searchPlaceholder: undefined
+    };
+    if ((conf.transParams || {}).searchPlaceholder) {
+      resp.searchPlaceholder = conf.transParams.searchPlaceholder;
+    }
     return resp;
   }
 
