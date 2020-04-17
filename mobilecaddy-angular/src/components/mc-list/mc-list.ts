@@ -522,7 +522,7 @@ export class McListComponent implements OnInit, OnDestroy, OnChanges {
 
   private maybeEnrichRecsWithImages() {
     return new Promise((resolve, reject) => {
-      console.log(this.logTag, 'maybeEnrichRecsWithImages');
+      // console.log(this.logTag, 'maybeEnrichRecsWithImages');
       if (this.imagesStart) {
         console.log(this.logTag, 'We have imagesStart');
 

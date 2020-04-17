@@ -44,16 +44,24 @@ describe('McListComponent', () => {
         expect(comp).toBeTruthy();
     });
 
-    it('should have a clickAdd', () => {
-        // let e = new Event('click');
+    // it('should have not have ion-list-header if headerTitle undefined', () => {
+    //     const bannerElement: HTMLElement = fixture.nativeElement;
+    //     const p = bannerElement.querySelector('ion-list-header');
+    //     expect(p).toBe(null);
+    // });
+
+    it('should have ion-list-header with "Hello', () => {
+        const headerTitle = 'HEADER TITLE';
+        comp.headerTitle = headerTitle;
+        const bannerElement: HTMLElement = fixture.nativeElement;
+        const p = bannerElement.querySelector('ion-list-header');
+        expect(p.textContent).toEqual(headerTitle);
+    });
+
+    it('should have a clickAdd()', () => {
+        spyOn(comp.addClicked, 'emit');
         comp.clickAdd();
-        expect(true).toBe(true);
+        expect(comp.addClicked.emit).toHaveBeenCalled();
     });
 
-
-    it('should handle  addClicked undefined', () => {
-        // let e = new Event('click');
-        comp.addClicked = undefined;
-        expect(true).toBe(true);
-    });
 });
