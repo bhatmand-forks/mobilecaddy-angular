@@ -12,7 +12,8 @@
     "ionic:serve": "ionic-app-scripts serve",
     "mobilecaddy": "node_modules/mobilecaddy-codeflow/bin/mobilecaddy-app-scripts.js",
     "packagr": "ng-packagr -p ng-package.json",
-    "test": "karma start ./test-config/karma.conf.js"
+    "test": "karma start ./test-config/karma.conf.js",
+    "test-coverage": "karma start ./test-config/karma.conf.js --coverage"
   },
   "config": {
     "ionic_watch": "./ionic-watch.config.js"
@@ -39,6 +40,7 @@
     "@types/jasmine": "^2.8.16",
     "@types/node": "^8.10.60",
     "angular2-template-loader": "^0.6.2",
+    "handlebars": "^4.5.0",
     "html-loader": "^0.5.1",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
@@ -60,7 +62,7 @@
     "sw-toolbox": "3.6.0",
     "ts-loader": "^3.5.0",
     "ts-node": "^3.3.0",
-    "typescript": "~2.6.2",
+    "typescript": "^2.8.4",
     "underscore": "^1.8.3",
     "zone.js": "0.8.20"
   },

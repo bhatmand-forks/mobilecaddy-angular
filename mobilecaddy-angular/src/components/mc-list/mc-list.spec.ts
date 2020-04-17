@@ -1,0 +1,59 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture,  inject, TestBed } from '@angular/core/testing';
+import { IonicModule } from 'ionic-angular';
+
+import { DomSanitizer } from '@angular/platform-browser';
+import { McDataProvider } from '../../providers/mc-data/mc-data';
+import { LoadingController } from 'ionic-angular';
+
+import { McListComponent } from './mc-list';
+
+describe('McListComponent', () => {
+    let comp: McListComponent;
+    let fixture: ComponentFixture<McListComponent>;
+
+    beforeEach(async() => {
+        const dataServiceStub = {};
+
+        const domSanitizerStub = {
+            sanitize: () => {
+                // console.log("sanitising");
+                return {};
+            }
+        };
+
+        TestBed.configureTestingModule({
+        // provide the component-under-test and dependent service
+            declarations: [McListComponent],
+            providers: [
+                { provide: LoadingController, useValue: LoadingController },
+                { provide: McDataProvider, useValue: dataServiceStub},
+                { provide: DomSanitizer, useValue: domSanitizerStub},
+            ],
+            imports: [IonicModule.forRoot({})]
+        }).compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(McListComponent);
+        comp    = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(comp).toBeTruthy();
+    });
+
+    it('should have a clickAdd', () => {
+        // let e = new Event('click');
+        comp.clickAdd();
+        expect(true).toBe(true);
+    });
+
+
+    it('should handle  addClicked undefined', () => {
+        // let e = new Event('click');
+        comp.addClicked = undefined;
+        expect(true).toBe(true);
+    });
+});
