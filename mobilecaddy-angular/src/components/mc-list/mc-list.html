@@ -23,7 +23,7 @@
             [color]="getIconStartColor(rec)" [ngClass]="getIconStartClass(rec)" item-start></ion-icon>
           <div *ngFor="let item of displayFields; let i = index">
             <span *ngFor="let field of item.fields; let j = index">
-              <span [innerHtml]='wrapField(i,j,rec[field])'></span>
+              <span class="mc-row" [innerHtml]='wrapField(i,j,rec[field])'></span>
             </span>
           </div>
           <button *ngIf="buttonsEnd&&getButtonEndName(rec)!==''" ion-button (click)="clickButtonEnd($event,rec)"
